@@ -1,7 +1,8 @@
-package com.android.quo
+package com.android.quo.ui
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.android.quo.R
 
 class MainActivity : AppCompatActivity() {
 
