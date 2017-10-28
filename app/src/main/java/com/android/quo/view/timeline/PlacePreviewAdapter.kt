@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.viewmodel.PlacePreviewViewModel
+import com.android.quo.model.PlacePreview
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewDescriptionTextView
 import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewTitleTextView
@@ -13,10 +13,10 @@ import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewTitleT
 /**
  * Created by vitusortner on 27.10.17.
  */
-class PlacePreviewAdapter(private val viewModel: PlacePreviewViewModel) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
+class PlacePreviewAdapter(private val list: List<PlacePreview>) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
     override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) {
-        holder.bindItem(viewModel, position)
+        holder.bindItem(list, position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
@@ -24,13 +24,13 @@ class PlacePreviewAdapter(private val viewModel: PlacePreviewViewModel) : Recycl
         return PlacePreviewViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int = viewModel.getPlacePreviews()!!.size
+    override fun getItemCount(): Int = list.size
 
     class PlacePreviewViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun bindItem(viewModel: PlacePreviewViewModel, position: Int) {
-            placePreviewTitleTextView.text = viewModel.getPlacePreviews()!![position].title
-            placePreviewDescriptionTextView.text = viewModel.getPlacePreviews()!![position].description
+        fun bindItem(list: List<PlacePreview>, position: Int) {
+            placePreviewTitleTextView.text = list[position].title
+            placePreviewDescriptionTextView.text = list[position].description
         }
     }
 }
