@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Created by vitusortner on 29.10.17.
  */
-object Api {
+object ApiService {
 
     fun create(): Retrofit {
         return Retrofit.Builder()

@@ -13,6 +13,6 @@ interface PlacePreviewListService {
     fun getPlacePreviewList(): Observable<PlacePreviewList>
 
     companion object {
-        fun create(): PlacePreviewListService = Api.create().create(PlacePreviewListService::class.java)
+        fun create(): PlacePreviewListService = ApiService.create().create(PlacePreviewListService::class.java)
     }
 }
