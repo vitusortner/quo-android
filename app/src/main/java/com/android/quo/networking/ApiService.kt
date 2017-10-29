@@ -9,11 +9,12 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 object ApiService {
 
-    fun create(): Retrofit {
-        return Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://www.mocky.io/v2/")
-            .build()
-    }
+    private val BASE_URL = "http://www.mocky.io/v2/"
+
+    // Retrofit setup
+    val retrofit: Retrofit = Retrofit.Builder()
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)
+        .build()
 }
