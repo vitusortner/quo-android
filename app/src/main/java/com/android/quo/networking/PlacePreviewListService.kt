@@ -13,6 +13,7 @@ interface PlacePreviewListService {
     fun getPlacePreviewList(): Observable<PlacePreviewList>
 
     companion object {
-        fun create(): PlacePreviewListService = ApiService.retrofit.create(PlacePreviewListService::class.java)
+
+        val service: PlacePreviewListService by lazy { ApiService.retrofit.create(PlacePreviewListService::class.java) }
     }
 }

@@ -28,7 +28,7 @@ class PlacePreviewListViewModel : ViewModel() {
     }
 
     private fun loadPlacePreviewList() {
-        val placePreviewListService = PlacePreviewListService.create()
+        val placePreviewListService = PlacePreviewListService.service
 
         compositDisposable.add(
             placePreviewListService.getPlacePreviewList()
