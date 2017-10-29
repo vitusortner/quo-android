@@ -3,13 +3,19 @@ package com.android.quo.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.os.Handler
+import android.util.Log
 import com.android.quo.model.PlacePreview
+import com.android.quo.networking.PlacePreviewListService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by vitusortner on 27.10.17.
  */
 class PlacePreviewListViewModel : ViewModel() {
+
+    private val compositDisposable = CompositeDisposable()
 
     private var placePreviewList: MutableLiveData<List<PlacePreview>>? = null
 
@@ -22,29 +28,23 @@ class PlacePreviewListViewModel : ViewModel() {
     }
 
     private fun loadPlacePreviewList() {
-        // Fake API request with 3 sec delay
-        val handler = Handler()
-        handler.postDelayed({
-            val fakePlacePreviewList = ArrayList<PlacePreview>()
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
-            fakePlacePreviewList.add(PlacePreview("Lorem ipsum", "Curabitur nisl dolor, dictum a eros facilisis."))
+        val placePreviewListService = PlacePreviewListService.create()
 
-            // When placePreviewList not null set value
-            placePreviewList?.let { it.value = fakePlacePreviewList }
-        }, 3000)
+        compositDisposable.add(
+            placePreviewListService.getPlacePreviewList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    placePreviewList?.value = result.list
+                }, { error ->
+                    // TODO proper error handling
+                    Log.i("API error", error.toString())
+                })
+        )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositDisposable.clear()
     }
 }
