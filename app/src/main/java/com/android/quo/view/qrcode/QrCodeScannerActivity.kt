@@ -3,6 +3,7 @@ package com.android.quo.view.qrcode
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
+import android.hardware.Camera
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
@@ -62,7 +63,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startScanner()
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
