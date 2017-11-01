@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.android.quo.view.timeline.PlacePreviewAdapter
+import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
@@ -80,8 +82,9 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
 
     override fun handleResult(p0: Result?) {
-        //TODO open places page after the code is scanned
-        //TODO APP closed because they can't handle the result of qr code.
+        val qrCodeScannerViewModel = QrCodeScannerViewModel()
+        qrCodeScannerViewModel.handleQrCode(p0, this)
+
         try {
             mScannerView!!.stopCamera()
             finish()
