@@ -7,17 +7,16 @@ import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.R.id.actionPlaces
-import com.android.quo.view.timeline.HomeFragment
-import kotlinx.android.synthetic.main.bottom_navigation_view.bottomNavigationView
+import com.android.quo.view.home.HomeFragment
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.bottom_navigation_view)
+        setContentView(R.layout.activity_main)
 
-        val bottomNavigationView = bottomNavigationView
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
     }
@@ -28,12 +27,12 @@ class MainActivity : AppCompatActivity() {
 
             actionHome -> {
                 val manager = supportFragmentManager
-                manager.beginTransaction().replace(R.id.frame, HomeFragment()).commit()
-                return@OnNavigationItemSelectedListener true
+                manager.beginTransaction().replace(R.id.content, HomeFragment()).commit()
             }
             actionPlaces -> true
+            else -> false
         }
-        false
+        true
     }
 
 }
