@@ -28,11 +28,10 @@ class MainActivity : AppCompatActivity() {
             actionHome -> {
                 val manager = supportFragmentManager
                 manager.beginTransaction().replace(R.id.content, HomeFragment()).commit()
+                true
             }
             actionPlaces -> true
             else -> false
         }
-        true
     }
-
 }
