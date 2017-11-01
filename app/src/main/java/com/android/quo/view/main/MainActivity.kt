@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import com.android.quo.R
-import com.android.quo.R.id.*
+import com.android.quo.R.id.actionHome
+import com.android.quo.R.id.actionQrCode
+import com.android.quo.R.id.actionPlaces
 import com.android.quo.view.timeline.HomeFragment
-import kotlinx.android.synthetic.main.bottom_navigation_view.*
+import kotlinx.android.synthetic.main.bottom_navigation_view.bottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,26 +17,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.bottom_navigation_view)
 
-        val bottomNavigationView = bottomNavigation
-        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        val bottomNavigationView = bottomNavigationView
+        bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
     }
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            actionQrCode -> {
+            actionQrCode -> true
 
-                return@OnNavigationItemSelectedListener true
-            }
             actionHome -> {
                 val manager = supportFragmentManager
                 manager.beginTransaction().replace(R.id.frame, HomeFragment()).commit()
                 return@OnNavigationItemSelectedListener true
             }
-            actionPlaces -> {
-
-                return@OnNavigationItemSelectedListener true
-            }
+            actionPlaces -> true
         }
         false
     }

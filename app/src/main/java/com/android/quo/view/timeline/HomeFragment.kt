@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.viewmodel.PlacePreviewListViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_home.placePreviewRecyclerView
 
 
 /**
@@ -21,10 +21,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater?.inflate(R.layout.fragment_home, container, false)
-
-        val placePreviewListViewModel = ViewModelProviders.of(this
-        ).get(PlacePreviewListViewModel().javaClass)
+        val placePreviewListViewModel = ViewModelProviders.of(this)
+                .get(PlacePreviewListViewModel().javaClass)
 
         placePreviewListViewModel.getPlacePreviewList().observe(this, Observer { list ->
             list?.let {
@@ -34,6 +32,6 @@ class HomeFragment : Fragment() {
             }
         })
 
-        return view
+        return inflater?.inflate(R.layout.fragment_home, container, false)
     }
 }
