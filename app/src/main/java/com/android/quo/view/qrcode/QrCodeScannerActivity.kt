@@ -3,12 +3,10 @@ package com.android.quo.view.qrcode
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
-import android.hardware.Camera
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.android.quo.R
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
