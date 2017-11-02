@@ -9,6 +9,8 @@
         android:id="@+id/placePreviewRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/home_recyclerview_padding_top"
         android:scrollbars="vertical">
 
     </android.support.v7.widget.RecyclerView>
