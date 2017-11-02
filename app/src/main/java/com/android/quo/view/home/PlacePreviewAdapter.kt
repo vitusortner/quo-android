@@ -1,7 +1,6 @@
 package com.android.quo.view.home
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +27,6 @@ class PlacePreviewAdapter(private val list: List<PlacePreview>) : RecyclerView.A
     class PlacePreviewViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bindItem(list: List<PlacePreview>, position: Int) {
-            Log.i("Debugging", "title: ${list[position].title} description: ${list[position].description} at position: $position")
-
             placePreviewTitleTextView.text = list[position].title
             placePreviewDescriptionTextView.text = list[position].description
         }
