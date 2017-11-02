@@ -1,4 +1,4 @@
-package com.android.quo.view.timeline
+package com.android.quo.view.home
 
 import android.support.v7.widget.RecyclerView
 import android.util.Log
