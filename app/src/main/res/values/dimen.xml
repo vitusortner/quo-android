@@ -3,6 +3,8 @@
     <dimen name="home_cardview_image_height">150dp</dimen>
     <dimen name="home_cardview_textview_padding">5dp</dimen>
     <dimen name="home_cardview_margin">8dp</dimen>
+    <dimen name="home_cardview_title_textsize">20sp</dimen>
+    <dimen name="home_cardview_description_textsize">14sp</dimen>
 
     <dimen name="home_recyclerview_padding_top">8dp</dimen>
 </resources>

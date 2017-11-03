@@ -11,10 +11,10 @@ import com.bumptech.glide.Glide
 import com.github.florent37.glidepalette.BitmapPalette
 import com.github.florent37.glidepalette.GlidePalette
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewCardView
-import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewDescriptionTextView
-import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewImageView
-import kotlinx.android.synthetic.main.place_preview_card_view.placePreviewTitleTextView
+import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewCardView
+import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewDescriptionTextView
+import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewImageView
+import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTextView
 
 /**
  * Created by vitusortner on 27.10.17.
@@ -24,7 +24,7 @@ class PlacePreviewAdapter(private val context: Context, private val list: List<P
     override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) = holder.bindItem(list, position)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.place_preview_card_view, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.place_preview_cardview, parent, false)
         return PlacePreviewViewHolder(context, itemView)
     }
 
@@ -33,13 +33,17 @@ class PlacePreviewAdapter(private val context: Context, private val list: List<P
     class PlacePreviewViewHolder(private val context: Context, override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bindItem(list: List<PlacePreview>, position: Int) {
-            val url = list[position].imageUrl
+            val imageUrl = list[position].imageUrl
 
             Glide.with(context)
-                .load(url)
-                .listener(GlidePalette.with(url)
-                    .use(BitmapPalette.Profile.MUTED)
-                    .intoBackground(placePreviewCardView)
+                .load(imageUrl)
+                // Set card view background color with Palette
+                .listener(GlidePalette.with(imageUrl)
+                    .intoCallBack { palette ->
+                        palette?.let {
+                            placePreviewCardView.setCardBackgroundColor(palette.getMutedColor(BitmapPalette.Profile.MUTED))
+                        }
+                    }
                 )
                 .into(placePreviewImageView)
 

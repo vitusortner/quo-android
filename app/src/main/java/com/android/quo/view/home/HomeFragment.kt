@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.viewmodel.PlacePreviewListViewModel
+import kotlinx.android.synthetic.main.fragment_home.homeSwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_home.placePreviewRecyclerView
 
 
@@ -35,5 +36,10 @@ class HomeFragment : Fragment() {
                 placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
             }
         })
+
+        homeSwipeRefreshLayout.setOnRefreshListener {
+            placePreviewListViewModel.updatePlacePreviewList()
+            homeSwipeRefreshLayout.isRefreshing = false
+        }
     }
 }
