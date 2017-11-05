@@ -10,7 +10,10 @@ import retrofit2.http.GET
 interface PlacePreviewListService {
 
     @GET("59fc37412d00002d3e12436b")
-    fun getPlacePreviewList(): Observable<PlacePreviewList>
+    fun getPlacePreviewListHome(): Observable<PlacePreviewList>
+
+    @GET("59ff44582e0000650bca5944")
+    fun getPlacePreviewListMyPlaces(): Observable<PlacePreviewList>
 
     companion object {
 

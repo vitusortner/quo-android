@@ -1,4 +1,4 @@
-package com.android.quo.view.home
+package com.android.quo.view
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
