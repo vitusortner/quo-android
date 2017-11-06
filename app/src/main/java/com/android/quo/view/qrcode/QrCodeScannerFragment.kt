@@ -20,14 +20,13 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.model.QrCodeScannerDialog
-import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.Result
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.galleryButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -36,14 +35,16 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
  */
 
 class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
-    private val REQUEST_PERMISSION_CAMERA = 1
-    private val REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 1
+    private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val RESULT_GALLERY = 0
 
     private var scannerView: ZXingScannerView? = null
     private var qrCodeScannerViewModel: QrCodeScannerViewModel? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
+                ASK_MULTIPLE_PERMISSION_REQUEST_CODE)
+
         return inflater?.inflate(R.layout.fragment_qr_code_scanner, container, false)
     }
 
@@ -55,8 +56,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         qrCodeScannerViewModel = ViewModelProviders.of(this).
                 get(QrCodeScannerViewModel(this.activity.application)::class.java!!)
 
-        requestPermissionCamera()
-        requestPermissionGallery()
 
         flashButton.setOnClickListener {
             handleFlashLight()
@@ -66,9 +65,14 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
             openPhoneGallery()
         }
 
-        activity.bottomNavigationView.visibility = GONE
+        if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            galleryButton.background = qrCodeScannerViewModel!!.getLastImageFromGallery()
+        }
 
+        activity.bottomNavigationView.visibility = GONE
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -96,27 +100,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         }
     }
 
-
-    private fun requestPermissionCamera() {
-        if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this.activity, arrayOf(Manifest.permission.CAMERA),
-                    REQUEST_PERMISSION_CAMERA)
-        } else {
-            startScanner()
-        }
-    }
-
-    private fun requestPermissionGallery() {
-        if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this.activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE)
-        } else {
-            galleryButton.background = qrCodeScannerViewModel!!.getLastImageFromGallery()
-        }
-    }
-
     private fun openPhoneGallery() {
         val galleryIntent = Intent(
                 Intent.ACTION_PICK,
@@ -134,7 +117,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this.activity,
                     Manifest.permission.CAMERA)) {
-                requestPermissionCamera()
             } else {
                 AlertDialog.Builder(this.context).
                         setTitle(R.string.qr_code_camera_permission_denied_title).

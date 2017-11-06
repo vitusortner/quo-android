@@ -43,8 +43,8 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
         try {
             if (url.toString().contains("http")) {
                 return QrCodeScannerDialog(
-                        R.string.qr_code_found_thirdparty_title,
-                        R.string.qr_code_found_thirdparty_message,
+                        R.string.qr_code_found_third_party_title,
+                        R.string.qr_code_found_third_party_message,
                         url.toString())
             } else {
                 //TODO open places page after the code is scanned
@@ -54,8 +54,8 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
             Log.e("Error", e.message)
         }
         return return QrCodeScannerDialog(
-                R.string.qr_code_not_found_thirdparty_title,
-                R.string.qr_code_not_found_thirdparty_message,
+                R.string.qr_code_not_found_third_party_title,
+                R.string.qr_code_not_found_third_party_message,
                 url.toString())
     }
 

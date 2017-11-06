@@ -7,10 +7,10 @@
     <string name="no">No</string>
 
     <!-- QR CODE SCANNER -->
-    <string name="qr_code_found_thirdparty_title">Open url</string>
-    <string name="qr_code_found_thirdparty_message">Do you like to enter</string>
-    <string name="qr_code_not_found_thirdparty_title">We are sorry</string>
-    <string name="qr_code_not_found_thirdparty_message">We can not resolve the qr code</string>
+    <string name="qr_code_found_third_party_title">Open url</string>
+    <string name="qr_code_found_third_party_message">Do you like to enter</string>
+    <string name="qr_code_not_found_third_party_title">We are sorry</string>
+    <string name="qr_code_not_found_third_party_message">We can not resolve the qr code</string>
     <string name="qr_code_camera_permission_denied_title">Take picture permission denied</string>
     <string name="qr_code_camera_permission_denied_message">You need to take picture permission. The feature will be " +
                                 "disabled. To enable it, go on settings and allow the camera " +
