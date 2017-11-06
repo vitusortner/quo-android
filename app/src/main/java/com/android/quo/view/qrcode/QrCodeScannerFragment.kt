@@ -54,17 +54,19 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         qrCodeScannerViewModel = ViewModelProviders.of(this).
                 get(QrCodeScannerViewModel(this.activity.application)::class.java!!)
 
+        requestPermissionCamera()
+        requestPermissionGallery()
+
         flashButton.setOnClickListener {
             handleFlashLight()
         }
 
         galleryButton.setOnClickListener {
-            requestPermissionGallery()
+            openPhoneGallery()
         }
 
         activity.bottomNavigationView.visibility = GONE
-        galleryButton.background = qrCodeScannerViewModel!!.getLastImageFromGallery()
-        requestPermissionCamera()
+
     }
 
     override fun onResume() {
@@ -110,7 +112,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
             ActivityCompat.requestPermissions(this.activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     REQUEST_PERMISSION_READ_EXTERNAL_STORAGE)
         } else {
-            openPhoneGallery()
+            galleryButton.background = qrCodeScannerViewModel!!.getLastImageFromGallery()
         }
     }
 
