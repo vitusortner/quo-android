@@ -20,10 +20,11 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.model.QrCodeScannerDialog
+import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.Result
-import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.galleryButton
@@ -120,7 +121,8 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         val galleryIntent = Intent(
                 Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        ActivityCompat.startActivityForResult(this.activity, galleryIntent, RESULT_GALLERY, null)
+
+        ActivityCompat.startActivityForResult(activity, galleryIntent, RESULT_GALLERY, null)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,

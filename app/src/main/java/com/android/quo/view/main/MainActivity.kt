@@ -1,23 +1,14 @@
 package com.android.quo.view.main
 
-import android.app.Activity
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
-import android.util.AttributeSet
-import android.view.View
 import com.android.quo.R
 import com.android.quo.R.id.*
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.qrcode.QrCodeScannerFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import android.content.Intent
-import android.R.attr.data
-
-
-
-
 
 
 class MainActivity : FragmentActivity() {
