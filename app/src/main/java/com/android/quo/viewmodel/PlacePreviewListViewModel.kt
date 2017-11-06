@@ -43,6 +43,10 @@ class PlacePreviewListViewModel : ViewModel() {
         )
     }
 
+    fun updatePlacePreviewList() {
+        loadPlacePreviewList()
+    }
+
     override fun onCleared() {
         super.onCleared()
         compositDisposable.clear()

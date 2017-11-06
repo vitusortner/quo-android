@@ -108,24 +108,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         ActivityCompat.startActivityForResult(activity, galleryIntent, RESULT_GALLERY, null)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startScanner()
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.activity,
-                    Manifest.permission.CAMERA)) {
-            } else {
-                AlertDialog.Builder(this.context).
-                        setTitle(R.string.qr_code_camera_permission_denied_title).
-                        setMessage(R.string.qr_code_camera_permission_denied_message).show()
-            }
-        }
-
-    }
-
     override fun handleResult(p0: Result?) {
         try {
             openUrlDialogFromQRCode(qrCodeScannerViewModel!!.handleQrCode(p0))

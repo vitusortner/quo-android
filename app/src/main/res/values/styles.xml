@@ -8,4 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CardViewFont">
+        <item name="android:textColor">@color/colorHomeCardViewText</item>
+    </style>
+
+    <style name="CardViewTitleFont" parent="CardViewFont">
+        <item name="android:textSize">@dimen/home_cardview_title_textsize</item>
+    </style>
+
+    <style name="CardViewDescriptionFont" parent="CardViewFont">
+        <item name="android:textSize">@dimen/home_cardview_description_textsize</item>
+    </style>
+
 </resources>
