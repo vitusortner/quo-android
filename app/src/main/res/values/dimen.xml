@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="qr_code_scanner_flash_button_margin">20dp</dimen>
+    <dimen name="qr_code_scanner_gallery_button_margin">20dp</dimen>
+    <dimen name="qr_code_scanner_gallery_button_height">64dp</dimen>
+    <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
+
+    <dimen name="qr_code_scanner_flash_button_height">42dp</dimen>
+    <dimen name="qr_code_scanner_flash_button_width">42dp</dimen>
+</resources>
