@@ -1,5 +1,6 @@
 package com.android.quo.viewmodel
 
+
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
@@ -19,10 +20,10 @@ import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.Result
 import com.google.zxing.common.HybridBinarizer
 
-
 /**
  * Created by Jung on 30.10.17.
  */
+
 
 class QrCodeScannerViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -106,5 +107,4 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
         roundedBitmapDrawable.cornerRadius = Math.max(bitmap.width, bitmap.height) / 2.0f
         return roundedBitmapDrawable
     }
-
 }
