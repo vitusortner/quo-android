@@ -23,10 +23,8 @@ import com.android.quo.model.QrCodeScannerDialog
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.Result
-import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.galleryButton
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.*
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -43,7 +41,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
-                ASK_MULTIPLE_PERMISSION_REQUEST_CODE)
+            ASK_MULTIPLE_PERMISSION_REQUEST_CODE)
 
         return inflater?.inflate(R.layout.fragment_qr_code_scanner, container, false)
     }
@@ -54,7 +52,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         scannerView!!.setAutoFocus(true)
 
         qrCodeScannerViewModel = ViewModelProviders.of(this).
-                get(QrCodeScannerViewModel(this.activity.application)::class.java!!)
+            get(QrCodeScannerViewModel(this.activity.application)::class.java!!)
 
 
         flashButton.setOnClickListener {
@@ -66,7 +64,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         }
 
         if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED) {
             galleryButton.background = qrCodeScannerViewModel!!.getLastImageFromGallery()
         }
 
@@ -85,11 +83,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         scannerView?.stopCamera()
     }
 
-    private fun startScanner() {
-        scannerView!!.setResultHandler(this)
-        scannerView!!.startCamera()
-    }
-
     private fun handleFlashLight() {
         scannerView!!.flash = !scannerView!!.flash
 
@@ -102,10 +95,10 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
     private fun openPhoneGallery() {
         val galleryIntent = Intent(
-                Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        ActivityCompat.startActivityForResult(activity, galleryIntent, RESULT_GALLERY, null)
+        activity.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
     override fun handleResult(p0: Result?) {
@@ -117,7 +110,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
             Log.e("Error", e.message)
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_CANCELED) {
