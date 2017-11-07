@@ -110,7 +110,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_CANCELED) {
             if (requestCode == RESULT_GALLERY) {
-                val selectedImageUri = data!!.data
+                val selectedImageUri = data.let { data!!.data }
                 val reader = MultiFormatReader()
 
                 val path = qrCodeScannerViewModel.getPath(selectedImageUri)

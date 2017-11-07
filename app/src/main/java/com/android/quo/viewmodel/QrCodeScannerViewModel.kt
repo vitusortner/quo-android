@@ -85,15 +85,17 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun getLastImageFromGallery(): RoundedBitmapDrawable {
-        val cursor = context!!.contentResolver
-            .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+        val cursor = context?.contentResolver?.
+            query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
                 null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
 
-        while (cursor.moveToNext()) {
-            val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
-            if (imagePath.isNotEmpty()) {
-                val bitmap = BitmapFactory.decodeFile(imagePath)
-                return setRoundCornerToBitmap(bitmap)
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
+                if (imagePath.isNotEmpty()) {
+                    val bitmap = BitmapFactory.decodeFile(imagePath)
+                    return setRoundCornerToBitmap(bitmap)
+                }
             }
         }
         val bitmap = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888)
