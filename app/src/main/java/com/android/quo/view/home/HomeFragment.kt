@@ -13,8 +13,8 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.viewmodel.PlacePreviewListViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_home.homeSwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_home.placePreviewRecyclerView
+import kotlinx.android.synthetic.main.fragment_home.homeSwipeRefreshLayout
 
 
 /**
@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
     private lateinit var placePreviewListViewModel: PlacePreviewListViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_home, container, false)
+        inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

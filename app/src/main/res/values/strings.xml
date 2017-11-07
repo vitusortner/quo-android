@@ -3,8 +3,8 @@
     <string name="menu_qrcode">QR Code Scanner</string>
     <string name="menu_home">Home</string>
     <string name="menu_places">Places</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 
     <!-- QR CODE SCANNER -->
     <string name="qr_code_found_third_party_title">Open url</string>

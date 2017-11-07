@@ -13,7 +13,6 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -23,8 +22,10 @@ import com.android.quo.model.QrCodeScannerDialog
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.Result
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.*
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.galleryButton
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -36,8 +37,8 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val RESULT_GALLERY = 0
 
-    private var scannerView: ZXingScannerView? = null
-    private var qrCodeScannerViewModel: QrCodeScannerViewModel? = null
+    private lateinit var scannerView: ZXingScannerView
+    private lateinit var qrCodeScannerViewModel: QrCodeScannerViewModel
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
@@ -49,7 +50,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scannerView = qrCodeScannerView
-        scannerView!!.setAutoFocus(true)
+        scannerView.setAutoFocus(true)
 
         qrCodeScannerViewModel = ViewModelProviders.of(this).
             get(QrCodeScannerViewModel(this.activity.application)::class.java!!)
@@ -65,7 +66,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
         if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE)
             == PackageManager.PERMISSION_GRANTED) {
-            galleryButton.background = qrCodeScannerViewModel!!.getLastImageFromGallery()
+            galleryButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
         }
 
         activity.bottomNavigationView.visibility = GONE
@@ -74,19 +75,19 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
     override fun onResume() {
         super.onResume()
-        scannerView?.setResultHandler(this)
-        scannerView?.startCamera()
+        scannerView.setResultHandler(this)
+        scannerView.startCamera()
     }
 
     override fun onPause() {
         super.onPause()
-        scannerView?.stopCamera()
+        scannerView.stopCamera()
     }
 
     private fun handleFlashLight() {
-        scannerView!!.flash = !scannerView!!.flash
+        scannerView.flash = !scannerView.flash
 
-        if (scannerView!!.flash) {
+        if (scannerView.flash) {
             flashButton.background = ContextCompat.getDrawable(this.context, R.drawable.ic_flash_on)
         } else {
             flashButton.background = ContextCompat.getDrawable(this.context, R.drawable.ic_flash_off)
@@ -101,52 +102,39 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         activity.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
-    override fun handleResult(p0: Result?) {
-        try {
-            openUrlDialogFromQRCode(qrCodeScannerViewModel!!.handleQrCode(p0))
-
-            scannerView!!.stopCamera()
-        } catch (e: Exception) {
-            Log.e("Error", e.message)
-        }
+    override fun handleResult(result: Result) {
+        openUrlDialogFromQRCode(qrCodeScannerViewModel.handleQrCode(result))
+        scannerView.stopCamera()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_CANCELED) {
-            try {
-                if (requestCode == RESULT_GALLERY) {
-                    val selectedImageUri = data!!.data
-                    val reader = MultiFormatReader()
+            if (requestCode == RESULT_GALLERY) {
+                val selectedImageUri = data!!.data
+                val reader = MultiFormatReader()
 
-                    val path = qrCodeScannerViewModel!!.getPath(selectedImageUri)
-                    val bitmap = BitmapFactory.decodeFile(path)
-                    val result = reader.decode(qrCodeScannerViewModel!!.getBinaryBitmap(bitmap))
-                    val qrCode = qrCodeScannerViewModel!!.handleQrCode(result)
-                    openUrlDialogFromQRCode(qrCode)
-                }
-            } catch (e: Exception) {
-                Log.e("Error", e.message)
+                val path = qrCodeScannerViewModel.getPath(selectedImageUri)
+                val bitmap = BitmapFactory.decodeFile(path)
+                val result = reader.decode(qrCodeScannerViewModel.getBinaryBitmap(bitmap))
+                val qrCode = qrCodeScannerViewModel.handleQrCode(result)
+                openUrlDialogFromQRCode(qrCode)
             }
         }
     }
 
     private fun openUrlDialogFromQRCode(result: QrCodeScannerDialog) {
-        try {
-            val urlAlert = AlertDialog.Builder(this.context).create()
-            urlAlert.setTitle(resources.getString(result.title))
-            urlAlert.setMessage(resources.getString(result.message) + " " + result.url)
+        val urlAlert = AlertDialog.Builder(this.context).create()
+        urlAlert.setTitle(resources.getString(result.title))
+        urlAlert.setMessage(resources.getString(result.message) + " " + result.url)
 
-            urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.yes), { _, _ ->
-                val builder = CustomTabsIntent.Builder()
-                val customTabsIntent = builder.build()
-                customTabsIntent.launchUrl(this.activity, Uri.parse(result.url))
-            })
-            urlAlert.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.no), { _, _ ->
-                this.onResume()
-            })
-            urlAlert.show()
-        } catch (e: Exception) {
-            Log.e("Error", e.message)
-        }
+        urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.open), { _, _ ->
+            val builder = CustomTabsIntent.Builder()
+            val customTabsIntent = builder.build()
+            customTabsIntent.launchUrl(this.activity, Uri.parse(result.url))
+        })
+        urlAlert.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.close), { _, _ ->
+            this.onResume()
+        })
+        urlAlert.show()
     }
 }

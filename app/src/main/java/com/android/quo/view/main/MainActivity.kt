@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
 import com.android.quo.R
-import com.android.quo.R.id.*
+import com.android.quo.R.id.actionQrCode
+import com.android.quo.R.id.actionHome
+import com.android.quo.R.id.actionPlaces
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.qrcode.QrCodeScannerFragment
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
 
 class MainActivity : FragmentActivity() {
@@ -24,15 +26,15 @@ class MainActivity : FragmentActivity() {
         when (item.itemId) {
             actionQrCode -> {
                 supportFragmentManager.beginTransaction().
-                        replace(R.id.content, QrCodeScannerFragment()).
-                        addToBackStack(null).commit()
+                    replace(R.id.content, QrCodeScannerFragment()).
+                    addToBackStack(null).commit()
                 true
             }
 
             actionHome -> {
                 supportFragmentManager.beginTransaction().
-                        replace(R.id.content, HomeFragment()).
-                        addToBackStack(null).commit()
+                    replace(R.id.content, HomeFragment()).
+                    addToBackStack(null).commit()
                 true
             }
             actionPlaces -> true
