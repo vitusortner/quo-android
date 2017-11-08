@@ -3,6 +3,7 @@ package com.android.quo.view.home
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -23,13 +24,17 @@ class HomeFragment : Fragment() {
 
     private lateinit var placePreviewListViewModel: PlacePreviewListViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_home, container, false)
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? =
+            inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        placePreviewListViewModel = ViewModelProviders.of(this).get(PlacePreviewListViewModel().javaClass)
+        placePreviewListViewModel = ViewModelProviders.of(this)
+                .get(PlacePreviewListViewModel().javaClass)
 
         observePlacePreviewList()
         setupSwipeRefresh()
