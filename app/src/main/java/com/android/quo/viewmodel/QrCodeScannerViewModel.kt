@@ -29,23 +29,21 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
 
     private val context: Context
     private var projection = arrayOf(
-        MediaStore.Images.ImageColumns._ID,
-        MediaStore.Images.ImageColumns.DATA,
-        MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-        MediaStore.Images.ImageColumns.DATE_TAKEN,
-        MediaStore.Images.ImageColumns.MIME_TYPE)
+            MediaStore.Images.ImageColumns._ID,
+            MediaStore.Images.ImageColumns.DATA,
+            MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.ImageColumns.DATE_TAKEN,
+            MediaStore.Images.ImageColumns.MIME_TYPE)
 
-    init {
-        context = application.applicationContext
-    }
+    init { context = application.applicationContext }
 
     fun handleQrCode(url: Result): QrCodeScannerDialog {
         try {
             if (url.toString().contains("http")) {
                 return QrCodeScannerDialog(
-                    context.resources.getString(R.string.qr_code_found_third_party_title),
-                    context.resources.getString(R.string.qr_code_found_third_party_message),
-                    url.toString())
+                        context.resources.getString(R.string.qr_code_found_third_party_title),
+                        context.resources.getString(R.string.qr_code_found_third_party_message),
+                        url.toString())
             } else {
                 //TODO open places page after the code is scanned
             }
@@ -54,9 +52,9 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
             Log.e("Error", e.message)
         }
         return QrCodeScannerDialog(
-            context.resources.getString(R.string.qr_code_not_found_third_party_title),
-            context.resources.getString(R.string.qr_code_not_found_third_party_message),
-            url.toString())
+                context.resources.getString(R.string.qr_code_not_found_third_party_title),
+                context.resources.getString(R.string.qr_code_not_found_third_party_message),
+                url.toString())
     }
 
     fun getPath(uri: Uri): String {
@@ -86,8 +84,8 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
 
     fun getLastImageFromGallery(): RoundedBitmapDrawable {
         val cursor = context.contentResolver.
-            query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
-                null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
+                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
