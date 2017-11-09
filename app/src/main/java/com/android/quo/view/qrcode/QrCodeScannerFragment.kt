@@ -13,6 +13,7 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -23,9 +24,9 @@ import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.Result
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.galleryButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -110,22 +111,28 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_CANCELED) {
             if (requestCode == RESULT_GALLERY) {
-                val selectedImageUri = data.let { data!!.data }
+                val selectedImageUri = data.let { data?.data }
                 val reader = MultiFormatReader()
 
-                val path = qrCodeScannerViewModel.getPath(selectedImageUri)
+                val path = selectedImageUri?.let { qrCodeScannerViewModel.getPath(it) }
                 val bitmap = BitmapFactory.decodeFile(path)
-                val result = reader.decode(qrCodeScannerViewModel.getBinaryBitmap(bitmap))
-                val qrCode = qrCodeScannerViewModel.handleQrCode(result)
-                openUrlDialogFromQRCode(qrCode)
+                val result: Result?
+                try {
+                    result = reader.decode(qrCodeScannerViewModel.getBinaryBitmap(bitmap))
+                } catch (e: Exception) {
+                    Log.e("Error", e.message)
+                    return
+                }
+                val qrCode = result?.let { qrCodeScannerViewModel.handleQrCode(it) }
+                qrCode?.let { openUrlDialogFromQRCode(it) }
             }
         }
     }
 
     private fun openUrlDialogFromQRCode(result: QrCodeScannerDialog) {
         val urlAlert = AlertDialog.Builder(this.context).create()
-        urlAlert.setTitle(resources.getString(result.title))
-        urlAlert.setMessage(resources.getString(result.message) + " " + result.url)
+        urlAlert.setTitle(result.title)
+        urlAlert.setMessage(result.message + " " + result.url)
 
         urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.open), { _, _ ->
             val builder = CustomTabsIntent.Builder()

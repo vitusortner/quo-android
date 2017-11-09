@@ -27,7 +27,7 @@ import com.google.zxing.common.HybridBinarizer
 
 class QrCodeScannerViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var context: Context? = null
+    private val context: Context
     private var projection = arrayOf(
         MediaStore.Images.ImageColumns._ID,
         MediaStore.Images.ImageColumns.DATA,
@@ -43,8 +43,8 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
         try {
             if (url.toString().contains("http")) {
                 return QrCodeScannerDialog(
-                    R.string.qr_code_found_third_party_title,
-                    R.string.qr_code_found_third_party_message,
+                    context.resources.getString(R.string.qr_code_found_third_party_title),
+                    context.resources.getString(R.string.qr_code_found_third_party_message),
                     url.toString())
             } else {
                 //TODO open places page after the code is scanned
@@ -54,15 +54,15 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
             Log.e("Error", e.message)
         }
         return QrCodeScannerDialog(
-            R.string.qr_code_not_found_third_party_title,
-            R.string.qr_code_not_found_third_party_message,
+            context.resources.getString(R.string.qr_code_not_found_third_party_title),
+            context.resources.getString(R.string.qr_code_not_found_third_party_message),
             url.toString())
     }
 
     fun getPath(uri: Uri): String {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context!!.contentResolver.query(uri, mediaStoreData, null, null, null)
+        val cursor = context.contentResolver.query(uri, mediaStoreData, null, null, null)
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
@@ -85,7 +85,7 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun getLastImageFromGallery(): RoundedBitmapDrawable {
-        val cursor = context?.contentResolver?.
+        val cursor = context.contentResolver.
             query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
                 null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
 
@@ -104,7 +104,7 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun setRoundCornerToBitmap(bitmap: Bitmap): RoundedBitmapDrawable {
-        val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context!!.resources, bitmap)
+        val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, bitmap)
         roundedBitmapDrawable.cornerRadius = Math.max(bitmap.width, bitmap.height) / 2.0f
         return roundedBitmapDrawable
     }
