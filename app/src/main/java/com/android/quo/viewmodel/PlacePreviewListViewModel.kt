@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.model.PlacePreview
 import com.android.quo.networking.PlacePreviewListService
+import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.HOME
+import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.MY_PLACES
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -15,37 +17,66 @@ import io.reactivex.schedulers.Schedulers
  */
 class PlacePreviewListViewModel : ViewModel() {
 
+    enum class FragmentType {
+        HOME, MY_PLACES
+    }
+
     private val compositDisposable = CompositeDisposable()
 
-    private var placePreviewList: MutableLiveData<List<PlacePreview>>? = null
+    private var placePreviewListHome: MutableLiveData<List<PlacePreview>>? = null
+    private var placePreviewListMyPlaces: MutableLiveData<List<PlacePreview>>? = null
 
-    fun getPlacePreviewList(): LiveData<List<PlacePreview>> {
-        if (placePreviewList == null) {
-            placePreviewList = MutableLiveData()
-            loadPlacePreviewList()
+    private val placePreviewListService = PlacePreviewListService.service
+
+    fun getPlacePreviewList(fragmentType: FragmentType): LiveData<List<PlacePreview>> =
+        when (fragmentType) {
+            HOME -> {
+                if (placePreviewListHome == null) {
+                    placePreviewListHome = MutableLiveData()
+                    loadPlacePreviewList(fragmentType)
+                }
+                placePreviewListHome as MutableLiveData<List<PlacePreview>>
+            }
+            MY_PLACES -> {
+                if (placePreviewListMyPlaces == null) {
+                    placePreviewListMyPlaces = MutableLiveData()
+                    loadPlacePreviewList(fragmentType)
+                }
+                placePreviewListMyPlaces as MutableLiveData<List<PlacePreview>>
+            }
         }
-        return placePreviewList as MutableLiveData<List<PlacePreview>>
-    }
 
-    private fun loadPlacePreviewList() {
-        val placePreviewListService = PlacePreviewListService.service
+    private fun loadPlacePreviewList(fragmentType: FragmentType) =
+        when (fragmentType) {
+            HOME -> {
+                compositDisposable.add(
+                    placePreviewListService.getPlacePreviewListHome()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ result ->
+                            placePreviewListHome?.value = result.list
+                        }, { error ->
+                            // TODO proper error handling
+                            Log.i("API error", error.toString())
+                        })
+                )
+            }
+            MY_PLACES -> {
+                compositDisposable.add(
+                    placePreviewListService.getPlacePreviewListMyPlaces()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ result ->
+                            placePreviewListMyPlaces?.value = result.list
+                        }, { error ->
+                            // TODO proper error handling
+                            Log.i("API error", error.toString())
+                        })
+                )
+            }
+        }
 
-        compositDisposable.add(
-            placePreviewListService.getPlacePreviewList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result ->
-                    placePreviewList?.value = result.list
-                }, { error ->
-                    // TODO proper error handling
-                    Log.i("API error", error.toString())
-                })
-        )
-    }
-
-    fun updatePlacePreviewList() {
-        loadPlacePreviewList()
-    }
+    fun updatePlacePreviewList(fragmentType: FragmentType) = loadPlacePreviewList(fragmentType)
 
     override fun onCleared() {
         super.onCleared()

@@ -8,6 +8,7 @@ import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.view.home.HomeFragment
+import com.android.quo.view.myplaces.MyPlacesFragment
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
 
@@ -22,15 +23,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        val manager = supportFragmentManager
+
         when (item.itemId) {
             actionQrCode -> true
-
             actionHome -> {
-                val manager = supportFragmentManager
                 manager.beginTransaction().replace(R.id.content, HomeFragment()).commit()
                 true
             }
-            actionPlaces -> true
+            actionPlaces -> {
+                manager.beginTransaction().replace(R.id.content, MyPlacesFragment()).commit()
+                true
+            }
             else -> false
         }
     }
