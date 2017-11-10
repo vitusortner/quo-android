@@ -4,19 +4,19 @@
     <item
         android:id="@+id/actionQrCode"
         android:enabled="true"
-        android:icon="@drawable/qr_code_icon"
+        android:icon="@drawable/ic_qr_code"
         android:title="@string/menu_qrcode"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/actionHome"
         android:enabled="true"
-        android:icon="@drawable/home_icon"
+        android:icon="@drawable/ic_home"
         android:title="@string/menu_home"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/actionPlaces"
         android:enabled="true"
-        android:icon="@drawable/places_icon"
+        android:icon="@drawable/ic_places"
         android:title="@string/menu_places"
         app:showAsAction="ifRoom" />
 </menu>

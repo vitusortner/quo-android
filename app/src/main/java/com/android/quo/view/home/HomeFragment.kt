@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.PlacePreviewListViewModel
 import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.HOME
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_home.placePreviewRecyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
 
@@ -27,6 +29,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity.bottomNavigationView.visibility = VISIBLE
 
         placePreviewListViewModel = ViewModelProviders.of(this).get(PlacePreviewListViewModel().javaClass)
 
