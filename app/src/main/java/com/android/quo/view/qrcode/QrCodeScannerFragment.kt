@@ -126,7 +126,17 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
             }
         } catch (e: NotFoundException) {
             Log.e("Error", e.message.toString())
+            openNoQrCodeFoundDialog()
         }
+    }
+
+    private fun openNoQrCodeFoundDialog(){
+        val dialog = AlertDialog.Builder(this.context).create()
+        dialog.setTitle(this.context.resources.getString(R.string.error_qr_code_title))
+        dialog.setMessage(this.context.resources.getString(R.string.error_qr_code_message))
+
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.done), { _, _ -> })
+        dialog.show()
     }
 
     private fun openUrlDialogFromQRCode(result: QrCodeScannerDialog) {

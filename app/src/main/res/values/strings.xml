@@ -15,5 +15,8 @@
     <string name="qr_code_camera_permission_denied_message">You need to take picture permission. The feature will be " +
                                 "disabled. To enable it, go on settings and allow the camera " +
                                 "permission for the application</string>
+    <string name="error_qr_code_title">Error</string>
+    <string name="error_qr_code_message">We are sorry ! There is not QR Code in image</string>
+    <string name="done">DONE</string>
 
 </resources>
