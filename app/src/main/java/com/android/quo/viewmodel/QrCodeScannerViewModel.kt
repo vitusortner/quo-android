@@ -33,9 +33,7 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
             MediaStore.Images.ImageColumns.DATE_TAKEN,
             MediaStore.Images.ImageColumns.MIME_TYPE)
 
-    init {
-        context = application.applicationContext
-    }
+    init { context = application.applicationContext }
 
     fun handleQrCode(url: Result): QrCodeScannerDialog {
         if (url.toString().contains("http")) {

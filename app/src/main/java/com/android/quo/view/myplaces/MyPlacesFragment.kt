@@ -13,6 +13,7 @@ import com.android.quo.R
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.PlacePreviewListViewModel
 import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.MY_PLACES
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.placePreviewRecyclerView
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
@@ -29,6 +30,7 @@ class MyPlacesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity.bottomNavigationView.visibility = View.VISIBLE
 
         placePreviewListViewModel = ViewModelProviders.of(this).get(PlacePreviewListViewModel().javaClass)
 
