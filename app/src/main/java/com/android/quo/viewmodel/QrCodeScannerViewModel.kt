@@ -11,11 +11,9 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.util.Log
 import com.android.quo.R
 import com.android.quo.model.QrCodeScannerDialog
 import com.google.zxing.BinaryBitmap
-import com.google.zxing.NotFoundException
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.Result
 import com.google.zxing.common.HybridBinarizer
@@ -35,21 +33,18 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
             MediaStore.Images.ImageColumns.DATE_TAKEN,
             MediaStore.Images.ImageColumns.MIME_TYPE)
 
-    init { context = application.applicationContext }
+    init {
+        context = application.applicationContext
+    }
 
     fun handleQrCode(url: Result): QrCodeScannerDialog {
-        try {
-            if (url.toString().contains("http")) {
-                return QrCodeScannerDialog(
-                        context.resources.getString(R.string.qr_code_found_third_party_title),
-                        context.resources.getString(R.string.qr_code_found_third_party_message),
-                        url.toString())
-            } else {
-                //TODO open places page after the code is scanned
-            }
-
-        } catch (e: NotFoundException) {
-            Log.e("Error", e.message)
+        if (url.toString().contains("http")) {
+            return QrCodeScannerDialog(
+                    context.resources.getString(R.string.qr_code_found_third_party_title),
+                    context.resources.getString(R.string.qr_code_found_third_party_message),
+                    url.toString())
+        } else {
+            //TODO open places page after the code is scanned
         }
         return QrCodeScannerDialog(
                 context.resources.getString(R.string.qr_code_not_found_third_party_title),
@@ -61,13 +56,12 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
         val cursor = context.contentResolver.query(uri, mediaStoreData, null, null, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
-                result = cursor.getString(columnIndex)
-            }
-            cursor.close()
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
+            result = cursor.getString(columnIndex)
         }
+        cursor.close()
+
         if (result == null) {
             result = "Not found"
         }
@@ -83,8 +77,8 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun getLastImageFromGallery(): RoundedBitmapDrawable {
-        val cursor = context.contentResolver.
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+        val cursor = context.contentResolver
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
                         null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
 
         if (cursor != null) {
@@ -96,6 +90,7 @@ class QrCodeScannerViewModel(application: Application) : AndroidViewModel(applic
                 }
             }
         }
+        cursor.close()
         val bitmap = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888)
         bitmap.eraseColor(Color.WHITE)
         return setRoundCornerToBitmap(bitmap)

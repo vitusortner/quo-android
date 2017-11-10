@@ -55,7 +55,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         scannerView.setAutoFocus(true)
 
         qrCodeScannerViewModel = ViewModelProviders.of(this).
-                get(QrCodeScannerViewModel(this.activity.application)::class.java!!)
+                get(QrCodeScannerViewModel(this.activity.application)::class.java)
 
 
         flashButton.setOnClickListener {
@@ -113,7 +113,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         try {
             if (resultCode != Activity.RESULT_CANCELED) {
                 if (requestCode == RESULT_GALLERY) {
-                    val selectedImageUri = data.let { data?.data }
+                    val selectedImageUri = data?.data
                     val reader = MultiFormatReader()
 
                     val path = selectedImageUri?.let { qrCodeScannerViewModel.getPath(it) }
