@@ -68,6 +68,7 @@ class MyPlacesFragment : Fragment() {
             floatingActionButton.setOnClickListener {
                 Snackbar.make(floatingActionButton, "Floating action button clicked",
                         Snackbar.LENGTH_LONG)
-                        .setAction("HIDE", { }).show()
+                        .setAction("HIDE", { })
+                        .show()
             }
 }
