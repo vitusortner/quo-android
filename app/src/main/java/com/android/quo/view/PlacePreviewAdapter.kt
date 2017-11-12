@@ -1,4 +1,4 @@
-package com.android.quo.view.home
+package com.android.quo.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
