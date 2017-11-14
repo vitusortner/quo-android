@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.model.PlacePreview
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import com.github.florent37.glidepalette.BitmapPalette
 import com.github.florent37.glidepalette.GlidePalette
 import kotlinx.android.extensions.LayoutContainer
@@ -21,12 +22,10 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
 class PlacePreviewAdapter(private val list: List<PlacePreview>) :
         RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
-    override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) =
-            holder.bindItem(list, position)
+    override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) = holder.bindItem(list, position)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.place_preview_cardview,
-                parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.place_preview_cardview, parent, false)
         return PlacePreviewViewHolder(itemView)
     }
 
@@ -40,6 +39,7 @@ class PlacePreviewAdapter(private val list: List<PlacePreview>) :
 
             Glide.with(containerView.context)
                     .load(imageUrl)
+                    .apply(centerCropTransform())
                     // Set card view background color with Palette
                     .listener(GlidePalette.with(imageUrl)
                             .intoCallBack { palette ->
