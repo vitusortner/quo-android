@@ -22,10 +22,13 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
 class PlacePreviewAdapter(private val list: List<PlacePreview>) :
         RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
-    override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) = holder.bindItem(list, position)
+    override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) {
+        holder.bindItem(list, position)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.place_preview_cardview, parent, false)
+        val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.place_preview_cardview, parent, false)
         return PlacePreviewViewHolder(itemView)
     }
 
