@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        val manager = supportFragmentManager
-
         when (item.itemId) {
             actionQrCode -> {
                 supportFragmentManager.beginTransaction()
@@ -42,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             actionPlaces -> {
-                manager.beginTransaction()
+                supportFragmentManager.beginTransaction()
                         .replace(R.id.content, MyPlacesFragment())
                         .commit()
                 true
