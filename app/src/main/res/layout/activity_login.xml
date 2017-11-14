@@ -3,92 +3,103 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/loginLogoImageView"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/login_logo_image_view_margin_top"
-        android:background="@drawable/qr_code_icon" />
+        android:layout_centerHorizontal="true">
 
-    <EditText
-        android:id="@+id/loginEmailEditText"
-        android:layout_width="@dimen/login_edit_text_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/loginLogoImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/login_email_edit_text_margin_top"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:theme="@style/EditTextTheme" />
-
-    <TextView
-        android:id="@+id/loginErrorEmailMessage"
-        android:layout_width="@dimen/login_error_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/loginEmailEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-8dp"
-        android:textColor="@color/colorErrorRed" />
-
-    <EditText
-        android:id="@+id/loginPasswordEditText"
-        android:layout_width="@dimen/login_edit_text_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/loginEmailEditText"
-        android:layout_centerHorizontal="true"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:theme="@style/EditTextTheme" />
-
-    <TextView
-        android:id="@+id/loginErrorPasswordMessage"
-        android:layout_width="@dimen/login_error_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/loginPasswordEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-8dp"
-        android:textColor="@color/colorErrorRed" />
-
-    <Button
-        android:id="@+id/signUpButton"
-        android:layout_width="@dimen/login_sign_up_button_width"
-        android:layout_height="@dimen/login_sign_up_button_height"
-        android:layout_below="@+id/loginPasswordEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/login_sign_up_button_margin_top"
-        android:background="@color/colorPrimary"
-        android:text="@string/sign_up"
-        android:textColor="@color/colorWhiteText" />
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebookLoginButton"
-        android:layout_width="@dimen/login_sign_up_button_width"
-        android:layout_height="@dimen/login_sign_up_button_height"
-        android:layout_below="@+id/signUpButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/login_facebook_button_margin_top" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/facebookLoginButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/forgotPasswordTextView"
+        <ImageView
+            android:id="@+id/LogoImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/forgot_password" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/login_logo_image_view_margin_top"
+            android:background="@drawable/qr_code_icon" />
+
+        <EditText
+            android:id="@+id/EmailEditText"
+            android:layout_width="@dimen/login_edit_text_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LogoImageView"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:theme="@style/EditTextTheme" />
 
         <TextView
-            android:id="@+id/forgotPasswordClickableTextView"
+            android:id="@+id/ErrorEmailMessage"
+            android:layout_width="@dimen/login_error_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/EmailEditText"
+            android:layout_marginTop="@dimen/error_message_margin_top"
+            android:textColor="@color/colorErrorRed" />
+
+        <EditText
+            android:id="@+id/PasswordEditText"
+            android:layout_width="@dimen/login_edit_text_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/EmailEditText"
+            android:hint="@string/password"
+            android:layout_marginTop="@dimen/password_edit_text_margin_top"
+            android:inputType="textPassword"
+            android:theme="@style/EditTextTheme" />
+
+        <TextView
+            android:id="@+id/ErrorPasswordMessage"
+            android:layout_width="@dimen/login_error_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/PasswordEditText"
+            android:layout_marginTop="@dimen/error_message_margin_top"
+            android:textColor="@color/colorErrorRed" />
+
+        <TextView
+            android:id="@+id/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/click_here" />
+            android:layout_below="@+id/PasswordEditText"
+            android:layout_marginTop="@dimen/login_button_margin_top"
+            android:textSize="@dimen/login_button_text_size"
+            android:text="@string/login"
+            android:textColor="@color/colorPrimary" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="@dimen/login_sign_up_button_width"
+            android:layout_height="@dimen/login_sign_up_button_height"
+            android:layout_below="@+id/loginButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/login_sign_up_button_margin_top"
+            android:background="@drawable/shape_button"
+            android:text="@string/sign_up"
+            android:textColor="@color/colorWhiteText" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebookLoginButton"
+            android:layout_width="@dimen/login_sign_up_button_width"
+            android:layout_height="@dimen/login_sign_up_button_height"
+            android:layout_below="@+id/signUpButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/login_facebook_button_margin_top" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/facebookLoginButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/forgotPasswordTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password" />
+
+            <TextView
+                android:id="@+id/forgotPasswordClickableTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/forgot_password_margin_start"
+                android:text="@string/click_here" />
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

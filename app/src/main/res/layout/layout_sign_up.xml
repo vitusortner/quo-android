@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dialog_layout_padding_start">
+
+    <EditText
+        android:id="@+id/email_editText"
+        style="@style/EditTextStyle"
+        android:layout_width="@dimen/dialog_edit_text_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_layout_margin_top"
+        android:text="@string/email"
+        android:theme="@style/EditTextTheme" />
+
+    <EditText
+        android:id="@+id/password_editText"
+        style="@style/EditTextStyle"
+        android:layout_width="@dimen/dialog_edit_text_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_layout_margin_top"
+        android:text="@string/password"
+        android:theme="@style/EditTextTheme" />
+
+    <CheckBox
+        android:id="@+id/agreement_checkbox"
+        style="@style/RadioButtonStyle"
+        android:layout_width="@dimen/dialog_edit_text_width"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/agreement_checkbox_margin_bottom"
+        android:layout_marginTop="@dimen/dialog_layout_margin_top"
+        android:paddingLeft="@dimen/checkbox_padding_left"
+        android:text="@string/agreement_info"
+        android:theme="@style/RadioButtonTheme" />
+
+</LinearLayout>

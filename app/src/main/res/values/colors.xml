@@ -7,4 +7,5 @@
     <color name="colorHomeCardViewText">#FFFFFF</color>
     <color name="colorWhiteText">#FFFFFF</color>
     <color name="colorErrorRed">#ff0000</color>
+    <color name="colorGrey">#95989A</color>
 </resources>

@@ -13,8 +13,18 @@
     <dimen name="login_email_edit_text_margin_top">40dp</dimen>
     <dimen name="login_sign_up_button_margin_top">40dp</dimen>
     <dimen name="login_facebook_button_margin_top">20dp</dimen>
-    <dimen name="login_edit_text_width">180dp</dimen>
-    <dimen name="login_error_width">175dp</dimen>
-    <dimen name="login_sign_up_button_width">180dp</dimen>
+    <dimen name="login_edit_text_width">250dp</dimen>
+    <dimen name="login_error_width">245dp</dimen>
+    <dimen name="login_sign_up_button_width">250dp</dimen>
     <dimen name="login_sign_up_button_height">32dp</dimen>
+    <dimen name="error_message_margin_top">-8dp</dimen>
+    <dimen name="password_edit_text_margin_top">10dp</dimen>
+    <dimen name="login_button_margin_top">20dp</dimen>
+    <dimen name="login_button_text_size">16sp</dimen>
+    <dimen name="forgot_password_margin_start">5dp</dimen>
+    <dimen name="dialog_edit_text_width">250dp</dimen>
+    <dimen name="dialog_layout_margin_top">10dp</dimen>
+    <dimen name="checkbox_padding_left">5dp</dimen>
+    <dimen name="agreement_checkbox_margin_bottom">40dp</dimen>
+    <dimen name="dialog_layout_padding_start">20dp</dimen>>
 </resources>
