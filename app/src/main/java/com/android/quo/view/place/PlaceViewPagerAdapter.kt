@@ -7,24 +7,22 @@ import android.support.v4.app.FragmentPagerAdapter
 /**
  * Created by vitusortner on 12.11.17.
  */
-class ViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class PlaceViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> PlaceOverviewFragment()
-            1 -> PlaceOverviewFragment()
-            2 -> PlaceOverviewFragment()
+            1 -> PlaceGalleryFragment()
             else -> PlaceOverviewFragment()
         }
     }
 
-    override fun getCount(): Int = 3
+    override fun getCount(): Int = 2
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            0 -> "1"
-            1 -> "2"
-            2 -> "3"
+            0 -> "OVERVIEW"
+            1 -> "GALLERY"
             else -> "x"
         }
     }

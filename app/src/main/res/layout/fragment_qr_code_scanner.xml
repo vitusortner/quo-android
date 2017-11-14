@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/toolbar_qr_code_scanner" />
+
     <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/qrCodeScannerView"
         android:layout_width="match_parent"

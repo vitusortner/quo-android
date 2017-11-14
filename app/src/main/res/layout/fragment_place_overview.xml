@@ -3,9 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="overview fragment" />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium enim urna, vitae luctus felis porta eget. Praesent auctor sem nec magna sodales efficitur. Etiam tempor orci sit amet sodales facilisis. Phasellus rhoncus, augue eget porta ornare, nisl velit luctus tortor, nec tristique enim sapien quis purus. In hac habitasse platea dictumst. Donec malesuada, dolor in ultrices finibus, nibh ex porta felis, vel pretium massa arcu ac magna. Donec ultrices ultricies consequat. Mauris lacus ante, rutrum ut elit ut, pulvinar gravida libero. Vivamus turpis libero, rutrum placerat felis ac, congue suscipit sem. Curabitur feugiat quam eu diam elementum, vel auctor turpis scelerisque. Phasellus ornare est ornare iaculis convallis. Sed in gravida sapien, ut convallis tellus. Nullam vitae commodo metus. Duis volutpat nisi vel lectus porta porta. Morbi sed orci non mauris tincidunt semper. Donec sagittis eros ut mi lacinia sodales.
+            Donec in odio ac arcu bibendum fermentum ac ac est. Nam sollicitudin nisi id odio consectetur, sit amet laoreet felis bibendum. Quisque gravida eu ipsum a iaculis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas nec faucibus justo, quis suscipit erat. Duis condimentum vehicula augue, vitae suscipit leo porttitor accumsan. Donec in augue et nibh fringilla molestie. Nunc finibus egestas leo hendrerit condimentum. Pellentesque condimentum nisl libero, quis rhoncus mi cursus et. Nunc commodo maximus tellus eget interdum. Mauris mi dolor, lobortis vitae lorem porta, condimentum blandit leo.
+            In condimentum tortor at tortor tempor vulputate. Cras vehicula mauris non ante lacinia, quis eleifend neque tempus. Quisque bibendum urna sapien, vitae pulvinar nisi ultricies sit amet. Fusce porttitor posuere vulputate. Mauris aliquet, nulla quis pellentesque dignissim, mauris nunc gravida tortor, ac ornare erat erat quis tortor. Aenean ornare mi sed molestie lobortis. Nam metus nibh, consequat eu laoreet vitae, tincidunt nec sem. Sed vel leo ligula. Aenean pharetra venenatis nisi ut finibus. Suspendisse aliquam urna nec velit feugiat vestibulum. Nulla ultricies nisl quis blandit elementum. Aenean porttitor pretium auctor. Fusce eget blandit felis.
+            Aliquam varius purus sed augue placerat rhoncus. Suspendisse potenti. Phasellus et euismod sapien. Cras iaculis vel lacus id vestibulum. Suspendisse malesuada efficitur fermentum. Mauris eu mauris in diam rutrum malesuada id ac risus. Praesent condimentum lectus pulvinar eleifend pellentesque.
+            Sed lacinia est elit, facilisis tincidunt enim fringilla et. Aenean commodo est ornare nunc mollis dignissim. Curabitur ut urna ut tortor sagittis finibus eget sit amet orci. Donec eget mi ex. Nam eros arcu, hendrerit at rutrum placerat, mattis condimentum tortor. Vestibulum dolor leo, fringilla et risus non, tempor feugiat felis. Integer vel posuere enim, sed sagittis risus. Suspendisse potenti."/>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.constraint.ConstraintLayout>

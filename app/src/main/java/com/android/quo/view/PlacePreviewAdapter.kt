@@ -24,8 +24,9 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
 /**
  * Created by vitusortner on 27.10.17.
  */
-class PlacePreviewAdapter(private val list: List<PlacePreview>,
-                          private val activity: FragmentActivity
+class PlacePreviewAdapter(
+        private val list: List<PlacePreview>,
+        private val activity: FragmentActivity
 ) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
     override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) =
