@@ -11,6 +11,7 @@ import com.android.quo.R
 import com.android.quo.model.PlacePreview
 import com.android.quo.view.place.PlaceFragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import com.github.florent37.glidepalette.BitmapPalette
 import com.github.florent37.glidepalette.GlidePalette
 import com.jakewharton.rxbinding2.view.RxView
@@ -23,8 +24,7 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
 /**
  * Created by vitusortner on 27.10.17.
  */
-class PlacePreviewAdapter(private val context: Context,
-                          private val list: List<PlacePreview>,
+class PlacePreviewAdapter(private val list: List<PlacePreview>,
                           private val activity: FragmentActivity
 ) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
@@ -34,13 +34,12 @@ class PlacePreviewAdapter(private val context: Context,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.place_preview_cardview, parent, false)
-        return PlacePreviewViewHolder(context, itemView, activity)
+        return PlacePreviewViewHolder(itemView, activity)
     }
 
     override fun getItemCount(): Int = list.size
 
-    class PlacePreviewViewHolder(private val context: Context,
-                                 override val containerView: View,
+    class PlacePreviewViewHolder(override val containerView: View,
                                  private val activity: FragmentActivity
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
@@ -56,8 +55,9 @@ class PlacePreviewAdapter(private val context: Context,
 
             val imageUrl = list[position].imageUrl
 
-            Glide.with(context)
+            Glide.with(containerView.context)
                     .load(imageUrl)
+                    .apply(centerCropTransform())
                     // Set card view background color with Palette
                     .listener(GlidePalette.with(imageUrl)
                             .intoCallBack { palette ->

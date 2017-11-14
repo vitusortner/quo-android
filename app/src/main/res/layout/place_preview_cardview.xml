@@ -17,9 +17,8 @@
 
             <ImageView
                 android:id="@+id/placePreviewImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/home_cardview_image_height"
-                android:scaleType="center" />
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/home_cardview_image_height" />
 
             <TextView
                 android:id="@+id/placePreviewTitleTextView"

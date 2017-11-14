@@ -35,7 +35,8 @@ class MyPlacesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity.bottomNavigationView.visibility = View.VISIBLE
 
-        placePreviewListViewModel = ViewModelProviders.of(this).get(PlacePreviewListViewModel().javaClass)
+        placePreviewListViewModel = ViewModelProviders.of(this)
+                .get(PlacePreviewListViewModel().javaClass)
 
         observePlacePreviewList()
         setupSwipeRefresh()
@@ -48,7 +49,7 @@ class MyPlacesFragment : Fragment() {
     private fun observePlacePreviewList() {
         placePreviewListViewModel.getPlacePreviewList(MY_PLACES).observe(this, Observer { list ->
             list?.let {
-                placePreviewRecyclerView.adapter = PlacePreviewAdapter(this.context, list, activity)
+                placePreviewRecyclerView.adapter = PlacePreviewAdapter(list, activity)
                 placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
             }
         })
@@ -66,6 +67,7 @@ class MyPlacesFragment : Fragment() {
     private fun setupFloatingActionButton() =
             floatingActionButton.setOnClickListener {
                 Snackbar.make(floatingActionButton, "Floating action button clicked", Snackbar.LENGTH_LONG)
-                        .setAction("HIDE", { }).show()
+                        .setAction("HIDE", { })
+                        .show()
             }
 }
