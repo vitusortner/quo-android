@@ -17,8 +17,7 @@ class PlaceFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?
-    ): View =
-            inflater.inflate(R.layout.fragment_place, container, false)
+    ): View = inflater.inflate(R.layout.fragment_place, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         // TODO differentiate between home and my places recyclerview

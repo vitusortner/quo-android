@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                 true
             }
-
             actionHome -> {
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.content, HomeFragment())
