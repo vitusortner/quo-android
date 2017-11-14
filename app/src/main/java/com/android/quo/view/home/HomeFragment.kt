@@ -25,10 +25,10 @@ class HomeFragment : Fragment() {
     private lateinit var placePreviewListViewModel: PlacePreviewListViewModel
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
+            inflater: LayoutInflater,
+            container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? =
-            inflater.inflate(R.layout.fragment_home, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
     private fun observePlacePreviewList() =
         placePreviewListViewModel.getPlacePreviewList(HOME).observe(this, Observer { list ->
             list?.let {
-                placePreviewRecyclerView.adapter = PlacePreviewAdapter(this.context, list)
+                placePreviewRecyclerView.adapter = PlacePreviewAdapter(list)
                 placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
             }
         })

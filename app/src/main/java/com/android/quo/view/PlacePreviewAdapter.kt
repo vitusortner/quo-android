@@ -1,6 +1,5 @@
 package com.android.quo.view
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -20,27 +19,28 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
 /**
  * Created by vitusortner on 27.10.17.
  */
-class PlacePreviewAdapter(private val context: Context, private val list: List<PlacePreview>) :
+class PlacePreviewAdapter(private val list: List<PlacePreview>) :
         RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
-    override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) =
-            holder.bindItem(list, position)
+    override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) {
+        holder.bindItem(list, position)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.place_preview_cardview,
-                parent, false)
-        return PlacePreviewViewHolder(context, itemView)
+        val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.place_preview_cardview, parent, false)
+        return PlacePreviewViewHolder(itemView)
     }
 
     override fun getItemCount(): Int = list.size
 
-    class PlacePreviewViewHolder(private val context: Context, override val containerView: View) :
+    class PlacePreviewViewHolder(override val containerView: View) :
             RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bindItem(list: List<PlacePreview>, position: Int) {
             val imageUrl = list[position].imageUrl
 
-            Glide.with(context)
+            Glide.with(containerView.context)
                     .load(imageUrl)
                     .apply(centerCropTransform())
                     // Set card view background color with Palette
