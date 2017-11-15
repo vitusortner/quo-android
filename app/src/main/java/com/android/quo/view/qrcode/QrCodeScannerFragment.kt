@@ -42,9 +42,16 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     private lateinit var scannerView: ZXingScannerView
     private lateinit var qrCodeScannerViewModel: QrCodeScannerViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
-                ASK_MULTIPLE_PERMISSION_REQUEST_CODE)
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        requestPermissions(arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE),
+                ASK_MULTIPLE_PERMISSION_REQUEST_CODE
+        )
 
         return inflater.inflate(R.layout.fragment_qr_code_scanner, container, false)
     }
@@ -76,7 +83,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
         activity?.bottomNavigationView?.visibility = GONE
     }
-
 
     override fun onResume() {
         super.onResume()
