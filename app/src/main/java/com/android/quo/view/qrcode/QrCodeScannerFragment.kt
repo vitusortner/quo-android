@@ -42,21 +42,22 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     private lateinit var scannerView: ZXingScannerView
     private lateinit var qrCodeScannerViewModel: QrCodeScannerViewModel
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
                 ASK_MULTIPLE_PERMISSION_REQUEST_CODE)
 
-        return inflater?.inflate(R.layout.fragment_qr_code_scanner, container, false)
+        return inflater.inflate(R.layout.fragment_qr_code_scanner, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scannerView = qrCodeScannerView
         scannerView.setAutoFocus(true)
 
-        qrCodeScannerViewModel = ViewModelProviders.of(this).
-                get(QrCodeScannerViewModel(this.activity.application)::class.java)
-
+        this.activity?.application?.let { application ->
+            qrCodeScannerViewModel = ViewModelProviders.of(this).
+                    get(QrCodeScannerViewModel(application)::class.java)
+        }
 
         flashButton.setOnClickListener {
             handleFlashLight()
@@ -66,12 +67,14 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
             openPhoneGallery()
         }
 
-        if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            galleryButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
+        this.context?.let { context ->
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                galleryButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
+            }
         }
 
-        activity.bottomNavigationView.visibility = GONE
+        activity?.bottomNavigationView?.visibility = GONE
     }
 
 
@@ -89,10 +92,12 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     private fun handleFlashLight() {
         scannerView.flash = !scannerView.flash
 
-        if (scannerView.flash) {
-            flashButton.background = ContextCompat.getDrawable(this.context, R.drawable.ic_flash_on)
-        } else {
-            flashButton.background = ContextCompat.getDrawable(this.context, R.drawable.ic_flash_off)
+        this.context?.let { context ->
+            if (scannerView.flash) {
+                flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_on)
+            } else {
+                flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_off)
+            }
         }
     }
 
@@ -101,7 +106,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
                 Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        activity.startActivityForResult(galleryIntent, RESULT_GALLERY)
+        activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
     override fun handleResult(result: Result) {
@@ -130,13 +135,15 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         }
     }
 
-    private fun openNoQrCodeFoundDialog(){
-        val dialog = AlertDialog.Builder(this.context).create()
-        dialog.setTitle(this.context.resources.getString(R.string.error_qr_code_title))
-        dialog.setMessage(this.context.resources.getString(R.string.error_qr_code_message))
+    private fun openNoQrCodeFoundDialog() {
+        this.context?.let { context ->
+            val dialog = AlertDialog.Builder(context).create()
+            dialog.setTitle(context.resources.getString(R.string.error_qr_code_title))
+            dialog.setMessage(context.resources.getString(R.string.error_qr_code_message))
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.done), { _, _ -> })
-        dialog.show()
+            dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.done), { _, _ -> })
+            dialog.show()
+        }
     }
 
     private fun openUrlDialogFromQRCode(result: QrCodeScannerDialog) {
