@@ -1,8 +1,6 @@
 package com.android.quo.view
 
-import android.app.Activity
-import android.content.Context
-import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +24,7 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
  */
 class PlacePreviewAdapter(
         private val list: List<PlacePreview>,
-        private val activity: FragmentActivity
+        private val supportFragmentManager: FragmentManager
 ) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
     override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) =
@@ -35,19 +33,20 @@ class PlacePreviewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.place_preview_cardview, parent, false)
-        return PlacePreviewViewHolder(itemView, activity)
+        return PlacePreviewViewHolder(itemView, supportFragmentManager)
     }
 
     override fun getItemCount(): Int = list.size
 
-    class PlacePreviewViewHolder(override val containerView: View,
-                                 private val activity: FragmentActivity
+    class PlacePreviewViewHolder(
+            override val containerView: View,
+            private val supportFragmentManager: FragmentManager
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bindItem(list: List<PlacePreview>, position: Int) {
             RxView.clicks(placePreviewCardView)
                     .subscribe {
-                        activity.supportFragmentManager
+                        supportFragmentManager
                                 .beginTransaction()
                                 .replace(R.id.content, PlaceFragment())
                                 .addToBackStack(null)

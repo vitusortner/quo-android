@@ -47,7 +47,8 @@ class HomeFragment : Fragment() {
     private fun observePlacePreviewList() =
             placePreviewListViewModel.getPlacePreviewList(HOME).observe(this, Observer { list ->
                 list?.let {
-                    placePreviewRecyclerView.adapter = PlacePreviewAdapter(list, activity)
+                    placePreviewRecyclerView.adapter =
+                            PlacePreviewAdapter(list, activity.supportFragmentManager)
                     placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
                 }
             })

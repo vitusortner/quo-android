@@ -24,7 +24,7 @@ class PlaceFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         setupToolbar()
 
-        placeViewPager.adapter = PlaceViewPagerAdapter(fragmentManager)
+        placeViewPager.adapter = PlaceViewPagerAdapter(childFragmentManager)
 
         placeTabLayout.setupWithViewPager(placeViewPager)
     }
