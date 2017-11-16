@@ -11,9 +11,9 @@ class PlaceViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAda
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> PlaceOverviewFragment()
+            0 -> PlacePageFragment()
             1 -> PlaceGalleryFragment()
-            else -> PlaceOverviewFragment()
+            else -> PlacePageFragment()
         }
     }
 
@@ -21,7 +21,7 @@ class PlaceViewPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAda
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            0 -> "OVERVIEW"
+            0 -> "PAGE"
             1 -> "GALLERY"
             else -> "x"
         }

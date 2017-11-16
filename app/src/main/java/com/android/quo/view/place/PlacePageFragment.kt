@@ -10,11 +10,11 @@ import com.android.quo.R
 /**
  * Created by vitusortner on 12.11.17.
  */
-class PlaceOverviewFragment : Fragment() {
+class PlacePageFragment : Fragment() {
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_place_overview, container, false)
+    ): View = inflater.inflate(R.layout.fragment_place_page, container, false)
 }
