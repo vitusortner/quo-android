@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TransparentAppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+    </style>
+
     <style name="CardViewFont">
         <item name="android:textColor">@color/colorHomeCardViewText</item>
     </style>

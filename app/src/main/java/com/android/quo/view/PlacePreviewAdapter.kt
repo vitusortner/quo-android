@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
  */
 class PlacePreviewAdapter(
         private val list: List<PlacePreview>,
-        private val supportFragmentManager: FragmentManager
+        private val fragmentManager: FragmentManager
 ) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
     override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) =
@@ -33,20 +33,20 @@ class PlacePreviewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.place_preview_cardview, parent, false)
-        return PlacePreviewViewHolder(itemView, supportFragmentManager)
+        return PlacePreviewViewHolder(itemView, fragmentManager)
     }
 
     override fun getItemCount(): Int = list.size
 
     class PlacePreviewViewHolder(
             override val containerView: View,
-            private val supportFragmentManager: FragmentManager
+            private val fragmentManager: FragmentManager
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bindItem(list: List<PlacePreview>, position: Int) {
             RxView.clicks(placePreviewCardView)
                     .subscribe {
-                        supportFragmentManager
+                        fragmentManager
                                 .beginTransaction()
                                 .replace(R.id.content, PlaceFragment())
                                 .addToBackStack(null)

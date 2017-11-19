@@ -1,4 +1,4 @@
-package com.android.quo.view.place
+package com.android.quo.view.place.page
 
 import android.support.v4.app.Fragment
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.android.quo.R
 /**
  * Created by vitusortner on 12.11.17.
  */
-class PlacePageFragment : Fragment() {
+class PageFragment : Fragment() {
 
     override fun onCreateView(
             inflater: LayoutInflater,

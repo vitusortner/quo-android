@@ -16,4 +16,6 @@
     <dimen name="home_recyclerview_padding_top">8dp</dimen>
 
     <dimen name="place_page_padding">20dp</dimen>
+    <dimen name="place_gallery_thumbnail_margin">4dp</dimen>
+    <dimen name="place_image_pager_margin">10dp</dimen>
 </resources>

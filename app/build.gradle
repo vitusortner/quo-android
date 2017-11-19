@@ -50,4 +50,5 @@ dependencies {
     compile "com.android.support:palette-v7:26.1.0"
     compile "com.github.florent37:glidepalette:2.1.1"
     compile "com.jakewharton.rxbinding2:rxbinding:2.0.0"
+    compile "com.alexvasilkov:gesture-views:2.3.2"
 }
