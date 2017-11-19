@@ -25,6 +25,7 @@ import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.Result
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonCancel
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonFlash
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonPhotos
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
@@ -53,7 +54,6 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
                 Manifest.permission.READ_EXTERNAL_STORAGE),
                 ASK_MULTIPLE_PERMISSION_REQUEST_CODE
         )
-
         return inflater.inflate(R.layout.fragment_qr_code_scanner, container, false)
     }
 
@@ -65,6 +65,10 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         this.activity?.application?.let { application ->
             qrCodeScannerViewModel = ViewModelProviders.of(this).
                     get(QrCodeScannerViewModel(application)::class.java)
+        }
+
+        buttonCancel.setOnClickListener {
+            fragmentManager!!.popBackStack()
         }
 
         buttonFlash.setOnClickListener {
