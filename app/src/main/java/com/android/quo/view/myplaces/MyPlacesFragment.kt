@@ -13,6 +13,7 @@ import com.android.quo.R
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.PlacePreviewListViewModel
 import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.MY_PLACES
+import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.placePreviewRecyclerView
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
@@ -24,13 +25,18 @@ class MyPlacesFragment : Fragment() {
 
     private lateinit var placePreviewListViewModel: PlacePreviewListViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_my_places, container, false)
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?
+    ): View? =
+            inflater.inflate(R.layout.fragment_my_places, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.bottomNavigationView?.visibility = View.VISIBLE
 
-        placePreviewListViewModel = ViewModelProviders.of(this).get(PlacePreviewListViewModel().javaClass)
+        placePreviewListViewModel = ViewModelProviders.of(this)
+                .get(PlacePreviewListViewModel().javaClass)
 
         observePlacePreviewList()
         setupSwipeRefresh()
@@ -43,7 +49,7 @@ class MyPlacesFragment : Fragment() {
     private fun observePlacePreviewList() {
         placePreviewListViewModel.getPlacePreviewList(MY_PLACES).observe(this, Observer { list ->
             list?.let {
-                placePreviewRecyclerView.adapter = PlacePreviewAdapter(this.context, list)
+                placePreviewRecyclerView.adapter = PlacePreviewAdapter(list)
                 placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
             }
         })
@@ -53,14 +59,16 @@ class MyPlacesFragment : Fragment() {
      * Update place preview list and stop refreshing animation
      */
     private fun setupSwipeRefresh() =
-        swipeRefreshLayout.setOnRefreshListener {
-            placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
-            swipeRefreshLayout.isRefreshing = false
-        }
+            swipeRefreshLayout.setOnRefreshListener {
+                placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
+                swipeRefreshLayout.isRefreshing = false
+            }
 
     private fun setupFloatingActionButton() =
-        floatingActionButton.setOnClickListener {
-            Snackbar.make(floatingActionButton, "Floating action button clicked", Snackbar.LENGTH_LONG)
-                .setAction("HIDE", { }).show()
-        }
+            floatingActionButton.setOnClickListener {
+                Snackbar.make(floatingActionButton, "Floating action button clicked",
+                        Snackbar.LENGTH_LONG)
+                        .setAction("HIDE", { })
+                        .show()
+            }
 }

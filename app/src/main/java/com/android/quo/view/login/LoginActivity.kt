@@ -34,6 +34,9 @@ import kotlinx.android.synthetic.main.layout_sign_up.view.editTextEmailSignUp
 import kotlinx.android.synthetic.main.layout_sign_up.view.editTextPasswordSignUp
 import kotlinx.android.synthetic.main.layout_sign_up.view.passwordWrapper
 import java.util.concurrent.TimeUnit
+import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.widget.EditText
+import com.android.quo.view.main.MainActivity
 
 
 /**
@@ -123,6 +126,9 @@ class LoginActivity : AppCompatActivity() {
                 .subscribe {
                     if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
                         //TODO login user
+                        
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
                     }
                 }
 
