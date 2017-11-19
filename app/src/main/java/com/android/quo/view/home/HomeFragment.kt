@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity.bottomNavigationView.visibility = VISIBLE
+        activity?.bottomNavigationView?.visibility = VISIBLE
 
         placePreviewListViewModel = ViewModelProviders.of(this)
                 .get(PlacePreviewListViewModel().javaClass)
@@ -45,19 +45,19 @@ class HomeFragment : Fragment() {
      * Observe place preview list and set adapter for place preview recycler view
      */
     private fun observePlacePreviewList() =
-        placePreviewListViewModel.getPlacePreviewList(HOME).observe(this, Observer { list ->
-            list?.let {
-                placePreviewRecyclerView.adapter = PlacePreviewAdapter(list)
-                placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
-            }
-        })
+            placePreviewListViewModel.getPlacePreviewList(HOME).observe(this, Observer { list ->
+                list?.let {
+                    placePreviewRecyclerView.adapter = PlacePreviewAdapter(list)
+                    placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
+                }
+            })
 
     /**
      * Update place preview list and stop refreshing animation
      */
     private fun setupSwipeRefresh() =
-        swipeRefreshLayout.setOnRefreshListener {
-            placePreviewListViewModel.updatePlacePreviewList(HOME)
-            swipeRefreshLayout.isRefreshing = false
-        }
+            swipeRefreshLayout.setOnRefreshListener {
+                placePreviewListViewModel.updatePlacePreviewList(HOME)
+                swipeRefreshLayout.isRefreshing = false
+            }
 }
