@@ -157,15 +157,6 @@ class LoginActivity : AppCompatActivity() {
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
-
-    private fun openAlertCheckInput() {
-        val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme).create()
-        dialog.setTitle(resources.getString(R.string.registration_failed_title))
-        dialog.setMessage(resources.getString(R.string.registration_failed_message))
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.ok), { _, _ -> })
-        dialog.show()
-    }
-
     /**
      * dialog forgot password
      */
@@ -204,6 +195,7 @@ class LoginActivity : AppCompatActivity() {
         })
 
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.next), { _, _ -> })
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.cancel), { _, _ -> })
         dialog.show()
     }
 
@@ -214,6 +206,7 @@ class LoginActivity : AppCompatActivity() {
         val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme).create()
         dialog.setTitle(resources.getString(R.string.send_reset_email_title))
         dialog.setMessage(resources.getString(R.string.send_reset_email_message))
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.okay), { _, _ -> })
         dialog.show()
     }
 
