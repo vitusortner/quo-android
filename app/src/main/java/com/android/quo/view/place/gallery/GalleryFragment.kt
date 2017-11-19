@@ -23,10 +23,12 @@ class GalleryFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_place_gallery, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val viewModel = ViewModelProviders.of(this).get(PlaceViewModel().javaClass)
 
-        recyclerView.adapter = GalleryAdapter(activity, viewModel.imageList)
-        recyclerView.layoutManager = GridLayoutManager(this.context, 3)
+        activity?.let { activity ->
+            recyclerView.adapter = GalleryAdapter(activity, viewModel.imageList)
+            recyclerView.layoutManager = GridLayoutManager(this.context, 3)
+        }
     }
 }

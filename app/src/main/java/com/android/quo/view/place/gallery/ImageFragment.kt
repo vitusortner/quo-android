@@ -30,7 +30,9 @@ class ImageFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        url = arguments.getString("url")
+        arguments?.let {
+            url = it.getString("url")
+        }
 
         return inflater.inflate(R.layout.gallery_image_full, container, false)
     }
@@ -59,10 +61,12 @@ class ImageFragment : Fragment() {
             }
 
             override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-                val decorView = activity.window.decorView
-                val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
-                decorView.systemUiVisibility = uiOptions
+                activity?.let { activity ->
+                    val decorView = activity.window.decorView
+                    val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+                    decorView.systemUiVisibility = uiOptions
 //                activity.actionBar.hide()
+                }
                 return true
             }
         })

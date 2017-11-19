@@ -21,7 +21,7 @@ class PlaceFragment : Fragment() {
                               savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_place, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupToolbar()
 
         placeViewPager.adapter = PlacePagerAdapter(childFragmentManager)
@@ -34,7 +34,7 @@ class PlaceFragment : Fragment() {
 
         RxToolbar.navigationClicks(toolbar)
                 .subscribe {
-                    activity.onBackPressed()
+                    activity?.onBackPressed()
                 }
     }
 }
