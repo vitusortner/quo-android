@@ -72,7 +72,6 @@ class LoginActivity : AppCompatActivity() {
                     }
                 })
 
-
         /**
          * check if email is validate
          */
@@ -126,7 +125,7 @@ class LoginActivity : AppCompatActivity() {
                 .subscribe {
                     if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
                         //TODO login user
-                        
+
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     }
@@ -138,8 +137,6 @@ class LoginActivity : AppCompatActivity() {
         RxView.clicks(textViewClickableForgotPassword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ openDialogForgotPassword() })
-
-
     }
 
     /**
