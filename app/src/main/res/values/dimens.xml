@@ -26,5 +26,6 @@
     <dimen name="dialog_layout_margin_top">10dp</dimen>
     <dimen name="checkbox_padding_left">5dp</dimen>
     <dimen name="agreement_checkbox_margin_bottom">40dp</dimen>
-    <dimen name="dialog_layout_padding_start">20dp</dimen>>
+    <dimen name="dialog_layout_padding_start">20dp</dimen>
+    <dimen name="checkbox_padding_top">10dp</dimen>>
 </resources>

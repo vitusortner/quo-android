@@ -1,71 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
 
+
         <ImageView
-            android:id="@+id/LogoImageView"
+            android:id="@+id/imageViewLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/login_logo_image_view_margin_top"
             android:background="@drawable/qr_code_icon" />
 
-        <EditText
-            android:id="@+id/EmailEditText"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/emailWrapper"
             android:layout_width="@dimen/login_edit_text_width"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/LogoImageView"
-            android:hint="@string/email"
+            android:layout_below="@+id/imageViewLogo"
             android:inputType="textEmailAddress"
-            android:theme="@style/EditTextTheme" />
+            android:theme="@style/EditTextTheme"
+            app:hintEnabled="false">
 
-        <TextView
-            android:id="@+id/ErrorEmailMessage"
-            android:layout_width="@dimen/login_error_width"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/EmailEditText"
-            android:layout_marginTop="@dimen/error_message_margin_top"
-            android:textColor="@color/colorErrorRed" />
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="textEmailAddress" />
 
-        <EditText
-            android:id="@+id/PasswordEditText"
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/passwordWrapper"
             android:layout_width="@dimen/login_edit_text_width"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/EmailEditText"
-            android:hint="@string/password"
+            android:layout_below="@+id/emailWrapper"
             android:layout_marginTop="@dimen/password_edit_text_margin_top"
             android:inputType="textPassword"
-            android:theme="@style/EditTextTheme" />
+            android:theme="@style/EditTextTheme"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:id="@+id/ErrorPasswordMessage"
-            android:layout_width="@dimen/login_error_width"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/PasswordEditText"
-            android:layout_marginTop="@dimen/error_message_margin_top"
-            android:textColor="@color/colorErrorRed" />
-
-        <TextView
-            android:id="@+id/loginButton"
+            android:id="@+id/buttonLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/PasswordEditText"
+            android:layout_below="@+id/passwordWrapper"
             android:layout_marginTop="@dimen/login_button_margin_top"
-            android:textSize="@dimen/login_button_text_size"
             android:text="@string/login"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/login_button_text_size" />
 
         <Button
-            android:id="@+id/signUpButton"
+            android:id="@+id/buttonSignUp"
             android:layout_width="@dimen/login_sign_up_button_width"
             android:layout_height="@dimen/login_sign_up_button_height"
-            android:layout_below="@+id/loginButton"
+            android:layout_below="@+id/buttonLogin"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/login_sign_up_button_margin_top"
             android:background="@drawable/shape_button"
@@ -73,33 +80,34 @@
             android:textColor="@color/colorWhiteText" />
 
         <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebookLoginButton"
+            android:id="@+id/buttonFacebookLogin"
             android:layout_width="@dimen/login_sign_up_button_width"
             android:layout_height="@dimen/login_sign_up_button_height"
-            android:layout_below="@+id/signUpButton"
+            android:layout_below="@+id/buttonSignUp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/login_facebook_button_margin_top" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/facebookLoginButton"
+            android:layout_below="@+id/buttonFacebookLogin"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/forgotPasswordTextView"
+                android:id="@+id/textViewForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/forgot_password" />
 
             <TextView
-                android:id="@+id/forgotPasswordClickableTextView"
+                android:id="@+id/textViewClickableForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/forgot_password_margin_start"
                 android:text="@string/click_here" />
         </LinearLayout>
+
     </RelativeLayout>
 </RelativeLayout>
