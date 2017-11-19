@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity.bottomNavigationView.visibility = VISIBLE
+        activity?.bottomNavigationView?.visibility = VISIBLE
 
         placePreviewListViewModel = ViewModelProviders.of(this)
                 .get(PlacePreviewListViewModel().javaClass)
