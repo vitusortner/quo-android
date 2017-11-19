@@ -25,9 +25,10 @@ import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.Result
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.galleryButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonFlash
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonPhotos
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.textViewFlash
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -66,18 +67,18 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
                     get(QrCodeScannerViewModel(application)::class.java)
         }
 
-        flashButton.setOnClickListener {
+        buttonFlash.setOnClickListener {
             handleFlashLight()
         }
 
-        galleryButton.setOnClickListener {
+        buttonPhotos.setOnClickListener {
             openPhoneGallery()
         }
 
         this.context?.let { context ->
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                galleryButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
+                buttonPhotos.background = qrCodeScannerViewModel.getLastImageFromGallery()
             }
         }
 
@@ -100,9 +101,11 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
         this.context?.let { context ->
             if (scannerView.flash) {
-                flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_on)
+                buttonFlash.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_on)
+                textViewFlash.setText(R.string.flash_off)
             } else {
-                flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_off)
+                buttonFlash.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_off)
+                textViewFlash.setText(R.string.flash_on)
             }
         }
     }

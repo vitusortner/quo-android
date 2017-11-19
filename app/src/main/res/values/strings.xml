@@ -18,5 +18,9 @@
     <string name="error_qr_code_title">Error</string>
     <string name="error_qr_code_message">We are sorry ! There is not QR Code in image</string>
     <string name="done">DONE</string>
+    <string name="flash_on">flash on</string>
+    <string name="flash_off">flash off</string>
+    <string name="photos">photos</string>
+    <string name="cancel">cancel</string>
 
 </resources>

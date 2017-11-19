@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="qr_code_scanner_flash_button_margin">20dp</dimen>
-    <dimen name="qr_code_scanner_gallery_button_margin">20dp</dimen>
+
+    <!-- qr code scanner -->
     <dimen name="qr_code_scanner_gallery_button_height">64dp</dimen>
     <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
-
-    <dimen name="qr_code_scanner_flash_button_height">42dp</dimen>
-    <dimen name="qr_code_scanner_flash_button_width">42dp</dimen>
+    <dimen name="qr_code_scanner_icon_width">42dp</dimen>
+    <dimen name="qr_code_scanner_icon_height">42dp</dimen>
+    <dimen name="qr_code_scanner_button_margin">50dp</dimen>
+    <dimen name="qr_code_scanner_text_margin_bottom">-30dp</dimen>
 
     <dimen name="home_cardview_image_height">150dp</dimen>
     <dimen name="home_cardview_textview_padding">5dp</dimen>
