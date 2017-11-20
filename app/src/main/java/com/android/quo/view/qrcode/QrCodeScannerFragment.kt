@@ -68,7 +68,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
         }
 
         cancelButton.setOnClickListener {
-            fragmentManager!!.popBackStack()
+            fragmentManager?.popBackStack()
         }
 
         flashButton.setOnClickListener {
