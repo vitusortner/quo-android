@@ -1,4 +1,4 @@
-package com.android.quo.database
+package com.android.quo.data
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase

@@ -1,4 +1,4 @@
-package com.android.quo.database
+package com.android.quo.data
 
 
 import android.arch.persistence.room.ColumnInfo
@@ -11,19 +11,10 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "user")
 data class User(
-    @PrimaryKey
-    val id: Int,
-
-    @ColumnInfo (name = "email")
+    @PrimaryKey val id: Int,
     val email: String,
-
-    @ColumnInfo (name = "password")
     val password: String,
-
-    @ColumnInfo ( name = "visitedPlaces")
-    val visitedPlaces: Array<Place>,
-
-    @ColumnInfo ( name = "active")
+    val visitedPlaces: Array<Place>, //foreign key needed?
     val active: Boolean
 
 )
