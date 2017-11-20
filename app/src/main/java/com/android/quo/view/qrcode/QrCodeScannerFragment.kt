@@ -25,11 +25,11 @@ import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.Result
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonCancel
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonFlash
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.buttonPhotos
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.cancelButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashTextView
+import kotlinx.android.synthetic.main.fragment_qr_code_scanner.photosButton
 import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.textViewFlash
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -67,22 +67,22 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
                     get(QrCodeScannerViewModel(application)::class.java)
         }
 
-        buttonCancel.setOnClickListener {
+        cancelButton.setOnClickListener {
             fragmentManager!!.popBackStack()
         }
 
-        buttonFlash.setOnClickListener {
+        flashButton.setOnClickListener {
             handleFlashLight()
         }
 
-        buttonPhotos.setOnClickListener {
+        photosButton.setOnClickListener {
             openPhoneGallery()
         }
 
         this.context?.let { context ->
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                buttonPhotos.background = qrCodeScannerViewModel.getLastImageFromGallery()
+                photosButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
             }
         }
 
@@ -105,11 +105,11 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
 
         this.context?.let { context ->
             if (scannerView.flash) {
-                buttonFlash.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_on)
-                textViewFlash.setText(R.string.flash_off)
+                flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_on)
+                flashTextView.setText(R.string.flash_off)
             } else {
-                buttonFlash.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_off)
-                textViewFlash.setText(R.string.flash_on)
+                flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_off)
+                flashTextView.setText(R.string.flash_on)
             }
         }
     }

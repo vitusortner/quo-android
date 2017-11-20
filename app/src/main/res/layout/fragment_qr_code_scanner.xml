@@ -16,7 +16,7 @@
     </me.dm7.barcodescanner.zxing.ZXingScannerView>
 
     <Button
-        android:id="@+id/buttonFlash"
+        android:id="@+id/flashButton"
         android:layout_width="@dimen/qr_code_scanner_icon_width"
         android:layout_height="@dimen/qr_code_scanner_icon_height"
         android:layout_alignParentBottom="true"
@@ -25,17 +25,17 @@
         android:background="@drawable/ic_flash_off" />
 
     <TextView
-        android:id="@+id/textViewFlash"
+        android:id="@+id/flashTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/buttonFlash"
+        android:layout_alignBottom="@+id/flashButton"
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:layout_marginStart="@dimen/qr_code_scanner_text_margin_start"
         android:text="@string/flash_on"
         android:textColor="@color/colorWhite" />
 
     <Button
-        android:id="@+id/buttonPhotos"
+        android:id="@+id/photosButton"
         android:layout_width="@dimen/qr_code_scanner_gallery_button_width"
         android:layout_height="@dimen/qr_code_scanner_gallery_button_height"
         android:layout_alignParentBottom="true"
@@ -44,17 +44,17 @@
         android:radius="10dp" />
 
     <TextView
-        android:id="@+id/textViewPhotos"
+        android:id="@+id/photosTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/buttonPhotos"
+        android:layout_alignBottom="@+id/photosButton"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:text="@string/photos"
         android:textColor="@color/colorWhite" />
 
     <Button
-        android:id="@+id/buttonCancel"
+        android:id="@+id/cancelButton"
         android:layout_width="@dimen/qr_code_scanner_icon_width"
         android:layout_height="@dimen/qr_code_scanner_icon_height"
         android:layout_alignParentBottom="true"
@@ -64,10 +64,10 @@
         android:background="@drawable/ic_cancel" />
 
     <TextView
-        android:id="@+id/textViewCancel"
+        android:id="@+id/cancelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/buttonCancel"
+        android:layout_alignBottom="@+id/cancelButton"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:layout_marginEnd="@dimen/qr_code_scanner_button_margin"
