@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
+import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -20,23 +21,20 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView.afterTextChangeEvents
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_login.buttonLogin
-import kotlinx.android.synthetic.main.activity_login.buttonSignUp
-import kotlinx.android.synthetic.main.activity_login.editTextEmail
-import kotlinx.android.synthetic.main.activity_login.editTextPassword
+import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
+import kotlinx.android.synthetic.main.activity_login.emailEditText
 import kotlinx.android.synthetic.main.activity_login.emailWrapper
+import kotlinx.android.synthetic.main.activity_login.loginButton
+import kotlinx.android.synthetic.main.activity_login.passwordEditText
 import kotlinx.android.synthetic.main.activity_login.passwordWrapper
-import kotlinx.android.synthetic.main.activity_login.textViewClickableForgotPassword
-import kotlinx.android.synthetic.main.layout_forgot_password.view.editTextEmail
+import kotlinx.android.synthetic.main.activity_login.signUpButton
+import kotlinx.android.synthetic.main.layout_forgot_password.view.emailEditText
 import kotlinx.android.synthetic.main.layout_forgot_password.view.emailWrapper
-import kotlinx.android.synthetic.main.layout_sign_up.view.agreement_checkbox
-import kotlinx.android.synthetic.main.layout_sign_up.view.editTextEmailSignUp
-import kotlinx.android.synthetic.main.layout_sign_up.view.editTextPasswordSignUp
+import kotlinx.android.synthetic.main.layout_sign_up.view.agreementCheckbox
+import kotlinx.android.synthetic.main.layout_sign_up.view.emailSignUpEditText
+import kotlinx.android.synthetic.main.layout_sign_up.view.passwordSignUpEditText
 import kotlinx.android.synthetic.main.layout_sign_up.view.passwordWrapper
 import java.util.concurrent.TimeUnit
-import android.provider.AlarmClock.EXTRA_MESSAGE
-import android.widget.EditText
-import com.android.quo.view.main.MainActivity
 
 
 /**
@@ -75,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
         /**
          * check if email is validate
          */
-        afterTextChangeEvents(editTextEmail)
+        afterTextChangeEvents(emailEditText)
                 .skipInitialValue()
                 .map {
                     emailWrapper.error = null
@@ -87,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
                 .compose(loginViewModel.retryWhenError {
                     emailWrapper.error = it.message
 
-                    ViewCompat.setBackgroundTintList(editTextEmail, ColorStateList
+                    ViewCompat.setBackgroundTintList(emailEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
                 .subscribe()
@@ -95,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
         /**
          * check if password is validate
          */
-        afterTextChangeEvents(editTextPassword)
+        afterTextChangeEvents(passwordEditText)
                 .skipInitialValue()
                 .map {
                     passwordWrapper.error = null
@@ -105,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
                 .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
                 .compose(loginViewModel.retryWhenError {
                     passwordWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(editTextEmail, ColorStateList
+                    ViewCompat.setBackgroundTintList(emailEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
                 .subscribe()
@@ -113,14 +111,14 @@ class LoginActivity : AppCompatActivity() {
         /**
          * button click handler for signIn
          */
-        RxView.clicks(buttonSignUp)
+        RxView.clicks(signUpButton)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { openDialogSignUp() }
 
         /**
          * button click handler for login button
          */
-        RxView.clicks(buttonLogin)
+        RxView.clicks(loginButton)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
@@ -134,7 +132,7 @@ class LoginActivity : AppCompatActivity() {
         /**
          * button click handler for forgot password
          */
-        RxView.clicks(textViewClickableForgotPassword)
+        RxView.clicks(clickableForgotPasswordTextView)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ openDialogForgotPassword() })
     }
@@ -166,7 +164,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.setTitle(resources.getString(R.string.forgot_password))
         dialog.setView(dialogView)
 
-        afterTextChangeEvents(dialogView.editTextEmail)
+        afterTextChangeEvents(dialogView.emailEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.emailWrapper.error = null
@@ -177,7 +175,7 @@ class LoginActivity : AppCompatActivity() {
                 .compose(loginViewModel.verifyEmailPattern).subscribeOn(Schedulers.io())
                 .compose(loginViewModel.retryWhenError {
                     dialogView.emailWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(dialogView.editTextEmail, ColorStateList
+                    ViewCompat.setBackgroundTintList(dialogView.emailEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
                 .subscribe()
@@ -219,15 +217,15 @@ class LoginActivity : AppCompatActivity() {
         dialog.setTitle(resources.getString(R.string.sign_up))
         dialog.setView(dialogView)
 
-        if (editTextEmail.text.isNotEmpty()) {
-            dialogView.editTextEmailSignUp.text = editTextEmail.text
+        if (emailEditText.text.isNotEmpty()) {
+            dialogView.emailSignUpEditText.text = emailEditText.text
         }
-        if (editTextPassword.text.isNotEmpty()) {
-            dialogView.editTextPasswordSignUp.text = editTextPassword.text
+        if (passwordEditText.text.isNotEmpty()) {
+            dialogView.passwordSignUpEditText.text = passwordEditText.text
         }
 
         //check if email is validate
-        afterTextChangeEvents(dialogView.editTextEmailSignUp)
+        afterTextChangeEvents(dialogView.emailSignUpEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.emailWrapper.error = null
@@ -238,13 +236,13 @@ class LoginActivity : AppCompatActivity() {
                 .compose(loginViewModel.verifyEmailPattern).subscribeOn(Schedulers.io())
                 .compose(loginViewModel.retryWhenError {
                     dialogView.emailWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(dialogView.editTextEmailSignUp, ColorStateList
+                    ViewCompat.setBackgroundTintList(dialogView.emailSignUpEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
                 .subscribe()
 
         //check if password is validate
-        afterTextChangeEvents(dialogView.editTextPasswordSignUp)
+        afterTextChangeEvents(dialogView.passwordSignUpEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.passwordWrapper.error = null
@@ -254,7 +252,7 @@ class LoginActivity : AppCompatActivity() {
                 .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
                 .compose(loginViewModel.retryWhenError {
                     dialogView.passwordWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(dialogView.editTextPasswordSignUp, ColorStateList
+                    ViewCompat.setBackgroundTintList(dialogView.passwordSignUpEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
                 .subscribe()
@@ -264,12 +262,12 @@ class LoginActivity : AppCompatActivity() {
             RxView.clicks(buttonNext)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
-                        if (dialogView.agreement_checkbox.isChecked) {
+                        if (dialogView.agreementCheckbox.isChecked) {
                             dialog.dismiss()
                             //TODO add new account to db
                             //TODO Check if password and email have no errors
                         } else {
-                            dialogView.agreement_checkbox.setTextColor(getColor(R.color.colorErrorRed))
+                            dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorErrorRed))
                         }
                     }
         })

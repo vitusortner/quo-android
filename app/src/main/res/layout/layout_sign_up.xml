@@ -16,7 +16,7 @@
         app:hintEnabled="false">
 
         <EditText
-            android:id="@+id/editTextEmailSignUp"
+            android:id="@+id/emailSignUpEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
@@ -35,7 +35,7 @@
         app:passwordToggleEnabled="true">
 
         <EditText
-            android:id="@+id/editTextPasswordSignUp"
+            android:id="@+id/passwordSignUpEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
@@ -45,7 +45,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <CheckBox
-        android:id="@+id/agreement_checkbox"
+        android:id="@+id/agreementCheckbox"
         style="@style/RadioButtonStyle"
         android:layout_width="@dimen/dialog_edit_text_width"
         android:layout_height="wrap_content"
