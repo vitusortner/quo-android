@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="titleTextColor">@color/colorSecondary</item>
@@ -9,17 +9,4 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
-
-    <style name="CardViewFont">
-        <item name="android:textColor">@color/colorHomeCardViewText</item>
-    </style>
-
-    <style name="CardViewTitleFont" parent="CardViewFont">
-        <item name="android:textSize">@dimen/home_cardview_title_textsize</item>
-    </style>
-
-    <style name="CardViewDescriptionFont" parent="CardViewFont">
-        <item name="android:textSize">@dimen/home_cardview_description_textsize</item>
-    </style>
-
 </resources>
