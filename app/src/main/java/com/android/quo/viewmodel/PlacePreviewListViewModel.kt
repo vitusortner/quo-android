@@ -80,6 +80,7 @@ class PlacePreviewListViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        compositDisposable.clear()
+
+        compositDisposable.dispose()
     }
 }

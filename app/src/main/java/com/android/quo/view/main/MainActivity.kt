@@ -3,7 +3,9 @@ package com.android.quo.view.main
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
@@ -22,6 +24,14 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
+
+        // set status bar color
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDarkPreM)
+        }
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->

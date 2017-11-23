@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.DisplayMetrics
 import com.android.quo.R
 import com.android.quo.extensions.getDisplayMetrics
+import com.android.quo.extensions.toPx
 import kotlinx.android.synthetic.main.activity_gallery_image_pager.viewPager
 
 
@@ -23,10 +24,8 @@ class ImagePagerActivity : FragmentActivity() {
         val list = intent.getStringArrayListExtra("list")
         val position = intent.getIntExtra("position", 0)
 
-//        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        viewPager.pageMargin = dpToPx(resources
-                .getDimension(R.dimen.place_image_pager_margin))
+//        viewPager.pageMargin = dpToPx(resources.getDimension(R.dimen.place_image_pager_margin))
+        viewPager.pageMargin = resources.getDimension(R.dimen.place_image_pager_margin).toPx(this)
         viewPager.adapter = GalleryDetailSlidePagerAdapter(supportFragmentManager, list)
         viewPager.currentItem = position
     }

@@ -19,4 +19,6 @@
     <string name="error_qr_code_message">We are sorry ! There is not QR Code in image</string>
     <string name="done">DONE</string>
 
+    <string name="place_info_menu">Information</string>
+
 </resources>

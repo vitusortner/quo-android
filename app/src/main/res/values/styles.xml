@@ -11,7 +11,21 @@
     <style name="TransparentAppTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+    </style>
 
+    <style name="TransparentStatusBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <item name="android:statusBarColor">@color/colorInfoToolbar</item>
+        <!--<item name="android:windowActionBar">false</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:statusBarColor">@color/colorInfoToolbar</item>-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+    </style>
+    
+    <style name="PlaceToolbarStyle">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
     <style name="CardViewFont">
@@ -25,5 +39,4 @@
     <style name="CardViewDescriptionFont" parent="CardViewFont">
         <item name="android:textSize">@dimen/home_cardview_description_textsize</item>
     </style>
-
 </resources>

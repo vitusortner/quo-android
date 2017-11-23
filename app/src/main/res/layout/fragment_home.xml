@@ -20,6 +20,6 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="@dimen/home_recyclerview_padding_top"
-            android:scrollbars="vertical" />
+            android:scrollbars="none" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>

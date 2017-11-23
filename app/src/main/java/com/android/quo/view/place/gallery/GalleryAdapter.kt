@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
-import com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf
 import com.jakewharton.rxbinding2.view.RxView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.gallery_image_thumbnail.imageView
@@ -35,6 +33,11 @@ class GalleryAdapter(private val activity: Activity, private val list: ArrayList
     override fun onBindViewHolder(holder: PlaceGalleryViewHolder, position: Int) {
         val imageUrl = list[position]
 
+        Glide.with(holder.containerView.context)
+                .load(imageUrl)
+                .apply(centerCropTransform())
+                .into(holder.imageView)
+
         RxView.clicks(holder.imageView)
                 .subscribe {
                     val intent = Intent(activity, ImagePagerActivity::class.java)
@@ -42,12 +45,6 @@ class GalleryAdapter(private val activity: Activity, private val list: ArrayList
                     intent.putExtra("position", position)
                     holder.containerView.context.startActivity(intent)
                 }
-
-        Glide.with(holder.containerView.context)
-                .load(imageUrl)
-                .apply(centerCropTransform())
-                .apply(diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                .into(holder.imageView)
     }
 
     class PlaceGalleryViewHolder(override val containerView: View) :

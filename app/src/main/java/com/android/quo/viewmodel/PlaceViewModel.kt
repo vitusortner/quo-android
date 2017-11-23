@@ -7,9 +7,12 @@ import android.arch.lifecycle.ViewModel
  */
 class PlaceViewModel : ViewModel() {
 
+    // contains gallery images, info view content, page content
+
     val imageList = ArrayList<String>()
 
     init {
+        // TODO replace with smaller images
         imageList.add("https://static.pexels.com/photos/196643/pexels-photo-196643.jpeg")
         imageList.add("https://static.pexels.com/photos/185343/pexels-photo-185343.jpeg")
         imageList.add("https://static.pexels.com/photos/185495/pexels-photo-185495.jpeg")

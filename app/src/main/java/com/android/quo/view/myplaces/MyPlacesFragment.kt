@@ -29,7 +29,9 @@ class MyPlacesFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_my_places, container, false)
+    ): View {
+        return inflater.inflate(R.layout.fragment_my_places, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,11 +63,13 @@ class MyPlacesFragment : Fragment() {
     /**
      * Update place preview list and stop refreshing animation
      */
-    private fun setupSwipeRefresh() =
-            swipeRefreshLayout.setOnRefreshListener {
-                placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
-                swipeRefreshLayout.isRefreshing = false
-            }
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setOnRefreshListener {
+            placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
 
     private fun setupFloatingActionButton() =
             floatingActionButton.setOnClickListener {

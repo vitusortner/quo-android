@@ -1,6 +1,5 @@
 package com.android.quo.view.place.gallery
 
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.viewmodel.PlaceViewModel
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
+import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
 
 /**
  * Created by vitusortner on 14.11.17.
@@ -21,14 +21,29 @@ class GalleryFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_place_gallery, container, false)
+    ): View {
+        return inflater.inflate(R.layout.fragment_place_gallery, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val viewModel = ViewModelProviders.of(this).get(PlaceViewModel().javaClass)
+        // TODO real viewmodel data handling (LiveData)
+        this.parentFragment?.let { parentFragment ->
+            val viewModel = ViewModelProviders.of(parentFragment).get(PlaceViewModel().javaClass)
 
-        activity?.let { activity ->
-            recyclerView.adapter = GalleryAdapter(activity, viewModel.imageList)
-            recyclerView.layoutManager = GridLayoutManager(this.context, 3)
+            activity?.let { activity ->
+                recyclerView.adapter = GalleryAdapter(activity, viewModel.imageList)
+                recyclerView.layoutManager = GridLayoutManager(this.context, 3)
+            }
+        }
+
+        setupSwipeRefresh()
+    }
+
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setOnRefreshListener {
+            // TODO updata data
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 }

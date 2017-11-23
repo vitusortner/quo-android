@@ -2,7 +2,6 @@ package com.android.quo.view.place.gallery
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -10,17 +9,19 @@ import android.view.ViewGroup
 import com.alexvasilkov.gestures.GestureController
 import com.android.quo.R
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf
-import com.jakewharton.rxbinding2.view.RxView
-import kotlinx.android.synthetic.main.gallery_image_full.imageView
+import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.fragment_gallery_image.imageView
+import kotlinx.android.synthetic.main.fragment_gallery_image.toolbar
 
 /**
  * Created by vitusortner on 16.11.17.
  */
 class ImageFragment : Fragment() {
 
-    private lateinit var url: String
+    private var url: String? = null
+
+    private val compositDisposable = CompositeDisposable()
 
     /**
      * Retrieves string extra from bundle and inflates view
@@ -34,18 +35,33 @@ class ImageFragment : Fragment() {
             url = it.getString("url")
         }
 
-        return inflater.inflate(R.layout.gallery_image_full, container, false)
+        return inflater.inflate(R.layout.fragment_gallery_image, container, false)
     }
 
     /**
      * Loads image from URL into image view
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Glide.with(view.context)
-                .load(url)
-                .apply(diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-                .into(imageView)
+        url?.let {
+            Glide.with(this.context)
+                    .load(it)
+                    .into(imageView)
+        }
 
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
+
+        compositDisposable.add(
+                RxToolbar.navigationClicks(toolbar)
+                        .subscribe {
+                            activity?.onBackPressed()
+                        }
+        )
+
+        // handle tap on image
         imageView.controller.setOnGesturesListener(object : GestureController.OnGestureListener {
             override fun onSingleTapUp(event: MotionEvent) = false
 
@@ -63,12 +79,33 @@ class ImageFragment : Fragment() {
             override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
                 activity?.let { activity ->
                     val decorView = activity.window.decorView
-                    val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
-                    decorView.systemUiVisibility = uiOptions
-//                activity.actionBar.hide()
+
+                    if ((decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+                        decorView.systemUiVisibility =
+                                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                                        or View.SYSTEM_UI_FLAG_LOW_PROFILE
+                                        or View.SYSTEM_UI_FLAG_IMMERSIVE)
+                        toolbar.visibility = View.GONE
+                    } else {
+                        decorView.systemUiVisibility =
+                                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+                        toolbar.visibility = View.VISIBLE
+                    }
                 }
                 return true
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        compositDisposable.dispose()
     }
 }
