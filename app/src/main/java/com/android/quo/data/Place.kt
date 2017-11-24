@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
+import com.google.zxing.qrcode.encoder.QRCode
 import java.util.Date
 
 /**
@@ -26,13 +27,13 @@ import java.util.Date
                 onDelete = ForeignKey.NO_ACTION))) //what happens if user gets deleted/deactivated?
 
 data class Place(
-    @PrimaryKey val id: Int,
-    val title: String,
-    val startDate: Date,
-    val endDate: Date,
-    //maybe lat and long as one "position"
-    val lat: String,
-    val long: String,
-    val components: Array<Component>//foreign key nedded?
-
+    @PrimaryKey var id: Long,
+    var host: Long,
+    var titlePicture: Long,
+    var qrCode: Long,
+    var title: String,
+    var startDate: Date,
+    var endDate: Date,
+    var lat: String,
+    var log: String
 )

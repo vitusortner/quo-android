@@ -4,7 +4,7 @@ import android.arch.persistence.room.*
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
 
 /**
- * Created by Flo on 18.11.2017.
+ * Created by FlorianSchlueter on 18.11.2017.
  */
 
 @Dao

@@ -10,11 +10,10 @@ import android.arch.persistence.room.PrimaryKey
  */
 
 @Entity(tableName = "user")
-data class User(
-    @PrimaryKey val id: Int,
-    val email: String,
-    val password: String,
-    val visitedPlaces: Array<Place>, //foreign key needed?
-    val active: Boolean
+data class User (
+    @PrimaryKey var id: Long,
+    var email: String,
+    var password: String,
+    var active: Boolean
 
 )

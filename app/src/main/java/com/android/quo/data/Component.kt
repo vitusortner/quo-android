@@ -14,11 +14,17 @@ import android.arch.persistence.room.PrimaryKey
             ForeignKey(entity = Picture::class,
                 parentColumns = arrayOf("id"),
                 childColumns = arrayOf("pictureId"),
-                onDelete = ForeignKey.SET_NULL))) //if picture gets deleted set value null ?
+                onDelete = ForeignKey.SET_NULL), //if picture gets deleted set value null ?
+            ForeignKey(entity = Place::class,
+                parentColumns = arrayOf("id"),
+                childColumns = arrayOf("placeId"),
+                onDelete = ForeignKey.CASCADE)))
 
 data class Component (
-    @PrimaryKey val id: Int,
-    val type: String,
-    val position: Int,
-    val text: String
+    @PrimaryKey var id: Long,
+    var pictureId: Long,
+    var placeId: Long,
+    var type: String,
+    var position: Int,
+    var text: String
 )
