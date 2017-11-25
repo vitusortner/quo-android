@@ -1,6 +1,7 @@
 package com.android.quo.networking
 
 import com.android.quo.model.PlacePreviewList
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import retrofit2.http.GET
 
@@ -10,13 +11,13 @@ import retrofit2.http.GET
 interface PlacePreviewListService {
 
     @GET("59fc37412d00002d3e12436b")
-    fun getPlacePreviewListHome(): Observable<PlacePreviewList>
+    fun getPlacePreviewListHome(): Flowable<PlacePreviewList>
 
     @GET("59ff44582e0000650bca5944")
-    fun getPlacePreviewListMyPlaces(): Observable<PlacePreviewList>
+    fun getPlacePreviewListMyPlaces(): Flowable<PlacePreviewList>
 
     companion object {
 
-        val service: PlacePreviewListService by lazy { ApiService.retrofit.create(PlacePreviewListService::class.java) }
+        val instance: PlacePreviewListService = ApiService.instance.create(PlacePreviewListService::class.java)
     }
 }

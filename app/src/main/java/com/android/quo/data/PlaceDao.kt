@@ -1,6 +1,12 @@
 package com.android.quo.data
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Delete
+import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy
+import android.arch.persistence.room.Query
+import android.arch.persistence.room.Update
+import io.reactivex.Flowable
 
 /**
  * Created by FlorianSchlueter on 18.11.2017.
@@ -9,7 +15,7 @@ import android.arch.persistence.room.*
 @Dao
 interface PlaceDao {
     @Query("SELECT * FROM place")
-    fun getAllPlaces(): List<Place>
+    fun getAllPlaces(): Flowable<List<Place>>
 
     @Query("SELECT * FROM place WHERE id = :id")
     fun findPlaceById(id: Long): Place

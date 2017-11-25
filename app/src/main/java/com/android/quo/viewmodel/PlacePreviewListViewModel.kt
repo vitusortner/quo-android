@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by vitusortner on 27.10.17.
  */
-class PlacePreviewListViewModel : ViewModel() {
+class PlacePreviewListViewModel() : ViewModel() {
 
     enum class FragmentType {
         HOME, MY_PLACES
@@ -26,7 +26,7 @@ class PlacePreviewListViewModel : ViewModel() {
     private var placePreviewListHome: MutableLiveData<List<PlacePreview>>? = null
     private var placePreviewListMyPlaces: MutableLiveData<List<PlacePreview>>? = null
 
-    private val placePreviewListService = PlacePreviewListService.service
+    private val placePreviewListService = PlacePreviewListService.instance
 
     fun getPlacePreviewList(fragmentType: FragmentType): LiveData<List<PlacePreview>> =
         when (fragmentType) {

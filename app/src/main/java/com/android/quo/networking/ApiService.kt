@@ -11,12 +11,9 @@ object ApiService {
 
     private val BASE_URL = "http://www.mocky.io/v2/"
 
-    // Retrofit setup
-    val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
+    val instance: Retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
-    }
 }

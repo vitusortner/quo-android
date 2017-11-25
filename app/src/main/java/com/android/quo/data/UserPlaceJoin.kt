@@ -11,18 +11,18 @@ import android.arch.persistence.room.PrimaryKey
  */
 
 @Entity(tableName = "user_place_join",
-    primaryKeys = arrayOf("userId","placeId"),
-    foreignKeys = arrayOf(
-    ForeignKey(entity = User::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("userId"),
-        onDelete = ForeignKey.SET_NULL),
-    ForeignKey(entity = Place::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("placeId"),
-        onDelete = ForeignKey.SET_NULL)))
+        primaryKeys = arrayOf("userId", "placeId"),
+        foreignKeys = arrayOf(
+                ForeignKey(entity = User::class,
+                        parentColumns = arrayOf("id"),
+                        childColumns = arrayOf("userId"),
+                        onDelete = ForeignKey.SET_NULL),
+                ForeignKey(entity = Place::class,
+                        parentColumns = arrayOf("id"),
+                        childColumns = arrayOf("placeId"),
+                        onDelete = ForeignKey.SET_NULL)))
 
-data class UserPlaceJoin (
-    var userId: Long,
-    var placeId: Long
+data class UserPlaceJoin(
+        var userId: Long,
+        var placeId: Long
 )
