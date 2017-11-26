@@ -18,9 +18,9 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxTextView.afterTextChangeEvents
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
 import kotlinx.android.synthetic.main.activity_login.emailEditText
 import kotlinx.android.synthetic.main.activity_login.emailWrapper
@@ -43,12 +43,13 @@ import java.util.concurrent.TimeUnit
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var callbackManager: CallbackManager
+    private lateinit var compositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         callbackManager = CallbackManager.Factory.create()
-
+        compositeDisposable = CompositeDisposable()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
 
 
@@ -73,40 +74,39 @@ class LoginActivity : AppCompatActivity() {
         /**
          * check if email is validate
          */
-        afterTextChangeEvents(emailEditText)
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(emailEditText)
                 .skipInitialValue()
                 .map {
                     emailWrapper.error = null
                     it.view().text.toString()
                 }
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
-                .compose(loginViewModel.verifyEmailPattern).subscribeOn(Schedulers.io())
+                .compose(loginViewModel.verifyEmailPattern)
                 .compose(loginViewModel.retryWhenError {
                     emailWrapper.error = it.message
 
                     ViewCompat.setBackgroundTintList(emailEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
-                .subscribe()
+                .subscribe())
 
         /**
          * check if password is validate
          */
-        afterTextChangeEvents(passwordEditText)
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(passwordEditText)
                 .skipInitialValue()
                 .map {
                     passwordWrapper.error = null
                     it.view().text.toString()
                 }
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
+                .compose(loginViewModel.lengthGreaterThanSix)
                 .compose(loginViewModel.retryWhenError {
                     passwordWrapper.error = it.message
                     ViewCompat.setBackgroundTintList(emailEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
-                .subscribe()
+                .subscribe())
 
         /**
          * button click handler for signIn
@@ -155,6 +155,11 @@ class LoginActivity : AppCompatActivity() {
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
+
     /**
      * dialog forgot password
      */
@@ -164,15 +169,14 @@ class LoginActivity : AppCompatActivity() {
         dialog.setTitle(resources.getString(R.string.forgot_password))
         dialog.setView(dialogView)
 
-        afterTextChangeEvents(dialogView.emailEditText)
+        RxTextView.afterTextChangeEvents(dialogView.emailEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.emailWrapper.error = null
                     it.view().text.toString()
                 }
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
-                .compose(loginViewModel.verifyEmailPattern).subscribeOn(Schedulers.io())
+                .compose(loginViewModel.verifyEmailPattern)
                 .compose(loginViewModel.retryWhenError {
                     dialogView.emailWrapper.error = it.message
                     ViewCompat.setBackgroundTintList(dialogView.emailEditText, ColorStateList
@@ -225,15 +229,14 @@ class LoginActivity : AppCompatActivity() {
         }
 
         //check if email is validate
-        afterTextChangeEvents(dialogView.emailSignUpEditText)
+        RxTextView.afterTextChangeEvents(dialogView.emailSignUpEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.emailWrapper.error = null
                     it.view().text.toString()
                 }
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
-                .compose(loginViewModel.verifyEmailPattern).subscribeOn(Schedulers.io())
+                .compose(loginViewModel.verifyEmailPattern)
                 .compose(loginViewModel.retryWhenError {
                     dialogView.emailWrapper.error = it.message
                     ViewCompat.setBackgroundTintList(dialogView.emailSignUpEditText, ColorStateList
@@ -242,14 +245,14 @@ class LoginActivity : AppCompatActivity() {
                 .subscribe()
 
         //check if password is validate
-        afterTextChangeEvents(dialogView.passwordSignUpEditText)
+        RxTextView.afterTextChangeEvents(dialogView.passwordSignUpEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.passwordWrapper.error = null
                     it.view().text.toString()
                 }
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(loginViewModel.lengthGreaterThanSix).subscribeOn(Schedulers.io())
+                .compose(loginViewModel.lengthGreaterThanSix)
                 .compose(loginViewModel.retryWhenError {
                     dialogView.passwordWrapper.error = it.message
                     ViewCompat.setBackgroundTintList(dialogView.passwordSignUpEditText, ColorStateList
