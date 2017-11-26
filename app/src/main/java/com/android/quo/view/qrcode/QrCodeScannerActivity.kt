@@ -11,13 +11,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
 import android.view.View.GONE
-import android.view.ViewGroup
+import android.view.WindowManager
 import com.android.quo.R
 import com.android.quo.model.QrCodeScannerDialog
 import com.android.quo.viewmodel.QrCodeScannerViewModel
@@ -25,11 +23,11 @@ import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.Result
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.cancelButton
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashButton
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.flashTextView
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.photosButton
-import kotlinx.android.synthetic.main.fragment_qr_code_scanner.qrCodeScannerView
+import kotlinx.android.synthetic.main.activity_qr_code_scanner.cancelButton
+import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashButton
+import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashTextView
+import kotlinx.android.synthetic.main.activity_qr_code_scanner.photosButton
+import kotlinx.android.synthetic.main.activity_qr_code_scanner.qrCodeScannerView
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
@@ -37,39 +35,41 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
  * Created by Jung on 30.10.17.
  */
 
-class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
+class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val RESULT_GALLERY = 0
 
     private lateinit var scannerView: ZXingScannerView
     private lateinit var qrCodeScannerViewModel: QrCodeScannerViewModel
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_qr_code_scanner)
+
         requestPermissions(arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE),
                 ASK_MULTIPLE_PERMISSION_REQUEST_CODE
         )
-        return inflater.inflate(R.layout.fragment_qr_code_scanner, container, false)
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        scannerView = qrCodeScannerView
-        scannerView.setAutoFocus(true)
+        // set statusbar transparent
+        window?.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 
-        this.activity?.application?.let { application ->
+        supportActionBar?.hide()
+
+        this.application?.let { application ->
             qrCodeScannerViewModel = ViewModelProviders.of(this).
                     get(QrCodeScannerViewModel(application)::class.java)
         }
 
         cancelButton.setOnClickListener {
-            fragmentManager?.popBackStack()
+            this.finish()
         }
+
+        scannerView = qrCodeScannerView
+        scannerView.setAutoFocus(true)
 
         flashButton.setOnClickListener {
             handleFlashLight()
@@ -79,14 +79,14 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
             openPhoneGallery()
         }
 
-        this.context?.let { context ->
+        this.let { context ->
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 photosButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
             }
         }
 
-        activity?.bottomNavigationView?.visibility = GONE
+        bottomNavigationView?.visibility = GONE
     }
 
     override fun onResume() {
@@ -103,7 +103,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     private fun handleFlashLight() {
         scannerView.flash = !scannerView.flash
 
-        this.context?.let { context ->
+        this.let { context ->
             if (scannerView.flash) {
                 flashButton.background = ContextCompat.getDrawable(context, R.drawable.ic_flash_on)
                 flashTextView.setText(R.string.flash_off)
@@ -119,7 +119,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
                 Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
+        startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
     override fun handleResult(result: Result) {
@@ -149,7 +149,7 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     }
 
     private fun openNoQrCodeFoundDialog() {
-        this.context?.let { context ->
+        this.let { context ->
             val dialog = AlertDialog.Builder(context).create()
             dialog.setTitle(context.resources.getString(R.string.error_qr_code_title))
             dialog.setMessage(context.resources.getString(R.string.error_qr_code_message))
@@ -160,14 +160,14 @@ class QrCodeScannerFragment : Fragment(), ZXingScannerView.ResultHandler {
     }
 
     private fun openUrlDialogFromQRCode(result: QrCodeScannerDialog) {
-        val urlAlert = AlertDialog.Builder(this.context).create()
+        val urlAlert = AlertDialog.Builder(this).create()
         urlAlert.setTitle(result.title)
         urlAlert.setMessage(result.message + " " + result.url)
 
         urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.open), { _, _ ->
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(this.activity, Uri.parse(result.url))
+            customTabsIntent.launchUrl(this, Uri.parse(result.url))
         })
         urlAlert.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.close), { _, _ ->
             this.onResume()
