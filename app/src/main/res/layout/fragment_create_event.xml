@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/headerImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/test_image" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:scrollbars="vertical">
+
+            <ImageButton
+                android:id="@+id/galleryButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="170dp"
+                android:background="@drawable/round_button"
+                android:elevation="15dp"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_camera" />
+
+            <EditText
+                android:id="@+id/eventNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@+id/galleryButton"
+                android:hint="Event name"
+                android:textColor="@color/colorGrey"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/locationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/eventNameEditText"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:drawableEnd="@drawable/ic_location"
+                android:hint="Location"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/fromTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/locationEditText"
+                android:layout_marginTop="30dp"
+                android:text="From"
+                android:textColor="@color/colorGrey" />
+
+            <EditText
+                android:id="@+id/fromDateEditText"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/fromTextView"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorPrimary" />
+
+            <EditText
+                android:id="@+id/fromTimeEditText"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/fromTextView"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/fromDateEditText"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/toTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fromTimeEditText"
+                android:layout_marginTop="10dp"
+                android:text="To"
+                android:textColor="@color/colorGrey" />
+
+            <EditText
+                android:id="@+id/toDateEditText"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/toTextView"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorPrimary" />
+
+            <EditText
+                android:id="@+id/toTimeEditText"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/toTextView"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/toDateEditText"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorPrimary" />
+
+            <CheckBox
+                android:id="@+id/expirationCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/toTimeEditText"
+                android:layout_marginStart="-3dp"
+                android:layout_marginTop="20dp"
+                android:paddingStart="@dimen/checkbox_padding_left"
+                android:text="No Expiration Date"
+                android:textColor="@color/colorPrimary" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_below="@id/expirationCheckBox"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/description_edit_text"
+                    android:gravity="top|left"
+                    android:hint="Description"
+                    android:lines="5"
+                    android:maxLines="10"
+                    android:minLines="1"
+                    android:padding="10dp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/colorPrimary" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

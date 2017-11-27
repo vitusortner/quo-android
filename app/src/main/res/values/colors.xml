@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorSecondary">#8C000000</color>
     <color name="colorHomeCardViewText">#FFFFFF</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="colorGrey">#95989A</color>
 </resources>

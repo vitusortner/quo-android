@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.placePreviewRecyclerView
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
 
+
 /**
  * Created by vitusortner on 05.11.17.
  */
@@ -66,6 +67,12 @@ class MyPlacesFragment : Fragment() {
 
     private fun setupFloatingActionButton() =
             floatingActionButton.setOnClickListener {
+
+                fragmentManager?.beginTransaction()
+                        ?.replace(R.id.content, CreatePlaceFragment())
+                        ?.addToBackStack(null)
+                        ?.commit()
+
                 Snackbar.make(floatingActionButton, "Floating action button clicked",
                         Snackbar.LENGTH_LONG)
                         .setAction("HIDE", { })
