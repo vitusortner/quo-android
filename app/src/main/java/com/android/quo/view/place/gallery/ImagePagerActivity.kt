@@ -24,18 +24,9 @@ class ImagePagerActivity : FragmentActivity() {
         val list = intent.getStringArrayListExtra("list")
         val position = intent.getIntExtra("position", 0)
 
-//        viewPager.pageMargin = dpToPx(resources.getDimension(R.dimen.place_image_pager_margin))
         viewPager.pageMargin = resources.getDimension(R.dimen.place_image_pager_margin).toPx(this)
         viewPager.adapter = GalleryDetailSlidePagerAdapter(supportFragmentManager, list)
         viewPager.currentItem = position
-    }
-
-    /**
-     * Converts [dp] to px
-     * @return calculated px
-     */
-    fun dpToPx(dp: Float): Int {
-        return dp.toInt() * (getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }
 
     class GalleryDetailSlidePagerAdapter(

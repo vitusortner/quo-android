@@ -12,9 +12,9 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="128dp"
-            android:minHeight="48dp"
-            app:contentScrim="#FFFFFF"
+            android:layout_height="@dimen/place_collapsing_toolbar_height"
+            android:minHeight="@dimen/place_collapsing_toolbar_min_height"
+            app:contentScrim="@color/colorPlaceToolbarContentScrim"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
             app:titleEnabled="false">
 
@@ -33,7 +33,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/place_toolbar_height"
                 android:layout_gravity="top"
                 android:theme="@style/PlaceToolbarStyle" />
 
@@ -44,10 +44,10 @@
                 android:layout_gravity="bottom"
                 android:fitsSystemWindows="true"
                 app:tabGravity="fill"
-                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorColor="@color/colorPlaceTablayoutHighlight"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/white" />
+                app:tabSelectedTextColor="@color/colorPlaceTablayoutHighlight"
+                app:tabTextColor="@color/colorPlaceTablayoutHighlight" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

@@ -14,13 +14,7 @@
     </style>
 
     <style name="TransparentStatusBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:statusBarColor">@color/colorInfoToolbar</item>
-        <!--<item name="android:windowActionBar">false</item>-->
-        <!--<item name="android:windowNoTitle">true</item>-->
-        <!--<item name="android:statusBarColor">@color/colorInfoToolbar</item>-->
-        <!--<item name="android:windowTranslucentNavigation">true</item>-->
-        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
     </style>
     
     <style name="PlaceToolbarStyle">

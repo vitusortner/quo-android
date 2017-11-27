@@ -12,8 +12,8 @@
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="238dp"
-            app:contentScrim="@color/white"
+            android:layout_height="@dimen/info_collapsing_toolbar_height"
+            app:contentScrim="@color/colorInfoToolbarContentScrim"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
 
@@ -27,7 +27,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:elevation="4dp"
+                android:elevation="@dimen/info_toolbar_elevation"
                 android:background="@color/colorInfoToolbar"
                 android:theme="@style/PlaceToolbarStyle"
                 app:layout_collapseMode="pin" />
@@ -39,8 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingTop="0dp"
         android:scrollbars="none"
-        app:behavior_overlapTop="60dp"
+        app:behavior_overlapTop="@dimen/info_recyclerview_overlap_top"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </android.support.design.widget.CoordinatorLayout>

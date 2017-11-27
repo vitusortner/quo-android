@@ -15,18 +15,21 @@
     <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
     <dimen name="qr_code_scanner_flash_button_height">42dp</dimen>
     <dimen name="qr_code_scanner_flash_button_width">42dp</dimen>
+    <dimen name="qr_code_scanner_toolbar_elevation">4dp</dimen>
 
     <dimen name="home_cardview_image_height">150dp</dimen>
     <dimen name="home_cardview_textview_padding">5dp</dimen>
     <dimen name="home_cardview_title_textsize">20sp</dimen>
     <dimen name="home_cardview_description_textsize">14sp</dimen>
-
     <dimen name="home_recyclerview_padding_top">8dp</dimen>
 
+    <dimen name="place_collapsing_toolbar_height">128dp</dimen>
+    <dimen name="place_collapsing_toolbar_min_height">48dp</dimen>
+    <dimen name="place_toolbar_height">48dp</dimen>
     <dimen name="place_page_padding">28dp</dimen>
     <dimen name="place_page_title_margin_bottom">10dp</dimen>
-
     <dimen name="place_gallery_thumbnail_margin">4dp</dimen>
+    <dimen name="place_gallery_image_margin_top">24dp</dimen>
     <dimen name="place_image_pager_margin">10dp</dimen>
 
     <dimen name="info_cardview_padding_top">12dp</dimen>
@@ -34,4 +37,11 @@
     <dimen name="info_cardview_padding_end">24dp</dimen>
     <dimen name="info_cardview_padding_bottom">41dp</dimen>
     <dimen name="info_cardview_title_margin_bottom">10dp</dimen>
+    <dimen name="info_collapsing_toolbar_height">238dp</dimen>
+    <dimen name="info_toolbar_elevation">4dp</dimen>
+    <dimen name="info_recyclerview_overlap_top">60dp</dimen>
+
+    <dimen name="my_places_fab_margin">16dp</dimen>
+
+    <dimen name="main_toolbar_elevation">4dp</dimen>
 </resources>

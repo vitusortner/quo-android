@@ -12,6 +12,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/place_gallery_image_margin_top"
         android:background="@android:color/transparent" />
 </android.support.design.widget.CoordinatorLayout>

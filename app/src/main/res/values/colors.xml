@@ -10,9 +10,14 @@
     <color name="colorHomeCardViewText">@color/white</color>
 
     <color name="colorInfoToolbar">#80545454</color>
+    <color name="colorInfoToolbarContentScrim">@color/white</color>
+    <color name="colorPlaceToolbarContentScrim">@color/white</color>
+    <color name="colorPlaceTablayoutHighlight">@color/white</color>
+
     <color name="colorTransparent">#00000000</color>
 
     <color name="colorTitle">@color/black</color>
+    <color name="colorTitlePlacePage">@color/black</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

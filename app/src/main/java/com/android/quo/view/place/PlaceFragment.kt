@@ -58,7 +58,9 @@ class PlaceFragment : Fragment() {
 
         setupToolbar()
 
-        placeViewPager.adapter = PlacePagerAdapter(childFragmentManager)
+        this.context?.let {
+            placeViewPager.adapter = PlacePagerAdapter(childFragmentManager, it)
+        }
 
         tabLayout.setupWithViewPager(placeViewPager)
     }
@@ -118,31 +120,6 @@ class PlaceFragment : Fragment() {
             }
         }
     }
-
-    // TODO https://app.clickup.com/751518/751948/t/vnbu
-    // remove in main activity then
-//    override fun onResume() {
-//        super.onResume()
-//
-//        activity?.window?.let { window ->
-//            this.context?.let { context ->
-//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-//                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
-//                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-//                } else {
-//                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorPrimaryDarkPreM)
-//                }
-//            }
-//        }
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//
-//        activity?.window?.let {
-//            it.statusBarColor = ContextCompat.getColor(this.context!!, R.color.colorPrimaryDark)
-//        }
-//    }
 
     override fun onDestroy() {
         super.onDestroy()
