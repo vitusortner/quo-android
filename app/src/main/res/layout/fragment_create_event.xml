@@ -27,8 +27,8 @@
 
             <ImageButton
                 android:id="@+id/galleryButton"
-                android:layout_width="@dimen/round_button_small_size"
-                android:layout_height="@dimen/round_button_small_size"
+                android:layout_width="@dimen/round_button_normal_size"
+                android:layout_height="@dimen/round_button_normal_size"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/event_gallery_button_marginTop"
                 android:background="@drawable/round_button"
@@ -43,7 +43,7 @@
                 android:layout_height="@dimen/event_edit_text_large_width"
                 android:layout_below="@+id/galleryButton"
                 android:hint="@string/event_name"
-                android:textColor="@color/colorGrey"
+                android:textColor="@color/colorGray"
                 android:textSize="30sp" />
 
             <EditText
@@ -74,7 +74,7 @@
                 android:layout_below="@id/locationEditText"
                 android:layout_marginTop="@dimen/event_large_margin_top"
                 android:text="@string/from"
-                android:textColor="@color/colorGrey" />
+                android:textColor="@color/colorGray" />
 
             <EditText
                 android:id="@+id/fromDateEditText"
@@ -107,7 +107,7 @@
                 android:layout_below="@id/fromTimeEditText"
                 android:layout_marginTop="@dimen/event_small_margin_top"
                 android:text="@string/to"
-                android:textColor="@color/colorGrey" />
+                android:textColor="@color/colorGray" />
 
             <EditText
                 android:id="@+id/toDateEditText"
