@@ -1,30 +1,45 @@
 package com.android.quo.view.myplaces
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.android.quo.R
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
+import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView
 import kotlinx.android.synthetic.main.fragment_create_event.expirationCheckBox
 import kotlinx.android.synthetic.main.fragment_create_event.fromDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.fromTimeEditText
 import kotlinx.android.synthetic.main.fragment_create_event.galleryButton
 import kotlinx.android.synthetic.main.fragment_create_event.headerImageView
 import kotlinx.android.synthetic.main.fragment_create_event.locationEditText
+import kotlinx.android.synthetic.main.fragment_create_event.locationProgressBar
 import kotlinx.android.synthetic.main.fragment_create_event.toDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
 import java.text.SimpleDateFormat
@@ -35,7 +50,8 @@ import java.util.*
  * Created by Jung on 27.11.17.
  */
 
-class CreateEventFragment : Fragment() {
+class CreateEventFragment : Fragment(), LocationListener {
+
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val DRAWABLE_RIGHT = 2
     private val RESULT_GALLERY = 0
@@ -43,6 +59,7 @@ class CreateEventFragment : Fragment() {
     private lateinit var currentEditText: EditText
     private val dateFormat = "E, MMM dd yyyy"
     private val timeFormat = "h:mm a"
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -63,35 +80,50 @@ class CreateEventFragment : Fragment() {
 
         setDefaultValuesOnStart()
 
-        RxView.clicks(fromDateEditText)
+        /**
+         * will show the calendar view
+         */
+        compositeDisposable.add(RxView.clicks(fromDateEditText)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     currentEditText = fromDateEditText
                     showCalendarView()
-                }
+                })
 
-        RxView.clicks(toDateEditText)
+        /**
+         * will show the calendar view
+         */
+        compositeDisposable.add(RxView.clicks(toDateEditText)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     currentEditText = toDateEditText
                     showCalendarView()
-                }
+                })
 
-        RxView.clicks(fromTimeEditText)
+        /**
+         * will show the time view
+         */
+        compositeDisposable.add(RxView.clicks(fromTimeEditText)
                 .observeOn((AndroidSchedulers.mainThread()))
                 .subscribe {
                     currentEditText = fromTimeEditText
                     showTimeView()
-                }
+                })
 
-        RxView.clicks(toTimeEditText)
+        /**
+         * will show the time view
+         */
+        compositeDisposable.add(RxView.clicks(toTimeEditText)
                 .observeOn((AndroidSchedulers.mainThread()))
                 .subscribe {
                     currentEditText = toTimeEditText
                     showTimeView()
-                }
+                })
 
-        RxView.clicks(expirationCheckBox as View)
+        /**
+         * enable or disable the expire edit boxen for date and time via checkbox
+         */
+        compositeDisposable.add(RxView.clicks(expirationCheckBox as View)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (expirationCheckBox.isChecked) {
@@ -101,26 +133,94 @@ class CreateEventFragment : Fragment() {
                         toDateEditText.isEnabled = true
                         toTimeEditText.isEnabled = true
                     }
-                }
+                })
 
-        RxView.clicks(galleryButton)
+        /**
+         * handle to open the gallery for the header image
+         */
+        compositeDisposable.add(RxView.clicks(galleryButton)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { openPhoneGallery() }
+                .subscribe { openPhoneGallery() })
 
 
-
-        RxView.touches(locationEditText, { motionEvent ->
+        /**
+         * handle click on location icon on the right side of the edit box
+         */
+        compositeDisposable.add(RxView.touches(locationEditText, { motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (motionEvent.rawX >= (locationEditText.right - locationEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
 //                  //TODO get gps location and convert in address
                     println("location icon pressed")
+                    locationProgressBar.visibility = VISIBLE
+                    locationEditText.clearFocus()
+                    getLocation()
                 }
             }
             false
         })
-                .subscribe()
+                .subscribe())
+
+        /**
+         * disable main scroller if user will scroll in description box
+         */
+        compositeDisposable.addAll(RxView.touches(descriptionEditText, { motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                eventScrollView.requestDisallowInterceptTouchEvent(true)
+            }
+            false
+        }).subscribe())
+
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
+
+    fun hideKeyboard(activity: FragmentActivity?) {
+        activity?.let { activity ->
+            val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            //Find the currently focused view, so we can grab the correct window token from it.
+            var view = activity.currentFocus
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = View(activity)
+            }
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation() {
+        hideKeyboard(activity)
+        val locationManager = activity?.getSystemService(LOCATION_SERVICE) as LocationManager?
+        val locationListener = this
+        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+    }
+
+    /**
+     * get the location with address postalCode and city from lat and long
+     */
+    private fun getAddressFromLocation(location: Location) {
+        val addresses: List<Address>
+        val geocoder = Geocoder(this.context, Locale.getDefault())
+
+        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        val address = addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        val city = addresses[0].locality
+        val state = addresses[0].adminArea
+        val country = addresses[0].countryName
+        val postalCode = addresses[0].postalCode
+        val knownName = addresses[0].featureName
+
+        locationProgressBar.visibility = GONE
+        locationEditText.setText("$address $postalCode $city")
+    }
+
+    /**
+     * open the phone gallery to select the header image
+     */
     private fun openPhoneGallery() {
         val galleryIntent = Intent(
                 Intent.ACTION_PICK,
@@ -229,4 +329,20 @@ class CreateEventFragment : Fragment() {
         val sdf = SimpleDateFormat(timeFormat, Locale.US)
         currentEditText.setText(sdf.format(calendar.time))
     }
+
+    /**
+     * below all location handler
+     */
+    override fun onLocationChanged(p0: Location?) {
+        if (p0 != null) {
+            println("#####################" + p0.latitude)
+            getAddressFromLocation(p0)
+        }
+    }
+
+    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
+
+    override fun onProviderEnabled(p0: String?) {}
+
+    override fun onProviderDisabled(p0: String?) {}
 }

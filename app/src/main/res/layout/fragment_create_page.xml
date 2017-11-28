@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/mainTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tempLine1TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:hint="@string/page_temp_line1_text" />
+
+    <TextView
+        android:id="@+id/tempLine2TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tempLine1TextView"
+        android:layout_centerInParent="true"
+        android:hint="@string/page_temp_line2_text" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp" />
+
+    <ImageButton
+        android:id="@+id/roundGalleryButton"
+        android:layout_width="@dimen/round_button_small_size"
+        android:layout_height="@dimen/round_button_small_size" />
+
+</RelativeLayout>

@@ -19,4 +19,18 @@
     <string name="error_qr_code_message">We are sorry ! There is not QR Code in image</string>
     <string name="done">DONE</string>
 
+    <!-- CREATE EVENT -->
+    <string name="to">To</string>
+    <string name="from">From</string>
+    <string name="location">Location</string>
+    <string name="event_name">Event name</string>
+    <string name="description">Description</string>
+    <string name="no_expiration_date">No Expiration Date</string>
+
+    <!-- CREATE PAGE -->
+    <string name="page_temp_line1_text">What do you want to</string>
+    <string name="page_temp_line2_text"> tell or show your visitors?</string>
+
+
+
 </resources>
