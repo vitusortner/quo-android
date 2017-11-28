@@ -22,4 +22,6 @@ interface ComponentDao {
 
     @Delete
     fun deleteComponent(component: Component)
+
+    //TODO get all components for placeID
 }

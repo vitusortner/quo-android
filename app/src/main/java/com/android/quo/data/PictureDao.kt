@@ -22,4 +22,6 @@ interface PictureDao {
 
     @Delete
     fun deletePicture(picture: Picture)
+
+    // TODO get Titlepicture
 }
