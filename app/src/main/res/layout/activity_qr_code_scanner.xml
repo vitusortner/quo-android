@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
+        android:id="@+id/qrCodeScannerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:borderLength="0dp"
+        app:laserEnabled="false">
+
+    </me.dm7.barcodescanner.zxing.ZXingScannerView>
+
+    <Button
+        android:id="@+id/flashButton"
+        android:layout_width="@dimen/qr_code_scanner_icon_width"
+        android:layout_height="@dimen/qr_code_scanner_icon_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/qr_code_scanner_button_margin"
+        android:layout_marginStart="@dimen/qr_code_scanner_button_margin"
+        android:background="@drawable/ic_flash_off" />
+
+    <TextView
+        android:id="@+id/flashTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/flashButton"
+        android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
+        android:layout_marginStart="@dimen/qr_code_scanner_text_margin_start"
+        android:text="@string/flash_on"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/photosButton"
+        android:layout_width="@dimen/qr_code_scanner_gallery_button_width"
+        android:layout_height="@dimen/qr_code_scanner_gallery_button_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/qr_code_scanner_button_margin"
+        android:radius="10dp" />
+
+    <TextView
+        android:id="@+id/photosTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/photosButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
+        android:text="@string/photos"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="@dimen/qr_code_scanner_icon_width"
+        android:layout_height="@dimen/qr_code_scanner_icon_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/qr_code_scanner_button_margin"
+        android:layout_marginEnd="@dimen/qr_code_scanner_button_margin"
+        android:background="@drawable/ic_cancel" />
+
+    <TextView
+        android:id="@+id/cancelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cancelButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
+        android:layout_marginEnd="@dimen/qr_code_scanner_button_margin"
+        android:text="@string/cancel"
+        android:textColor="@color/colorWhite" />
+
+</RelativeLayout>
