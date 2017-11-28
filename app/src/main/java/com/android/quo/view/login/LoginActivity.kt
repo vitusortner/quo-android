@@ -43,13 +43,12 @@ import java.util.concurrent.TimeUnit
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var callbackManager: CallbackManager
-    private lateinit var compositeDisposable: CompositeDisposable
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         callbackManager = CallbackManager.Factory.create()
-        compositeDisposable = CompositeDisposable()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
 
 
@@ -111,14 +110,14 @@ class LoginActivity : AppCompatActivity() {
         /**
          * button click handler for signIn
          */
-        RxView.clicks(signUpButton)
+        compositeDisposable.add(RxView.clicks(signUpButton)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { openDialogSignUp() }
+                .subscribe { openDialogSignUp() })
 
         /**
          * button click handler for login button
          */
-        RxView.clicks(loginButton)
+        compositeDisposable.add(RxView.clicks(loginButton)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
@@ -127,14 +126,14 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     }
-                }
+                })
 
         /**
          * button click handler for forgot password
          */
-        RxView.clicks(clickableForgotPasswordTextView)
+        compositeDisposable.add(RxView.clicks(clickableForgotPasswordTextView)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ openDialogForgotPassword() })
+                .subscribe({ openDialogForgotPassword() }))
     }
 
     /**
@@ -169,7 +168,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.setTitle(resources.getString(R.string.forgot_password))
         dialog.setView(dialogView)
 
-        RxTextView.afterTextChangeEvents(dialogView.emailEditText)
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.emailEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.emailWrapper.error = null
@@ -182,18 +181,18 @@ class LoginActivity : AppCompatActivity() {
                     ViewCompat.setBackgroundTintList(dialogView.emailEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
-                .subscribe()
+                .subscribe())
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            RxView.clicks(buttonNext)
+            compositeDisposable.add(RxView.clicks(buttonNext)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         if (dialogView.emailWrapper.error.isNullOrEmpty()) {
                             dialog.dismiss()
                             openDialogPasswordResetFinished()
                         }
-                    })
+                    }))
         })
 
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.next), { _, _ -> })
@@ -229,7 +228,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         //check if email is validate
-        RxTextView.afterTextChangeEvents(dialogView.emailSignUpEditText)
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.emailSignUpEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.emailWrapper.error = null
@@ -242,10 +241,10 @@ class LoginActivity : AppCompatActivity() {
                     ViewCompat.setBackgroundTintList(dialogView.emailSignUpEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
-                .subscribe()
+                .subscribe())
 
         //check if password is validate
-        RxTextView.afterTextChangeEvents(dialogView.passwordSignUpEditText)
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.passwordSignUpEditText)
                 .skipInitialValue()
                 .map {
                     dialogView.passwordWrapper.error = null
@@ -258,11 +257,11 @@ class LoginActivity : AppCompatActivity() {
                     ViewCompat.setBackgroundTintList(dialogView.passwordSignUpEditText, ColorStateList
                             .valueOf(checkEditTextTintColor(it.message)))
                 })
-                .subscribe()
+                .subscribe())
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            RxView.clicks(buttonNext)
+            compositeDisposable.add(RxView.clicks(buttonNext)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         if (dialogView.agreementCheckbox.isChecked) {
@@ -272,7 +271,7 @@ class LoginActivity : AppCompatActivity() {
                         } else {
                             dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorErrorRed))
                         }
-                    }
+                    })
         })
 
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.next), { _, _ -> })
