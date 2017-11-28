@@ -49,5 +49,7 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:4.3.0"
     compile "com.android.support:palette-v7:$support_library_version"
     compile "com.github.florent37:glidepalette:2.1.1"
+    compile 'com.facebook.android:facebook-login:4.28.0'
     compile 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.0.0'
 }
+
