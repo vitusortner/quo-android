@@ -7,10 +7,10 @@
         android:id="@+id/placePreviewCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/home_cardview_margin"
         android:layout_marginBottom="@dimen/home_cardview_margin"
         android:layout_marginLeft="@dimen/home_cardview_margin"
-        android:layout_marginRight="@dimen/home_cardview_margin">
+        android:layout_marginRight="@dimen/home_cardview_margin"
+        android:layout_marginTop="@dimen/home_cardview_margin">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -32,7 +32,8 @@
                 android:minLines="1"
                 android:padding="@dimen/event_description_padding"
                 android:scrollbars="vertical"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorGray"
+                android:theme="@style/EditTextTheme" />
 
             <TextView
                 android:id="@+id/tempLine1TextView"
