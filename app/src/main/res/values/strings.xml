@@ -3,8 +3,30 @@
     <string name="menu_qrcode">QR Code Scanner</string>
     <string name="menu_home">Home</string>
     <string name="menu_places">Places</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
+
+    <!-- Login -->
+    <string name="email">e-mail</string>
+    <string name="password">password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="click_here">click here</string>
+    <string name="error_email">Email is not valid</string>
+    <string name="error_password">Length should be greater than 6</string>
+    <string name="ok">OK</string>
+    <string name="next">NEXT</string>
+    <string name="send_reset_email_message">We sent you a email to reset your password</string>
+    <string name="send_reset_email_title">Done!</string>
+    <string name="login">Log In</string>
+    <string name="agreement_info">I read and agree with the Terms and Conditions.</string>
+    <string name="cancel">CANCEL</string>
+    <string name="okay">OKAY</string>
+
+    <!-- Facebook ID -->
+    <string name="fb_app_id">1638330242854778</string>
+    <string name="fb_login_protocol_scheme">fb1638330242854778</string>
+
+    <string name="fb_open">Open</string>
+    <string name="fb_close">Close</string>
 
     <!-- QR CODE SCANNER -->
     <string name="qr_code_found_third_party_title">Open url</string>
@@ -15,12 +37,11 @@
     <string name="qr_code_camera_permission_denied_message">You need to take picture permission. The feature will be " +
                                 "disabled. To enable it, go on settings and allow the camera " +
                                 "permission for the application</string>
-    <string name="error_qr_code_title">Error</string>
-    <string name="error_qr_code_message">We are sorry ! There is not QR Code in image</string>
-    <string name="done">DONE</string>
-    <string name="flash_on">flash on</string>
-    <string name="flash_off">flash off</string>
-    <string name="photos">photos</string>
-    <string name="cancel">cancel</string>
-
+    <string name="qr_code_error_title">Error</string>
+    <string name="qr_code_error_message">We are sorry ! There is not QR Code in image</string>
+    <string name="qr_code_done">DONE</string>
+    <string name="qr_code_flash_on">flash on</string>
+    <string name="qr_code_flash_off">flash off</string>
+    <string name="qr_code_photos">photos</string>
+    <string name="qr_code_cancel">cancel</string>
 </resources>
