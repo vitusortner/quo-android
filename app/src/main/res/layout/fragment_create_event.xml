@@ -12,7 +12,9 @@
             android:id="@+id/headerImageView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/test_image" />
+            android:background="@drawable/test_image"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -49,8 +51,8 @@
                 android:layout_below="@id/eventNameEditText"
                 android:layout_marginTop="10dp"
                 android:clickable="true"
-                android:focusable="true"
                 android:drawableEnd="@drawable/ic_location"
+                android:focusable="true"
                 android:hint="Location"
                 android:textColor="@color/colorPrimary" />
 
@@ -131,21 +133,21 @@
                 android:text="No Expiration Date"
                 android:textColor="@color/colorPrimary" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_below="@id/expirationCheckBox"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/description_edit_text"
-                    android:gravity="top|left"
-                    android:hint="Description"
-                    android:lines="5"
-                    android:maxLines="10"
-                    android:minLines="1"
-                    android:padding="10dp"
-                    android:scrollbars="vertical"
-                    android:textColor="@color/colorPrimary" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@id/expirationCheckBox"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/description_edit_text"
+                android:gravity="top|left"
+                android:hint="Description"
+                android:lines="5"
+                android:maxLines="10"
+                android:minLines="1"
+                android:padding="10dp"
+                android:scrollbars="vertical"
+                android:textColor="@color/colorPrimary" />
 
         </RelativeLayout>
     </RelativeLayout>

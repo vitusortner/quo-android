@@ -1,10 +1,16 @@
 package com.android.quo.view.myplaces
 
 import android.Manifest
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,6 +22,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_create_event.expirationCheckBox
 import kotlinx.android.synthetic.main.fragment_create_event.fromDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.fromTimeEditText
+import kotlinx.android.synthetic.main.fragment_create_event.galleryButton
+import kotlinx.android.synthetic.main.fragment_create_event.headerImageView
 import kotlinx.android.synthetic.main.fragment_create_event.locationEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
@@ -30,6 +38,7 @@ import java.util.*
 class CreateEventFragment : Fragment() {
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val DRAWABLE_RIGHT = 2
+    private val RESULT_GALLERY = 0
     private lateinit var calendar: Calendar
     private lateinit var currentEditText: EditText
     private val dateFormat = "E, MMM dd yyyy"
@@ -94,6 +103,10 @@ class CreateEventFragment : Fragment() {
                     }
                 }
 
+        RxView.clicks(galleryButton)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { openPhoneGallery() }
+
 
 
         RxView.touches(locationEditText, { motionEvent ->
@@ -108,6 +121,52 @@ class CreateEventFragment : Fragment() {
                 .subscribe()
     }
 
+    private fun openPhoneGallery() {
+        val galleryIntent = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+        this.activity?.let { activity ->
+            activity.startActivityForResult(galleryIntent, RESULT_GALLERY)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        try {
+            if (resultCode != Activity.RESULT_CANCELED) {
+                if (requestCode == RESULT_GALLERY) {
+                    val selectedImageUri = data?.data
+                    val path = selectedImageUri?.let { getPath(it) }
+                    val bitmap = BitmapFactory.decodeFile(path)
+                    headerImageView.setImageBitmap(bitmap)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
+    }
+
+    private fun getPath(uri: Uri): String {
+        var result: String? = null
+        val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = this.context?.let { context ->
+            context.contentResolver?.query(uri, mediaStoreData,
+                    null, null, null)
+        }
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
+                result = cursor.getString(columnIndex)
+                cursor.close()
+            }
+        }
+
+        if (result == null) {
+            result = "Not found"
+        }
+        return result
+    }
 
     private fun setDefaultValuesOnStart() {
         fromDateEditText.hint = setCurrentDate()

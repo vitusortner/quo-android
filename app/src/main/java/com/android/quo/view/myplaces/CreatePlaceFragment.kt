@@ -1,6 +1,7 @@
 package com.android.quo.view.myplaces
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -28,5 +29,13 @@ class CreatePlaceFragment : Fragment() {
         val adapter = CreatePlacePagerAdapter(childFragmentManager)
         createPlaceViewPager.adapter = adapter
         tabLayout.setupWithViewPager(createPlaceViewPager)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        for (fragment in childFragmentManager.fragments) {
+            fragment.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }
