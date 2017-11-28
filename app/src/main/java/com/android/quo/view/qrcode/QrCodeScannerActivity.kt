@@ -97,10 +97,10 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
         if (scannerView.flash) {
             flashButton.background = ContextCompat.getDrawable(this, R.drawable.ic_flash_on)
-            flashTextView.setText(R.string.flash_off)
+            flashTextView.setText(R.string.qr_code_flash_off)
         } else {
             flashButton.background = ContextCompat.getDrawable(this, R.drawable.ic_flash_off)
-            flashTextView.setText(R.string.flash_on)
+            flashTextView.setText(R.string.qr_code_flash_on)
         }
     }
 
@@ -140,10 +140,10 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private fun openNoQrCodeFoundDialog() {
         val dialog = AlertDialog.Builder(this).create()
-        dialog.setTitle(resources.getString(R.string.error_qr_code_title))
-        dialog.setMessage(resources.getString(R.string.error_qr_code_message))
+        dialog.setTitle(resources.getString(R.string.qr_code_error_title))
+        dialog.setMessage(resources.getString(R.string.qr_code_error_message))
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.done), { _, _ -> })
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.qr_code_done), { _, _ -> })
         dialog.show()
     }
 
@@ -152,12 +152,12 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         urlAlert.setTitle(result.title)
         urlAlert.setMessage(result.message + " " + result.url)
 
-        urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.open), { _, _ ->
+        urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.fb_open), { _, _ ->
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(this, Uri.parse(result.url))
         })
-        urlAlert.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.close), { _, _ ->
+        urlAlert.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.fb_close), { _, _ ->
             this.onResume()
         })
         urlAlert.show()
