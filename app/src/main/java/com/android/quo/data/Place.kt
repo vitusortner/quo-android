@@ -1,32 +1,39 @@
 package com.android.quo.data
 
-import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
-import com.google.zxing.qrcode.encoder.QRCode
-import java.util.Date
+import java.util.*
 
 /**
  * Created by FlorianSchlueter on 17.11.2017.
  */
 
-@Entity(tableName = "place",
-        foreignKeys = arrayOf(
-            ForeignKey(entity = User::class,
-                parentColumns = arrayOf("id"),
-                childColumns = arrayOf("host"),
-                onDelete = ForeignKey.NO_ACTION)))
-
+@Entity(tableName = "place")
 data class Place(
-    @PrimaryKey var id: Long,
-    var host: Long,
-    var title: String,
-    var startDate: Date,
-    var endDate: Date,
-    var lat: String,
-    var log: String,
-    var visitorPhotoSetting: Boolean,
-    var validateGpsSetting: Boolean,
-    var createdAt: Date
+        @PrimaryKey
+        val id: String,
+
+        val isHost: Boolean,
+
+        val title: String,
+
+        val startDate: Date,
+
+        val endDate: Date? = null,
+
+        val lat: String,
+
+        val long: String,
+
+        @Embedded
+        val address: Address? = null,
+
+        val isPhotoUploadAllowed: Boolean = true,
+
+        val hasToValidateGps: Boolean = true,
+
+        val titlePicture: String,
+
+        val qrCodeId: String
 )
