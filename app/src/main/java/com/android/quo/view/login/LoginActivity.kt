@@ -143,7 +143,7 @@ class LoginActivity : AppCompatActivity() {
     private fun checkEditTextTintColor(message: String?): Int {
         var backgroundTintColor: Int = EditTextTheme
         if (!message.isNullOrEmpty()) {
-            backgroundTintColor = R.color.colorErrorRed
+            backgroundTintColor = R.color.colorAlert
         }
         return backgroundTintColor
     }
@@ -269,7 +269,7 @@ class LoginActivity : AppCompatActivity() {
                             //TODO add new account to db
                             //TODO Check if password and email have no errors
                         } else {
-                            dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorErrorRed))
+                            dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
                         }
                     })
         })

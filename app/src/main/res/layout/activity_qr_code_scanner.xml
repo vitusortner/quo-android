@@ -32,7 +32,7 @@
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:layout_marginStart="@dimen/qr_code_scanner_text_margin_start"
         android:text="@string/qr_code_flash_on"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorTextWhite" />
 
     <Button
         android:id="@+id/photosButton"
@@ -51,7 +51,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:text="@string/qr_code_photos"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorTextWhite" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -72,6 +72,6 @@
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:layout_marginEnd="@dimen/qr_code_scanner_button_margin"
         android:text="@string/qr_code_cancel"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorTextWhite" />
 
 </RelativeLayout>
