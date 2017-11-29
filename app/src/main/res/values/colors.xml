@@ -2,12 +2,14 @@
 <resources>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">#F0F2F2</color>
     <color name="colorAccent">#00796B</color>
     <color name="colorAlert">#B92D00</color>
-    <color name="colorSecondary">#8C000000</color>
+    <color name="colorSecondary">#8c000000</color>
     <color name="colorBottomNavigationBarBackground">@color/white</color>
-    <color name="colorHomeCardViewText">@color/white</color>
+    <color name="colorHomeCardViewTitle">@color/white</color>
+    <color name="colorHomeCardViewPreview">@color/black</color>
 </resources>

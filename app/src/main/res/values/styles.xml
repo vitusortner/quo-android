@@ -10,16 +10,14 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
-    <style name="CardViewFont">
-        <item name="android:textColor">@color/colorHomeCardViewText</item>
-    </style>
-
-    <style name="CardViewTitleFont" parent="CardViewFont">
+    <style name="CardViewTitleFont">
         <item name="android:textSize">@dimen/home_cardview_title_textsize</item>
+        <item name="android:textColor">@color/colorHomeCardViewTitle</item>
     </style>
 
-    <style name="CardViewDescriptionFont" parent="CardViewFont">
+    <style name="CardViewDescriptionFont">
         <item name="android:textSize">@dimen/home_cardview_description_textsize</item>
+        <item name="android:textColor">@color/colorHomeCardViewPreview</item>
     </style>
 
 </resources>

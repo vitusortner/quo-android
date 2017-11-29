@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
         android:id="@+id/placePreviewCardView"
@@ -18,20 +19,24 @@
             <ImageView
                 android:id="@+id/placePreviewImageView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/home_cardview_image_height" />
+                android:layout_height="@dimen/home_cardview_image_height"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false" />
 
             <TextView
                 android:id="@+id/placePreviewTitleTextView"
                 style="@style/CardViewTitleFont"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/home_cardview_textview_padding"
-                android:paddingStart="@dimen/home_cardview_textview_padding" />
+                android:background="@color/colorSecondary"
+                android:paddingBottom="15dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp" />
 
             <TextView
                 android:id="@+id/placePreviewDescriptionTextView"
                 style="@style/CardViewDescriptionFont"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/home_cardview_textview_padding"
                 android:paddingEnd="@dimen/home_cardview_textview_padding"
