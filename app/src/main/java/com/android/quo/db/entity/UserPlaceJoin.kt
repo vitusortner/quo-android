@@ -2,8 +2,6 @@ package com.android.quo.db.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
-import com.android.quo.db.entity.Place
-import com.android.quo.db.entity.User
 import java.util.*
 
 /**

@@ -20,8 +20,8 @@ import java.util.*
                         entity = Place::class,
                         parentColumns = arrayOf("id"),
                         childColumns = arrayOf("placeId"),
-                        onDelete = ForeignKey.CASCADE)
-        )) //if place gets deleted all his picuturs too
+                        onDelete = ForeignKey.CASCADE) //if place gets deleted all his picuturs too
+        ))
 data class Picture(
         @PrimaryKey
         val id: String,
