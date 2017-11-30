@@ -1,4 +1,4 @@
-package com.android.quo.data
+package com.android.quo.db.dao
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Delete
@@ -6,26 +6,28 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Update
-import io.reactivex.Flowable
+import com.android.quo.db.entity.Picture
 
 /**
  * Created by FlorianSchlueter on 18.11.2017.
  */
 
 @Dao
-interface PlaceDao {
-    @Query("SELECT * FROM place")
-    fun getAllPlaces(): Flowable<List<Place>>
+interface PictureDao {
+    @Query("SELECT * FROM picture")
+    fun getAllPictures(): List<Picture>
 
-    @Query("SELECT * FROM place WHERE id = :id")
-    fun findPlaceById(id: Long): Place
+    @Query("SELECT * FROM picture WHERE id = :id")
+    fun findPictureById(id: String): Picture
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlace(place: Place)
+    fun insertPicture(picture: Picture)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updatePlace(place: Place)
+    fun updatePicture(picture: Picture)
 
     @Delete
-    fun deletePlace(place: Place)
+    fun deletePicture(picture: Picture)
+
+    // TODO get Titlepicture
 }

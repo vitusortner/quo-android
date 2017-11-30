@@ -17,6 +17,7 @@ abstract class NetworkBoundSource<LocalType, RemoteType>(emitter: FlowableEmitte
                 .subscribe(emitter::onNext)
 
         getRemote()
+                .map(mapper())
                 .subscribeOn(Schedulers.io())
                 .subscribe { localTypeData ->
 //                    firstDataDisposable.dispose()
@@ -26,9 +27,11 @@ abstract class NetworkBoundSource<LocalType, RemoteType>(emitter: FlowableEmitte
     }
 
     // TODO change return type, if needed
-    abstract fun getRemote(): Single<LocalType>
+    abstract fun getRemote(): Single<RemoteType>
 
     abstract fun getLocal(): Flowable<LocalType>
 
     abstract fun saveCallResult(data: LocalType)
+
+    abstract fun mapper(): (RemoteType) -> LocalType
 }

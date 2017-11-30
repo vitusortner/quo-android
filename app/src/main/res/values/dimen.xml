@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="qr_code_scanner_flash_button_margin">20dp</dimen>
-    <dimen name="qr_code_scanner_gallery_button_margin">20dp</dimen>
+
+    <!-- qr code scanner -->
     <dimen name="qr_code_scanner_gallery_button_height">64dp</dimen>
     <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
-
-    <dimen name="qr_code_scanner_flash_button_height">42dp</dimen>
-    <dimen name="qr_code_scanner_flash_button_width">42dp</dimen>
+    <dimen name="qr_code_scanner_icon_width">42dp</dimen>
+    <dimen name="qr_code_scanner_icon_height">42dp</dimen>
+    <dimen name="qr_code_scanner_button_margin">50dp</dimen>
+    <dimen name="qr_code_scanner_text_margin_start">45dp</dimen>
+    <dimen name="qr_code_scanner_text_margin_bottom">-30dp</dimen>
 
     <dimen name="home_cardview_image_height">150dp</dimen>
     <dimen name="home_cardview_textview_padding">5dp</dimen>
@@ -15,4 +17,25 @@
     <dimen name="home_cardview_description_textsize">14sp</dimen>
 
     <dimen name="home_recyclerview_padding_top">8dp</dimen>
+
+    <!-- Login Page -->
+    <dimen name="login_logo_image_view_margin_top">80dp</dimen>
+    <dimen name="login_email_edit_text_margin_top">40dp</dimen>
+    <dimen name="login_sign_up_button_margin_top">40dp</dimen>
+    <dimen name="login_facebook_button_margin_top">20dp</dimen>
+    <dimen name="login_edit_text_width">250dp</dimen>
+    <dimen name="login_error_width">245dp</dimen>
+    <dimen name="login_sign_up_button_width">250dp</dimen>
+    <dimen name="login_sign_up_button_height">32dp</dimen>
+    <dimen name="error_message_margin_top">-8dp</dimen>
+    <dimen name="password_edit_text_margin_top">10dp</dimen>
+    <dimen name="login_button_margin_top">20dp</dimen>
+    <dimen name="login_button_text_size">16sp</dimen>
+    <dimen name="forgot_password_margin_start">5dp</dimen>
+    <dimen name="dialog_edit_text_width">250dp</dimen>
+    <dimen name="dialog_layout_margin_top">10dp</dimen>
+    <dimen name="checkbox_padding_left">5dp</dimen>
+    <dimen name="agreement_checkbox_margin_bottom">40dp</dimen>
+    <dimen name="dialog_layout_padding_start">20dp</dimen>
+    <dimen name="checkbox_padding_top">10dp</dimen>>
 </resources>

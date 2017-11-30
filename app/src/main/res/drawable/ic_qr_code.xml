@@ -1,54 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportHeight="24"
+    android:width="24dp"
+    android:height="24dp">
     <group
-        android:translateX="-59"
-        android:translateY="-2636">
+        android:translateX="397"
+        android:translateY="-136">
         <group
-            android:translateX="-791.036"
-            android:translateY="1086.705">
+            android:translateX="-717"
+            android:translateY="-91">
             <group
-                android:translateX="-92"
-                android:translateY="-120.601">
+                android:translateX="2.1"
+                android:translateY="-325.9">
+                <path
+                    android:pathData="M317.9 552.9l24 0 0 24 -24 0z"
+                     />
+            </group>
+            <group
+                android:translateX="-527.036"
+                android:translateY="-1319.295">
                 <group
-                    android:translateY="2.99">
-                    <path
-                        android:pathData="M943.036 1672.064l0 -4.158 4.158 0"
-                        android:strokeWidth="2"
-                        android:strokeColor="#000000" />
-                </group>
-                <group
-                    android:rotation="90"
-                    android:translateX="958.629"
-                    android:translateY="1670.896">
-                    <path
-                        android:pathData="M0 4.158L0 0 4.158 0"
-                        android:strokeWidth="2"
-                        android:strokeColor="#000000" />
-                </group>
-                <group
-                    android:rotation="90"
-                    android:scaleX="-1"
-                    android:scaleY="-1"
-                    android:translateX="943.036"
-                    android:translateY="1686.489">
-                    <path
-                        android:pathData="M0 4.158L0 0 4.158 0"
-                        android:strokeWidth="2"
-                        android:strokeColor="#000000" />
-                </group>
-                <group
-                    android:scaleX="-1"
-                    android:scaleY="-1"
-                    android:translateX="958.629"
-                    android:translateY="1686.489">
-                    <path
-                        android:pathData="M0 4.158L0 0 4.158 0"
-                        android:strokeWidth="2"
-                        android:strokeColor="#000000" />
+                    android:translateX="-92"
+                    android:translateY="-120.601">
+                    <group
+                        android:translateY="2.99">
+                        <path
+                            android:pathData="M943.036 1672.064l0 -4.158 4.158 0"
+                            android:strokeWidth="2"
+                            android:strokeColor="#000000" />
+                    </group>
+                    <group
+                        android:rotation="90"
+                        android:translateX="958.629"
+                        android:translateY="1670.896">
+                        <path
+                            android:pathData="M0 4.158L0 0 4.158 0"
+                            android:strokeWidth="2"
+                            android:strokeColor="#000000" />
+                    </group>
+                    <group
+                        android:rotation="90"
+                        android:scaleX="-1"
+                        android:scaleY="-1"
+                        android:translateX="943.036"
+                        android:translateY="1686.489">
+                        <path
+                            android:pathData="M0 4.158L0 0 4.158 0"
+                            android:strokeWidth="2"
+                            android:strokeColor="#000000" />
+                    </group>
+                    <group
+                        android:scaleX="-1"
+                        android:scaleY="-1"
+                        android:translateX="958.629"
+                        android:translateY="1686.489">
+                        <path
+                            android:pathData="M0 4.158L0 0 4.158 0"
+                            android:strokeWidth="2"
+                            android:strokeColor="#000000" />
+                    </group>
                 </group>
             </group>
         </group>

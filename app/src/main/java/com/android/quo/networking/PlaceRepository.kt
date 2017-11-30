@@ -1,8 +1,10 @@
 package com.android.quo.networking
 
 import android.util.Log
-import com.android.quo.QuoApplication
-import com.android.quo.data.Place
+import com.android.quo.db.dao.PlaceDao
+import com.android.quo.db.entity.Place
+import com.android.quo.networking.mapper.EntityMapper
+import com.android.quo.networking.model.ServerPlace
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -10,7 +12,7 @@ import io.reactivex.Single
 /**
  * Created by vitusortner on 24.11.17.
  */
-class PlaceRepository {
+class PlaceRepository(private val placeDao: PlaceDao, private val apiService: ApiService) {
 
     init {
         // TODO move to viewmodel
@@ -20,12 +22,10 @@ class PlaceRepository {
     }
 
     fun getPlaces(): Flowable<List<Place>> {
-        val placeDao = QuoApplication.database.placeDao()
-
         return Flowable.create({ emitter ->
-            object : NetworkBoundSource<List<Place>, List<Place>>(emitter) {
+            object : NetworkBoundSource<List<Place>, List<ServerPlace>>(emitter) {
 
-                override fun getRemote(): Single<List<Place>> = PlaceService.instance.getPlaces()
+                override fun getRemote(): Single<List<ServerPlace>> = apiService.getPlaces()
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
@@ -35,6 +35,9 @@ class PlaceRepository {
                     }
                 }
 
+                override fun mapper(): (List<ServerPlace>) -> List<Place> {
+                    return EntityMapper.mapToPlaces()
+                }
             }
         }, BackpressureStrategy.BUFFER)
     }

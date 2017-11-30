@@ -4,14 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
+import com.android.quo.networking.ApiService
 import com.android.quo.networking.PlaceRepository
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.myplaces.MyPlacesFragment
-import com.android.quo.view.qrcode.QrCodeScannerFragment
+import com.android.quo.view.qrcode.QrCodeScannerActivity
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
 
@@ -21,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        PlaceRepository()
+        PlaceRepository(QuoApplication.database.placeDao(), ApiService.instance)
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
@@ -32,10 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         when (item.itemId) {
             actionQrCode -> {
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.content, QrCodeScannerFragment())
-                        .addToBackStack(null)
-                        .commit()
+                startActivity(Intent(this, QrCodeScannerActivity::class.java))
                 true
             }
 
