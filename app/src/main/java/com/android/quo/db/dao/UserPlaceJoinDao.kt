@@ -17,9 +17,9 @@ interface UserPlaceJoinDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUserPlaceJoin(userPlaceJoin: UserPlaceJoin)
 
-    @Query("SELECT * FROM user INNER JOIN user_place_join ON user.id=user_place_join.userId WHERE user_place_join.placeId=:placeId")
-    fun getUsersFromPlace(placeId: Long): List<User>
+    @Query("SELECT * FROM user INNER JOIN user_place_join ON user.id=user_place_join.user_id WHERE user_place_join.place_id=:placeId")
+    fun getUsersFromPlace(placeId: String): List<User>
 
-    @Query("SELECT * FROM place INNER JOIN user_place_join ON place.id=user_place_join.placeId WHERE user_place_join.userId=:userId")
-    fun getPlacesFromUser(userId: Long): List<Place>
+    @Query("SELECT * FROM place INNER JOIN user_place_join ON place.id=user_place_join.place_id WHERE user_place_join.user_id=:userId")
+    fun getPlacesFromUser(userId: String): List<Place>
 }

@@ -9,7 +9,7 @@ import android.arch.persistence.room.PrimaryKey
  */
 
 @Entity(tableName = "user")
-data class User (
+data class User(
         @PrimaryKey
-        val id: String
+        var id: String = ""
 )

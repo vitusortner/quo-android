@@ -1,5 +1,6 @@
 package com.android.quo.db.entity
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
@@ -14,25 +15,28 @@ import java.util.*
                 ForeignKey(
                         entity = User::class,
                         parentColumns = arrayOf("id"),
-                        childColumns = arrayOf("ownerId"),
+                        childColumns = arrayOf("owner_id"),
                         onDelete = ForeignKey.CASCADE), //if user gets deleted all his picuturs too
                 ForeignKey(
                         entity = Place::class,
                         parentColumns = arrayOf("id"),
-                        childColumns = arrayOf("placeId"),
+                        childColumns = arrayOf("place_id"),
                         onDelete = ForeignKey.CASCADE) //if place gets deleted all his picuturs too
         ))
 data class Picture(
         @PrimaryKey
-        val id: String,
+        var id: String = "",
 
-        val ownerId: String,
+        @ColumnInfo(name = "owner_id")
+        var ownerId: String = "",
 
-        val placeId: String,
+        @ColumnInfo(name = "place_id")
+        var placeId: String = "",
 
-        val src: String,
+        var src: String = "",
 
-        val isVisible: Boolean,
+        @ColumnInfo(name = "is_visible")
+        var isVisible: Boolean = false,
 
-        val timestamp: Date
+        var timestamp: Date = Date()
 )

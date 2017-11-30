@@ -1,5 +1,6 @@
 package com.android.quo.db.entity
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
@@ -12,28 +13,35 @@ import java.util.*
 @Entity(tableName = "place")
 data class Place(
         @PrimaryKey
-        val id: String,
+        var id: String = "",
 
-        val isHost: Boolean,
+        @ColumnInfo(name = "is_host")
+        var isHost: Boolean = false,
 
-        val title: String,
+        var title: String = "",
 
-        val startDate: Date,
+        @ColumnInfo(name = "start_date")
+        var startDate: Date = Date(),
 
-        val endDate: Date? = null,
+        @ColumnInfo(name = "end_date")
+        var endDate: Date? = null,
 
-        val lat: String,
+        var latitude: String = "",
 
-        val long: String,
+        var longitude: String = "",
 
         @Embedded
-        val address: Address? = null,
+        var address: Address? = null,
 
-        val isPhotoUploadAllowed: Boolean = true,
+        @ColumnInfo(name = "is_photo_upload_allowed")
+        var isPhotoUploadAllowed: Boolean = true,
 
-        val hasToValidateGps: Boolean = true,
+        @ColumnInfo(name = "has_to_validate_gps")
+        var hasToValidateGps: Boolean = true,
 
-        val titlePicture: String,
+        @ColumnInfo(name = "title_picture")
+        var titlePicture: String = "",
 
-        val qrCodeId: String
+        @ColumnInfo(name = "qr_code_id")
+        var qrCodeId: String = ""
 )

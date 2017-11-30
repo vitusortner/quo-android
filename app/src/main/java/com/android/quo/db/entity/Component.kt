@@ -1,5 +1,6 @@
 package com.android.quo.db.entity
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
@@ -13,18 +14,19 @@ import android.arch.persistence.room.PrimaryKey
                 ForeignKey(
                         entity = Place::class,
                         parentColumns = arrayOf("id"),
-                        childColumns = arrayOf("placeId"),
+                        childColumns = arrayOf("place_id"),
                         onDelete = ForeignKey.CASCADE)
         ))
 data class Component(
         @PrimaryKey
-        val id: String,
+        var id: String = "",
 
-        val picture: String? = null,
+        var picture: String? = null,
 
-        val text: String? = null,
+        var text: String? = null,
 
-        val placeId: String,
+        @ColumnInfo(name = "place_id")
+        var placeId: String = "",
 
-        val position: Int
+        var position: Int = 0
 )
