@@ -35,7 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/place_toolbar_height"
                 android:layout_gravity="top"
-                android:theme="@style/PlaceToolbarStyle" />
+                android:theme="@style/PlaceToolbarStyle"
+                app:titleTextColor="@color/colorTitleWhite"/>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"

@@ -109,13 +109,13 @@ class PlaceFragment : Fragment() {
                 }
                 // value trough trial and error
                 if (scrollRange + verticalOffset <= 150) {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.black))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.black),
-                            resources.getColor(R.color.black))
+                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
+                            resources.getColor(R.color.colorTextBlack))
                 } else {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.white))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.white),
-                            resources.getColor(R.color.white))
+                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
+                            resources.getColor(R.color.colorTextWhite))
                 }
             }
         }

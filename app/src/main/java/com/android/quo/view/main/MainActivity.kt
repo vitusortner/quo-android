@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDarkPreM)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
         }
     }
 
@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             actionQrCode -> {
                 startActivity(Intent(this, QrCodeScannerActivity::class.java))
-                true
+                false // because qr code scanner uses separate activity
+                // TODO https://app.clickup.com/751518/751948/t/vtmj
             }
             actionHome -> {
                 supportFragmentManager.beginTransaction()
