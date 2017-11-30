@@ -1,8 +1,9 @@
-package com.android.quo.data
+package com.android.quo.db.entity
 
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.android.quo.db.entity.Address
 import java.util.*
 
 /**

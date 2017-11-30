@@ -1,4 +1,4 @@
-package com.android.quo.data
+package com.android.quo.db.entity
 
 
 import android.arch.persistence.room.Entity

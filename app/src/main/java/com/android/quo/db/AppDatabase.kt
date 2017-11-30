@@ -1,8 +1,10 @@
-package com.android.quo.data
+package com.android.quo.db
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
+import com.android.quo.db.dao.*
+import com.android.quo.db.entity.*
 
 /**
  * Created by FlorianSchlueter on 20.11.2017.

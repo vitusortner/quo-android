@@ -12,7 +12,9 @@ import org.junit.runner.RunWith
 
 
 import android.arch.persistence.room.Room
-import com.android.quo.data.*
+import com.android.quo.db.*
+import com.android.quo.db.dao.*
+import com.android.quo.db.entity.*
 import java.util.*
 
 
@@ -49,7 +51,7 @@ class DataInstrumentedTest {
 
     @Test
     fun insert_test(){
-        val user = User(1,"name@email.com","123",true, true, true, Date())
+        val user = User(1, "name@email.com", "123", true, true, true, Date())
         userDao?.insertUser(user)
         val userTest = userDao?.findUserById(user.id)!!
         Assert.assertEquals(user,userTest)
@@ -57,9 +59,9 @@ class DataInstrumentedTest {
 
     @Test
     fun update_test(){
-        val user = User(2,"name@email.com","123",true, true, true, Date())
+        val user = User(2, "name@email.com", "123", true, true, true, Date())
         userDao?.insertUser(user)
-        val userUpdate = User(2,"other@email.com","321",true, true, true, Date())
+        val userUpdate = User(2, "other@email.com", "321", true, true, true, Date())
         userDao?.updateUser(userUpdate)
         val userTest = userDao?.findUserById(user.id)!!
         Assert.assertNotEquals(userTest,user)
@@ -67,7 +69,7 @@ class DataInstrumentedTest {
 
     @Test
     fun delete_test(){
-        val user = User(3,"name@email.com","123",true, true, true, Date())
+        val user = User(3, "name@email.com", "123", true, true, true, Date())
         userDao?.insertUser(user)
         userDao?.deleteUser(user)
         val userTest = userDao?.findUserById(user.id)
@@ -76,19 +78,19 @@ class DataInstrumentedTest {
 
     @Test
     fun realtionship_test(){
-        val user = User(4,"name@email.com","123",true, true, true, Date())
+        val user = User(4, "name@email.com", "123", true, true, true, Date())
         userDao?.insertUser(user)
-        val place = Place(1,4,"testPlace", Date(), Date(),"00","11",false,false,Date())
+        val place = Place(1, 4, "testPlace", Date(), Date(), "00", "11", false, false, Date())
         placeDao?.insertPlace(place)
-        val tPic = Picture(1,4,1,"",true,true,false,Date())
+        val tPic = Picture(1, 4, 1, "", true, true, false, Date())
         pictureDao?.insertPicture(tPic)
-        val qrPic = Picture(2,4,1,"",true,false,true,Date())
+        val qrPic = Picture(2, 4, 1, "", true, false, true, Date())
         pictureDao?.insertPicture(qrPic)
-        val compPic = Picture(3,4,1,"",true,false,false,Date())
+        val compPic = Picture(3, 4, 1, "", true, false, false, Date())
         pictureDao?.insertPicture(compPic)
-        val component = Component(1,3,1,"Picture",1,"", Date())
+        val component = Component(1, 3, 1, "Picture", 1, "", Date())
         componentDao?.insertComponent(component)
-        val userPlaceJoin = UserPlaceJoin(4,1)
+        val userPlaceJoin = UserPlaceJoin(4, 1)
         userPlaceJoinDao?.insertUserPlaceJoin(userPlaceJoin)
    }
 

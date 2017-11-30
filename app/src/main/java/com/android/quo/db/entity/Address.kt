@@ -1,4 +1,4 @@
-package com.android.quo.data
+package com.android.quo.db.entity
 
 /**
  * Created by vitusortner on 29.11.17.
