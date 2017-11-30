@@ -58,15 +58,6 @@ class PlacePreviewAdapter(
             Glide.with(containerView.context)
                     .load(imageUrl)
                     .apply(centerCropTransform())
-                    // Set card view background color with Palette
-                    .listener(GlidePalette.with(imageUrl)
-                            .intoCallBack { palette ->
-                                palette?.let {
-                                    placePreviewCardView.setCardBackgroundColor(
-                                            palette.getMutedColor(BitmapPalette.Profile.MUTED))
-                                }
-                            }
-                    )
                     .into(placePreviewImageView)
 
             placePreviewTitleTextView.text = list[position].title
