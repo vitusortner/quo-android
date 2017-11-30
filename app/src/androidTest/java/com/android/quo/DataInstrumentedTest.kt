@@ -1,0 +1,128 @@
+package com.android.quo
+
+
+import android.arch.persistence.room.Room
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
+import com.android.quo.db.AppDatabase
+import com.android.quo.db.dao.*
+import com.android.quo.db.entity.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.*
+
+
+/**
+ * Created by FlorianSchlueter on 21.11.2017.
+ */
+
+@RunWith(AndroidJUnit4::class)
+class DataInstrumentedTest {
+    lateinit var database: AppDatabase
+
+    var userDao: UserDao? = null
+    var placeDao: PlaceDao? = null
+    var pictureDao: PictureDao? = null
+    var componentDao: ComponentDao? = null
+    var userPlaceJoinDao: UserPlaceJoinDao? = null
+
+    @Before
+    fun createDB() {
+        val appContext = InstrumentationRegistry.getTargetContext()
+        database = Room.inMemoryDatabaseBuilder(appContext, AppDatabase::class.java).build()
+
+        userDao = database.userDao()
+        placeDao = database.placeDao()
+        pictureDao = database.pictureDao()
+        componentDao = database.componentDao()
+        userPlaceJoinDao = database.userPlaceJoinDao()
+    }
+
+    @After
+    fun closeDB() {
+        database.close()
+    }
+
+    @Test
+    fun component_insert_test() {
+        val date = Date()
+
+        val address = Address("street", "city", 123)
+        val place = Place("103", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
+        placeDao?.insertPlace(place)
+
+        val component = Component(id = "78", picture = "pic.com", placeId = place.id, position = 1)
+        componentDao?.insertComponent(component)
+        val foundComponent = componentDao?.findComponentById(component.id)
+
+        Assert.assertEquals(component, foundComponent)
+    }
+
+    @Test
+    fun picture_insert_test() {
+        val date = Date()
+
+        val user = User("1234")
+        userDao?.insertUser(user)
+
+        val address = Address("street", "city", 123)
+        val place = Place("897", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
+        placeDao?.insertPlace(place)
+
+        val picture = Picture("456", user.id, place.id, "src.com", true, date)
+        pictureDao?.insertPicture(picture)
+        val foundPicture = pictureDao?.findPictureById(picture.id)
+
+        Assert.assertEquals(picture, foundPicture)
+    }
+
+    @Test
+    fun place_insert_test() {
+        val date = Date()
+
+        val address = Address("street", "city", 123)
+        val place = Place("123", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
+        placeDao?.insertPlace(place)
+        val foundPlace = placeDao?.findPlaceById(place.id)
+
+        Assert.assertEquals(place, foundPlace)
+    }
+
+    @Test
+    fun user_insert_test() {
+        val user = User("1")
+        userDao?.insertUser(user)
+        val foundUser = userDao?.findUserById(user.id)
+        Assert.assertEquals(user, foundUser)
+    }
+
+    @Test
+    fun user_place_join_insert_test() {
+        val date = Date()
+
+        val user = User("899898")
+        userDao?.insertUser(user)
+        val users = listOf(user)
+
+        val address = Address("street", "city", 123)
+        val place = Place("717171", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
+        val place2 = Place("9998888", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
+        placeDao?.insertPlace(place)
+        placeDao?.insertPlace(place2)
+        val places = listOf(place, place2)
+
+        val userPlaceJoin = UserPlaceJoin(user.id, place.id, date)
+        val userPlaceJoin2 = UserPlaceJoin(user.id, place2.id, date)
+        userPlaceJoinDao?.insertUserPlaceJoin(userPlaceJoin)
+        userPlaceJoinDao?.insertUserPlaceJoin(userPlaceJoin2)
+
+        val foundPlaces = userPlaceJoinDao?.getPlacesFromUser(user.id)
+        val foundUsers = userPlaceJoinDao?.getUsersFromPlace(place.id)
+
+        Assert.assertEquals(users, foundUsers)
+        Assert.assertEquals(places, foundPlaces)
+    }
+}
