@@ -21,10 +21,7 @@ interface PictureDao {
     fun findPictureById(id: String): Picture
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPicture(picture: Picture)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updatePicture(picture: Picture)
+    fun insertAllPictures(pictures: List<Picture>)
 
     @Delete
     fun deletePicture(picture: Picture)

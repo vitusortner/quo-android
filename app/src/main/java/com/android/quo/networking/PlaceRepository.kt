@@ -3,7 +3,7 @@ package com.android.quo.networking
 import android.util.Log
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place
-import com.android.quo.networking.mapper.EntityMapper
+import com.android.quo.networking.mapper.SyncService
 import com.android.quo.networking.model.ServerPlace
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -29,14 +29,8 @@ class PlaceRepository(private val placeDao: PlaceDao, private val apiService: Ap
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
-                override fun saveCallResult(data: List<Place>) {
-                    data.forEach {
-                        placeDao.insertPlace(it)
-                    }
-                }
-
-                override fun mapper(): (List<ServerPlace>) -> List<Place> {
-                    return EntityMapper.mapToPlaces()
+                override fun sync(data: List<ServerPlace>) {
+                    SyncService.savePlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)

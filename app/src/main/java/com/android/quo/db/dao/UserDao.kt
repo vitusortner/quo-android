@@ -23,9 +23,6 @@ interface UserDao {
     @Insert(onConflict = REPLACE)
     fun insertUser(user: User)
 
-    @Update(onConflict = REPLACE)
-    fun updateUser(user: User)
-
     @Delete
     fun deleteUser(user: User)
 }

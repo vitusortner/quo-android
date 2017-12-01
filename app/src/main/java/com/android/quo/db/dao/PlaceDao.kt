@@ -22,10 +22,7 @@ interface PlaceDao {
     fun findPlaceById(id: String): Place
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlace(place: Place)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updatePlace(place: Place)
+    fun insertAllPlaces(places: List<Place>)
 
     @Delete
     fun deletePlace(place: Place)

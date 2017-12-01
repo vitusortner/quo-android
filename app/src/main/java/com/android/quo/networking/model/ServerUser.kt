@@ -9,5 +9,7 @@ data class ServerUser(
         val id: String,
 
         @SerializedName("visited_places")
-        val visitedPlaces: List<ServerPlace>
+        val visitedPlaces: List<ServerPlace>?,
+
+        val token: String
 )

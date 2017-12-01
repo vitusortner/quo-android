@@ -21,10 +21,7 @@ interface ComponentDao {
     fun findComponentById(id: String): Component
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertComponent(component: Component)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateComponent(component: Component)
+    fun insertAllComponents(components: List<Component>)
 
     @Delete
     fun deleteComponent(component: Component)

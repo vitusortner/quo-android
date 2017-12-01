@@ -4,13 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
-import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.PlaceRepository
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.myplaces.MyPlacesFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
@@ -22,8 +19,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        PlaceRepository(QuoApplication.database.placeDao(), ApiService.instance)
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
