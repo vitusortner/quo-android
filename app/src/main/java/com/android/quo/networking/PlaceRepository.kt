@@ -3,7 +3,6 @@ package com.android.quo.networking
 import android.util.Log
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place
-import com.android.quo.networking.mapper.SyncService
 import com.android.quo.networking.model.ServerPlace
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable

@@ -1,4 +1,4 @@
-package com.android.quo.networking.mapper
+package com.android.quo.networking
 
 import com.android.quo.QuoApplication
 import com.android.quo.db.entity.Address
