@@ -18,10 +18,10 @@
         android:background="@color/colorPrimary"
         android:fitsSystemWindows="true"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorColor="@color/colorAccent"
         app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/white"
-        app:tabTextColor="@color/white" />
+        app:tabSelectedTextColor="@color/colorAccent"
+        app:tabTextColor="@color/colorAccent" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/createPlaceViewPager"

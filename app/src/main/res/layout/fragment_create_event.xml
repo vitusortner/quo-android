@@ -43,7 +43,7 @@
                 android:layout_height="@dimen/event_edit_text_large_width"
                 android:layout_below="@+id/galleryButton"
                 android:hint="@string/event_name"
-                android:textColor="@color/colorGray"
+                android:textColor="@color/colorAccent"
                 android:textSize="30sp"
                 android:theme="@style/EditTextTheme" />
 
@@ -57,7 +57,7 @@
                 android:drawableEnd="@drawable/ic_location"
                 android:focusable="true"
                 android:hint="@string/location"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:theme="@style/EditTextTheme" />
 
             <ProgressBar
@@ -76,7 +76,7 @@
                 android:layout_below="@id/locationEditText"
                 android:layout_marginTop="@dimen/event_large_margin_top"
                 android:text="@string/from"
-                android:textColor="@color/colorGray" />
+                android:textColor="@color/colorTextGray" />
 
             <EditText
                 android:id="@+id/fromDateEditText"
@@ -87,7 +87,7 @@
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_dropdown_arrow"
                 android:focusable="false"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:theme="@style/EditTextTheme" />
 
             <EditText
@@ -101,7 +101,7 @@
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_dropdown_arrow"
                 android:focusable="false"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:theme="@style/EditTextTheme" />
 
             <TextView
@@ -111,7 +111,7 @@
                 android:layout_below="@id/fromTimeEditText"
                 android:layout_marginTop="@dimen/event_small_margin_top"
                 android:text="@string/to"
-                android:textColor="@color/colorGray" />
+                android:textColor="@color/colorTextGray" />
 
             <EditText
                 android:id="@+id/toDateEditText"
@@ -122,7 +122,7 @@
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_dropdown_arrow"
                 android:focusable="false"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:theme="@style/EditTextTheme" />
 
             <EditText
@@ -136,7 +136,7 @@
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_dropdown_arrow"
                 android:focusable="false"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:theme="@style/EditTextTheme" />
 
             <CheckBox
@@ -148,7 +148,7 @@
                 android:layout_marginTop="@dimen/event_middle_margin_top"
                 android:paddingStart="@dimen/checkbox_padding_left"
                 android:text="@string/no_expiration_date"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 tools:ignore="RtlSymmetry" />
 
             <EditText
@@ -167,7 +167,7 @@
                 android:minLines="1"
                 android:padding="@dimen/event_description_padding"
                 android:scrollbars="vertical"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:theme="@style/EditTextTheme" />
 
         </RelativeLayout>

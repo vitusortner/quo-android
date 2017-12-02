@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/event_middle_margin_top"
-                android:background="@color/white"
+                android:background="@color/colorTextWhite"
                 android:clickable="false"
                 android:cursorVisible="false"
                 android:focusable="false"
@@ -32,7 +32,7 @@
                 android:minLines="1"
                 android:padding="@dimen/event_description_padding"
                 android:scrollbars="vertical"
-                android:textColor="@color/colorGray"
+                android:textColor="@color/colorTextGray"
                 android:theme="@style/EditTextTheme" />
 
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="16dp"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorAccentDark"
                 android:src="@drawable/ic_add" />
 
             <ImageButton

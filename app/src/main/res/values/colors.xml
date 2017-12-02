@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorSecondary">#8C000000</color>
-    <color name="colorHomeCardViewText">#FFFFFF</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#F0F2F2</color>
+    <color name="colorAccent">#4CB5AB</color>
+    <color name="colorAccentDark">#009688</color>
+    <color name="colorAlert">#B92D00</color>
+    <color name="colorSecondary">#8c000000</color>
 
-
-    <color name="white">#FFFFFF</color>
-
-
-    <color name="colorWhiteText">#FFFFFF</color>
-    <color name="colorErrorRed">#ff0000</color>
-    <color name="colorWhite">#FFFFFF</color>
-    <color name="colorGray">#95989A</color>
+    <!-- COLOR FOR TEXT -->
+    <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorTextGray">#95989A</color>
+    <color name="colorTextBlack">#000000</color>
 
 </resources>

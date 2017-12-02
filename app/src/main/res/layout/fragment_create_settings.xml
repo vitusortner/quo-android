@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/photosTextView"
             android:text="allows visitors to upload photos"
-            android:textColor="@color/colorGray" />
+            android:textColor="@color/colorTextGray" />
 
         <Switch
             android:id="@+id/photosSwitch"
@@ -48,7 +48,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_marginTop="20dp"
-        android:background="@color/colorGray" />
+        android:background="@color/colorTextGray" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/gpsTextView"
             android:text="visitors must verify their location"
-            android:textColor="@color/colorGray" />
+            android:textColor="@color/colorTextGray" />
 
         <Switch
             android:id="@+id/gpsSwitch"
