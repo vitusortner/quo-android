@@ -9,8 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.view.place.info.InfoFragment
+import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
 import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
+import kotlinx.android.synthetic.main.fragment_place.toolbar
 
 
 /**
@@ -18,6 +23,8 @@ import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
  */
 
 class CreatePlaceFragment : Fragment() {
+    private val compositDisposable = CompositeDisposable()
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -31,11 +38,32 @@ class CreatePlaceFragment : Fragment() {
         createPlaceViewPager.adapter = adapter
         tabLayout.setupWithViewPager(createPlaceViewPager)
 
+        setupToolbar()
 
     }
 
+    private fun setupToolbar() {
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
+        toolbar.inflateMenu(R.menu.create_place_menu)
+        toolbar.title = "New Place"
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        compositDisposable.add(
+                RxToolbar.navigationClicks(toolbar)
+                        .subscribe {
+                            activity?.onBackPressed()
+                        }
+        )
+
+        compositDisposable.add(
+                RxToolbar.itemClicks(toolbar)
+                        .subscribe {
+                            //TODO save 
+                        }
+        )
+    }
+
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         for (fragment in childFragmentManager.fragments) {
@@ -43,13 +71,9 @@ class CreatePlaceFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.hide()
-    }
+    override fun onDestroy() {
+        super.onDestroy()
 
-    override fun onStop() {
-        super.onStop()
-        (activity as AppCompatActivity).supportActionBar?.show()
+        compositDisposable.dispose()
     }
 }
