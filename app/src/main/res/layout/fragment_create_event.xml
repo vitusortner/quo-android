@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/event_header_image_height"
             android:adjustViewBounds="true"
-            android:background="@drawable/test_image"
+            android:background="@drawable/default_event_image1"
             android:scaleType="centerCrop" />
 
         <RelativeLayout

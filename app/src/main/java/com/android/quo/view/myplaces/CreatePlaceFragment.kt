@@ -4,15 +4,13 @@ package com.android.quo.view.myplaces
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
 import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
-import android.support.v7.app.AppCompatActivity
-import kotlinx.android.synthetic.main.fragment_create_place.toolbar
-import kotlinx.android.synthetic.main.fragment_create_place.view.toolbar
 
 
 /**

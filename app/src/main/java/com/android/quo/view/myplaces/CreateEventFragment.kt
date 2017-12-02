@@ -8,6 +8,7 @@ import android.app.TimePickerDialog
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -16,8 +17,10 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -27,10 +30,13 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import com.android.quo.R
+import com.android.quo.view.myplaces.createplace.EventDefaultImagesAdapter
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.event_default_image.defaultImageView
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView
 import kotlinx.android.synthetic.main.fragment_create_event.expirationCheckBox
@@ -42,8 +48,10 @@ import kotlinx.android.synthetic.main.fragment_create_event.locationEditText
 import kotlinx.android.synthetic.main.fragment_create_event.locationProgressBar
 import kotlinx.android.synthetic.main.fragment_create_event.toDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
+import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.defaultImageListView
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -140,7 +148,20 @@ class CreateEventFragment : Fragment(), LocationListener {
          */
         compositeDisposable.add(RxView.clicks(galleryButton)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { openPhoneGallery() })
+                .subscribe {
+                    //openPhoneGallery()
+                    this.context.let { context ->
+                        val mBottomSheetDialog = BottomSheetDialog(context!!)
+                        val sheetView = activity?.layoutInflater!!.inflate(R.layout.layout_bottom_sheet_select_foto, null)
+                        sheetView.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList())
+                        val linearLayoutManager = LinearLayoutManager(this.context)
+                        linearLayoutManager.orientation = LinearLayout.HORIZONTAL
+                        sheetView.defaultImageListView.layoutManager = linearLayoutManager
+                        mBottomSheetDialog.setContentView(sheetView)
+                        mBottomSheetDialog.show()
+
+                    }
+                })
 
 
         /**
@@ -176,6 +197,25 @@ class CreateEventFragment : Fragment(), LocationListener {
         super.onDestroy()
         compositeDisposable.dispose()
     }
+
+    fun getDefaultImageList(): ArrayList<Drawable> {
+        val list = ArrayList<Drawable>()
+        list.add(resources.getDrawable(R.drawable.default_event_image1))
+        list.add(resources.getDrawable(R.drawable.default_event_image2))
+        list.add(resources.getDrawable(R.drawable.default_event_image3))
+        list.add(resources.getDrawable(R.drawable.default_event_image4))
+        list.add(resources.getDrawable(R.drawable.default_event_image5))
+        list.add(resources.getDrawable(R.drawable.default_event_image6))
+        list.add(resources.getDrawable(R.drawable.default_event_image7))
+        list.add(resources.getDrawable(R.drawable.default_event_image8))
+        list.add(resources.getDrawable(R.drawable.default_event_image9))
+
+        return list
+
+
+    }
+
+    // fun createBitmap(image: Int): Bitmap = BitmapFactory.decodeResource(context?.resources,image)
 
     fun hideKeyboard(activity: FragmentActivity?) {
         activity?.let { activity ->
