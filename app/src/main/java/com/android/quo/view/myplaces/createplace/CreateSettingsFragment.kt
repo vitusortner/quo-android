@@ -1,4 +1,4 @@
-package com.android.quo.view.myplaces
+package com.android.quo.view.myplaces.createplace
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

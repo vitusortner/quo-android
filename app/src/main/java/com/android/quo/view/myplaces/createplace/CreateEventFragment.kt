@@ -1,4 +1,4 @@
-package com.android.quo.view.myplaces
+package com.android.quo.view.myplaces.createplace
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.location.Address
@@ -32,7 +33,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
-import com.android.quo.view.myplaces.createplace.EventDefaultImagesAdapter
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -47,7 +47,9 @@ import kotlinx.android.synthetic.main.fragment_create_event.locationEditText
 import kotlinx.android.synthetic.main.fragment_create_event.locationProgressBar
 import kotlinx.android.synthetic.main.fragment_create_event.toDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
+import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.cameraLayout
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.defaultImageListView
+import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.photosLayout
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -62,11 +64,13 @@ class CreateEventFragment : Fragment(), LocationListener {
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val DRAWABLE_RIGHT = 2
     private val RESULT_GALLERY = 0
+    private var RESULT_CAMERA = 1
     private lateinit var calendar: Calendar
     private lateinit var currentEditText: EditText
     private val dateFormat = "E, MMM dd yyyy"
     private val timeFormat = "h:mm a"
     private var compositeDisposable = CompositeDisposable()
+    private lateinit var bottomSheetDialog: BottomSheetDialog
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -149,15 +153,21 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     //openPhoneGallery()
-                    this.context.let { context ->
-                        val mBottomSheetDialog = BottomSheetDialog(context!!)
+                    context.let { context ->
+                        bottomSheetDialog = BottomSheetDialog(context!!)
                         val sheetView = activity?.layoutInflater!!.inflate(R.layout.layout_bottom_sheet_select_foto, null)
-                        sheetView.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList())
+                        sheetView.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList(), headerImageView)
                         val linearLayoutManager = LinearLayoutManager(this.context)
                         linearLayoutManager.orientation = LinearLayout.HORIZONTAL
                         sheetView.defaultImageListView.layoutManager = linearLayoutManager
-                        mBottomSheetDialog.setContentView(sheetView)
-                        mBottomSheetDialog.show()
+                        bottomSheetDialog.setContentView(sheetView)
+                        bottomSheetDialog.show()
+
+                        compositeDisposable.add(RxView.clicks(sheetView.photosLayout)
+                                .subscribe { openPhoneGallery() })
+
+                        compositeDisposable.add(RxView.clicks(sheetView.cameraLayout)
+                                .subscribe { openPhoneCamera() })
 
                     }
                 })
@@ -270,6 +280,14 @@ class CreateEventFragment : Fragment(), LocationListener {
         }
     }
 
+    private fun openPhoneCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        this.activity?.let { activity ->
+            activity.startActivityForResult(cameraIntent, RESULT_CAMERA)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         try {
             if (resultCode != Activity.RESULT_CANCELED) {
@@ -278,6 +296,12 @@ class CreateEventFragment : Fragment(), LocationListener {
                     val path = selectedImageUri?.let { getPath(it) }
                     val bitmap = BitmapFactory.decodeFile(path)
                     headerImageView.setImageBitmap(bitmap)
+                    bottomSheetDialog.hide()
+
+                } else if (resultCode == RESULT_CAMERA) {
+                    val image = data?.extras?.get("data") as Bitmap
+                    headerImageView.setImageBitmap(image)
+
                 }
             }
         } catch (e: Exception) {
