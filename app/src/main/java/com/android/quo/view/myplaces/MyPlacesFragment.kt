@@ -25,11 +25,13 @@ class MyPlacesFragment : Fragment() {
 
     private lateinit var placePreviewListViewModel: PlacePreviewListViewModel
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?
-    ): View? =
-            inflater.inflate(R.layout.fragment_my_places, container, false)
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_my_places, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,8 +51,11 @@ class MyPlacesFragment : Fragment() {
     private fun observePlacePreviewList() {
         placePreviewListViewModel.getPlacePreviewList(MY_PLACES).observe(this, Observer { list ->
             list?.let {
-                placePreviewRecyclerView.adapter = PlacePreviewAdapter(list)
-                placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
+                activity?.let { activity ->
+                    placePreviewRecyclerView.adapter =
+                            PlacePreviewAdapter(list, activity.supportFragmentManager)
+                    placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
+                }
             }
         })
     }
@@ -58,16 +63,17 @@ class MyPlacesFragment : Fragment() {
     /**
      * Update place preview list and stop refreshing animation
      */
-    private fun setupSwipeRefresh() =
-            swipeRefreshLayout.setOnRefreshListener {
-                placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
-                swipeRefreshLayout.isRefreshing = false
-            }
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setOnRefreshListener {
+            placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
 
     private fun setupFloatingActionButton() =
             floatingActionButton.setOnClickListener {
-                Snackbar.make(floatingActionButton, "Floating action button clicked",
-                        Snackbar.LENGTH_LONG)
+                Snackbar.make(floatingActionButton, "Floating action button clicked", Snackbar.LENGTH_LONG)
                         .setAction("HIDE", { })
                         .show()
             }

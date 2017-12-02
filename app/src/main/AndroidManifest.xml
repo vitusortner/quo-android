@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".view.place.gallery.ImagePagerActivity"
+            android:theme="@style/TransparentAppTheme" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/fb_app_id" />
@@ -45,7 +50,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.qrcode.QrCodeScannerActivity"></activity>
+        <activity android:name=".view.qrcode.QrCodeScannerActivity">
+        </activity>
     </application>
 
 </manifest>
