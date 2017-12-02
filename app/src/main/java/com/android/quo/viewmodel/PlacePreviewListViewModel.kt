@@ -29,57 +29,58 @@ class PlacePreviewListViewModel : ViewModel() {
     private val placePreviewListService = PlacePreviewListService.service
 
     fun getPlacePreviewList(fragmentType: FragmentType): LiveData<List<PlacePreview>> =
-        when (fragmentType) {
-            HOME -> {
-                if (placePreviewListHome == null) {
-                    placePreviewListHome = MutableLiveData()
-                    loadPlacePreviewList(fragmentType)
+            when (fragmentType) {
+                HOME -> {
+                    if (placePreviewListHome == null) {
+                        placePreviewListHome = MutableLiveData()
+                        loadPlacePreviewList(fragmentType)
+                    }
+                    placePreviewListHome as MutableLiveData<List<PlacePreview>>
                 }
-                placePreviewListHome as MutableLiveData<List<PlacePreview>>
-            }
-            MY_PLACES -> {
-                if (placePreviewListMyPlaces == null) {
-                    placePreviewListMyPlaces = MutableLiveData()
-                    loadPlacePreviewList(fragmentType)
+                MY_PLACES -> {
+                    if (placePreviewListMyPlaces == null) {
+                        placePreviewListMyPlaces = MutableLiveData()
+                        loadPlacePreviewList(fragmentType)
+                    }
+                    placePreviewListMyPlaces as MutableLiveData<List<PlacePreview>>
                 }
-                placePreviewListMyPlaces as MutableLiveData<List<PlacePreview>>
             }
-        }
 
     private fun loadPlacePreviewList(fragmentType: FragmentType) =
-        when (fragmentType) {
-            HOME -> {
-                compositDisposable.add(
-                    placePreviewListService.getPlacePreviewListHome()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ result ->
-                            placePreviewListHome?.value = result.list
-                        }, { error ->
-                            // TODO proper error handling
-                            Log.i("API error", error.toString())
-                        })
-                )
+            when (fragmentType) {
+                HOME -> {
+                    compositDisposable.add(
+                            placePreviewListService.getPlacePreviewListHome()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({ result ->
+                                        placePreviewListHome?.value = result.list
+                                    }, { error ->
+                                        // TODO proper error handling
+                                        Log.i("API error", error.toString())
+                                    })
+                    )
+                }
+                MY_PLACES -> {
+                    compositDisposable.add(
+                            placePreviewListService.getPlacePreviewListMyPlaces()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({ result ->
+                                        placePreviewListMyPlaces?.value = result.list
+                                    }, { error ->
+                                        // TODO proper error handling
+                                        Log.i("API error", error.toString())
+                                    })
+                    )
+                }
             }
-            MY_PLACES -> {
-                compositDisposable.add(
-                    placePreviewListService.getPlacePreviewListMyPlaces()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ result ->
-                            placePreviewListMyPlaces?.value = result.list
-                        }, { error ->
-                            // TODO proper error handling
-                            Log.i("API error", error.toString())
-                        })
-                )
-            }
-        }
 
     fun updatePlacePreviewList(fragmentType: FragmentType) = loadPlacePreviewList(fragmentType)
 
     override fun onCleared() {
         super.onCleared()
-        compositDisposable.clear()
+
+        compositDisposable.dispose()
     }
 }

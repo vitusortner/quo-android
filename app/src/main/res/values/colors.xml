@@ -12,4 +12,15 @@
     <color name="colorTextGray">#95989A</color>
     <color name="colorTextBlack">#000000</color>
 
+    <color name="colorStatusBarSdkPre23">#BDBDBD</color>
+
+    <color name="colorInfoToolbar">#80545454</color>
+    <color name="colorInfoToolbarContentScrim">#FFFFFF</color>
+    <color name="colorPlaceToolbarContentScrim">#FFFFFF</color>
+    <color name="colorPlaceTablayoutHighlight">#FFFFFF</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorTitle">#000000</color>
+    <color name="colorTitleWhite">#FFFFFF</color>
+    <color name="colorInfoIcon">#FFFFFF</color>
+    <color name="colorImagePagerBackground">#000000</color>
 </resources>

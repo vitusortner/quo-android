@@ -61,6 +61,8 @@
     <string name="page_temp_line1_text">What do you want to</string>
     <string name="page_temp_line2_text"> tell or show your visitors?</string>
 
-
-
+    <!-- PLACE -->
+    <string name="place_info_menu">Information</string>
+    <string name="place_tablayout_title_page">PAGE</string>
+    <string name="place_tablayout_title_gallery">GALLERY</string>
 </resources>

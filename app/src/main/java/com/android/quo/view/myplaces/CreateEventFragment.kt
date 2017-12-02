@@ -36,7 +36,6 @@ import com.android.quo.view.myplaces.createplace.EventDefaultImagesAdapter
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.event_default_image.defaultImageView
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView
 import kotlinx.android.synthetic.main.fragment_create_event.expirationCheckBox
