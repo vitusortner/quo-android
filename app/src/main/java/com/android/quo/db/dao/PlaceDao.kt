@@ -25,4 +25,7 @@ interface PlaceDao {
 
     @Delete
     fun deletePlace(place: Place)
+
+    @Query("DELETE FROM place")
+    fun deleteAllPlaces()
 }

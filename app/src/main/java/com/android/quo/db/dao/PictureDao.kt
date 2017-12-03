@@ -25,4 +25,7 @@ interface PictureDao {
 
     @Delete
     fun deletePicture(picture: Picture)
+
+    @Query("DELETE FROM picture")
+    fun deleteAllPictures()
 }

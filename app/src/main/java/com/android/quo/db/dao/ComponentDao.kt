@@ -26,4 +26,6 @@ interface ComponentDao {
     @Delete
     fun deleteComponent(component: Component)
 
+    @Query("DELETE FROM component")
+    fun deleteAllComponents()
 }
