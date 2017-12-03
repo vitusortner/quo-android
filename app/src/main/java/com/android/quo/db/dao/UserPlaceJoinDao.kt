@@ -15,7 +15,7 @@ import com.android.quo.db.entity.UserPlaceJoin
 @Dao
 interface UserPlaceJoinDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUserPlaceJoin(userPlaceJoin: UserPlaceJoin)
+    fun insertAllUserPlaceJoins(userPlaceJoins: List<UserPlaceJoin>)
 
     @Query("SELECT * FROM user INNER JOIN user_place_join ON user.id=user_place_join.user_id WHERE user_place_join.place_id=:placeId")
     fun getUsersFromPlace(placeId: String): List<User>

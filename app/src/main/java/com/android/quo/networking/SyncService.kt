@@ -3,8 +3,11 @@ package com.android.quo.networking
 import com.android.quo.QuoApplication
 import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
+import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
 import com.android.quo.db.entity.User
+import com.android.quo.db.entity.UserPlaceJoin
+import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerUser
 import java.util.*
@@ -17,6 +20,7 @@ object SyncService {
     private val userDao = QuoApplication.database.userDao()
     private val placeDao = QuoApplication.database.placeDao()
     private val componentDao = QuoApplication.database.componentDao()
+    private val userPlaceJoinDao = QuoApplication.database.userPlaceJoinDao()
 
     fun savePlaces(data: List<ServerPlace>) {
         val places = data.map { place ->
@@ -58,31 +62,58 @@ object SyncService {
     }
 
     fun saveUser(data: ServerUser) {
-//        val places = data.visitedPlaces.map {
-//            Place(
-//                    id = it.id,
-//                    isHost = userDao.findUserById(it.host) != null,
-//                    title = it.title,
-//                    startDate = Date(),
-//                    endDate = Date(),
-//                    latitude = it.latitude,
-//                    longitude = it.longitude,
-//                    address = Address(
-//                            street = it.address.street,
-//                            city = it.address.city,
-//                            zipCode = it.address.zipCode
-//                    ),
-//                    isPhotoUploadAllowed = it.settings.isPhotoUploadAllowed,
-//                    hasToValidateGps = it.settings.hasToValidateGps,
-//                    titlePicture = it.titlePicture,
-//                    qrCodeId = it.qrCodeId
-//            )
-//        }
-//        placeDao.insertAllPlaces(places)
+        data.visitedPlaces?.let {
+            val places = it.map { place ->
+                Place(
+                        id = place.id,
+                        isHost = userDao.findUserById(place.host) != null,
+                        title = place.title,
+                        startDate = Date(),
+                        endDate = Date(),
+                        latitude = place.latitude,
+                        longitude = place.longitude,
+                        address = Address(
+                                street = place.address.street,
+                                city = place.address.city,
+                                zipCode = place.address.zipCode
+                        ),
+                        isPhotoUploadAllowed = place.settings.isPhotoUploadAllowed,
+                        hasToValidateGps = place.settings.hasToValidateGps,
+                        titlePicture = place.titlePicture,
+                        qrCodeId = place.qrCodeId
+                )
+            }
+            placeDao.insertAllPlaces(places)
 
+            val userPlaceJoins = it.map { place ->
+                UserPlaceJoin(
+                        userId = data.id,
+                        placeId = place.id,
+                        // TODO timestamp/date
+                        timestamp = Date()
+                )
+            }
+            userPlaceJoinDao.insertAllUserPlaceJoins(userPlaceJoins)
+        }
         // TODO write token to key chain
-
         val user = User(data.id)
         userDao.insertUser(user)
     }
+
+    fun savePictures(data: List<ServerPicture>) {
+        val pictures = data.map { picture ->
+            Picture(
+                    id = picture.id,
+                    ownerId = picture.ownerId,
+                    placeId = picture.placeId,
+                    src = picture.src,
+                    isVisible = picture.isVisible,
+                    // TODO timestamp/date
+                    timestamp = Date()
+            )
+        }
+        QuoApplication.database.pictureDao().insertAllPictures(pictures)
+    }
+
+
 }

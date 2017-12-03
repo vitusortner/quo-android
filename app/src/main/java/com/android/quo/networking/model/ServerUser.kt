@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class ServerUser(
         val id: String,
 
+        // TODO place objects or ids?
         @SerializedName("visited_places")
         val visitedPlaces: List<ServerPlace>?,
 

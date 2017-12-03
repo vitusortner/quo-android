@@ -5,6 +5,7 @@ import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerLogin
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPasswordReset
+import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
 import io.reactivex.Flowable
@@ -17,34 +18,46 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 /**
  * Created by vitusortner on 29.10.17.
  */
 interface ApiService {
 
-    @POST()
+    // TODO
+    @POST("")
     fun login(@Body data: ServerLogin): Single<ServerUser>
 
-    @POST()
+    // TODO
+    @POST("")
     fun singup(@Body data: ServerSignup): Single<ServerUser>
 
-    @POST()
+    // TODO
+    @POST("")
     fun resetPassword(@Body data: ServerPasswordReset)
 
-    @GET(Endpoint.USER)
+    // TODO
+    @GET("users")
     fun getUser(): Single<ServerUser>
 
-    @POST(Endpoint.PLACE)
+    @POST("places")
     fun addPlace(place: ServerPlace): Single<ServerPlace>
 
-    @GET()
-    fun getPlace(data: String): Single<ServerPlace> // get place with qr code id
+    @GET("places/{id}")
+    fun getPlace(@Path("id") placeId: String): Single<ServerPlace>
 
-    @GET("5a2135932d00009f16e0018c")
+//    @GET("5a2135932d00009f16e0018c")
+    @GET("places")
     fun getPlaces(): Single<List<ServerPlace>>
 
-    @POST()
+    @GET("users/{id}/places")
+    fun getPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+
+    @GET("places/{id}/pictures")
+    fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
+
+    @POST("components")
     fun addComponent(@Body data: ServerComponent)
 
 
@@ -56,7 +69,8 @@ interface ApiService {
 
     companion object {
 
-        private const val BASE_URL = "http://www.mocky.io/v2/"
+//        private const val BASE_URL = "http://www.mocky.io/v2/"
+        private const val BASE_URL = "http://localhost:3000/"
 
         private val okClient: OkHttpClient
             get() {
@@ -75,9 +89,9 @@ interface ApiService {
             get() {
                 val headers = mapOf(
                         "Accept" to "application/json",
-                        "Content-Type" to "application/json",
+                        "Content-Type" to "application/json"
                         // TODO real token
-                        "Authorization" to "auth token"
+//                        "Authorization" to "auth token"
                 )
                 return Headers.of(headers)
             }
@@ -90,12 +104,5 @@ interface ApiService {
                 .build()
 
         val instance: ApiService = ApiService.retrofit.create(ApiService::class.java)
-    }
-
-    object Endpoint {
-
-        const val PLACE = "place"
-        const val USER = "user"
-
     }
 }
