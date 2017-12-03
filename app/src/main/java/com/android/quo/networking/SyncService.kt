@@ -6,10 +6,10 @@ import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
 import com.android.quo.db.entity.User
-import com.android.quo.db.entity.UserPlaceJoin
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerUser
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -17,18 +17,14 @@ import java.util.*
  */
 object SyncService {
 
-    private val userDao = QuoApplication.database.userDao()
-    private val placeDao = QuoApplication.database.placeDao()
-    private val componentDao = QuoApplication.database.componentDao()
-    private val userPlaceJoinDao = QuoApplication.database.userPlaceJoinDao()
-
     fun savePlaces(data: List<ServerPlace>) {
         val places = data.map { place ->
             Place(
                     id = place.id,
-                    isHost = userDao.findUserById(place.host) != null,
+                    // TODO has this check to be done on client side? or always send user id with request and check on server?
+                    isHost = QuoApplication.database.userDao().getUserById(place.host) != null,
                     title = place.title,
-                    // TODO to date required?
+                    // TODO to date function required? (cast from string to date)
                     startDate = Date(),
                     endDate = Date(),
                     latitude = place.latitude,
@@ -44,7 +40,7 @@ object SyncService {
                     qrCodeId = place.qrCodeId
             )
         }
-        placeDao.insertAllPlaces(places)
+        QuoApplication.database.placeDao().insertAllPlaces(places)
 
         val components = data.flatMap { place ->
             place.components.map { component ->
@@ -58,46 +54,13 @@ object SyncService {
             }
 
         }
-        componentDao.insertAllComponents(components)
+        QuoApplication.database.componentDao().insertAllComponents(components)
     }
 
     fun saveUser(data: ServerUser) {
-        data.visitedPlaces?.let {
-            val places = it.map { place ->
-                Place(
-                        id = place.id,
-                        isHost = userDao.findUserById(place.host) != null,
-                        title = place.title,
-                        startDate = Date(),
-                        endDate = Date(),
-                        latitude = place.latitude,
-                        longitude = place.longitude,
-                        address = Address(
-                                street = place.address.street,
-                                city = place.address.city,
-                                zipCode = place.address.zipCode
-                        ),
-                        isPhotoUploadAllowed = place.settings.isPhotoUploadAllowed,
-                        hasToValidateGps = place.settings.hasToValidateGps,
-                        titlePicture = place.titlePicture,
-                        qrCodeId = place.qrCodeId
-                )
-            }
-            placeDao.insertAllPlaces(places)
-
-            val userPlaceJoins = it.map { place ->
-                UserPlaceJoin(
-                        userId = data.id,
-                        placeId = place.id,
-                        // TODO timestamp/date
-                        timestamp = Date()
-                )
-            }
-            userPlaceJoinDao.insertAllUserPlaceJoins(userPlaceJoins)
-        }
         // TODO write token to key chain
         val user = User(data.id)
-        userDao.insertUser(user)
+        QuoApplication.database.userDao().insertUser(user)
     }
 
     fun savePictures(data: List<ServerPicture>) {
@@ -115,5 +78,14 @@ object SyncService {
         QuoApplication.database.pictureDao().insertAllPictures(pictures)
     }
 
-
+    // TODO move to extensions class
+    private fun String?.toDate(): Date? {
+        this?.let {
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+            simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            return simpleDateFormat.parse(it)
+        } ?: run {
+            return null
+        }
+    }
 }

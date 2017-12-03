@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
  * Created by vitusortner on 24.11.17.
  */
 @Suppress("LeakingThis")
-abstract class NetworkBoundSource<LocalType, RemoteType>(emitter: FlowableEmitter<LocalType>) {
+abstract class Repository<LocalType, RemoteType>(emitter: FlowableEmitter<LocalType>) {
 
     init {
         getLocal()

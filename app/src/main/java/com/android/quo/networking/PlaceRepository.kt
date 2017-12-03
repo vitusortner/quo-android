@@ -22,9 +22,9 @@ class PlaceRepository(private val placeDao: PlaceDao, private val apiService: Ap
 
     fun getPlaces(): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : NetworkBoundSource<List<Place>, List<ServerPlace>>(emitter) {
+            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getPlaces()
+                override fun getRemote(): Single<List<ServerPlace>> = apiService.getPlaces("1")
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 

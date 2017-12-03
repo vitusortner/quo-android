@@ -18,7 +18,7 @@ interface PlaceDao {
     fun getAllPlaces(): Flowable<List<Place>>
 
     @Query("SELECT * FROM place WHERE id = :id")
-    fun findPlaceById(id: String): Place
+    fun getPlaceById(id: String): Place
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPlaces(places: List<Place>)

@@ -3,9 +3,9 @@ package com.android.quo.networking
 import com.android.quo.model.PlacePreviewList
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerLogin
-import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPasswordReset
 import com.android.quo.networking.model.ServerPicture
+import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
 import io.reactivex.Flowable
@@ -16,6 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -37,22 +38,24 @@ interface ApiService {
     @POST("")
     fun resetPassword(@Body data: ServerPasswordReset)
 
+    @DELETE("users/{id}")
+    fun deleteUser(@Path("id") userId: String)
+
     // TODO
     @GET("users")
     fun getUser(): Single<ServerUser>
 
     @POST("places")
-    fun addPlace(place: ServerPlace): Single<ServerPlace>
+    fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
     @GET("places/{id}")
     fun getPlace(@Path("id") placeId: String): Single<ServerPlace>
 
-//    @GET("5a2135932d00009f16e0018c")
-    @GET("places")
-    fun getPlaces(): Single<List<ServerPlace>>
-
     @GET("users/{id}/places")
     fun getPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+
+    @POST("pictures")
+    fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>
 
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
@@ -69,7 +72,7 @@ interface ApiService {
 
     companion object {
 
-//        private const val BASE_URL = "http://www.mocky.io/v2/"
+        //        private const val BASE_URL = "http://www.mocky.io/v2/"
         private const val BASE_URL = "http://localhost:3000/"
 
         private val okClient: OkHttpClient

@@ -10,13 +10,11 @@ import com.android.quo.db.dao.ComponentDao
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.dao.UserDao
-import com.android.quo.db.dao.UserPlaceJoinDao
 import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
 import com.android.quo.db.entity.User
-import com.android.quo.db.entity.UserPlaceJoin
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -38,7 +36,6 @@ class DataInstrumentedTest {
     var placeDao: PlaceDao? = null
     var pictureDao: PictureDao? = null
     var componentDao: ComponentDao? = null
-    var userPlaceJoinDao: UserPlaceJoinDao? = null
 
     @Before
     fun createDB() {
@@ -51,7 +48,6 @@ class DataInstrumentedTest {
         placeDao = database.placeDao()
         pictureDao = database.pictureDao()
         componentDao = database.componentDao()
-        userPlaceJoinDao = database.userPlaceJoinDao()
     }
 
     @After
@@ -69,11 +65,11 @@ class DataInstrumentedTest {
 
         val address = Address("street", "city", 123)
         val place = Place("103", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
-        placeDao?.insertPlace(place)
+        placeDao?.insertAllPlaces(place)
 
         val component = Component(id = "78", picture = "pic.com", placeId = place.id, position = 1)
-        componentDao?.insertComponent(component)
-        val foundComponent = componentDao?.findComponentById(component.id)
+        componentDao?.insertAllComponents(component)
+        val foundComponent = componentDao?.getComponentById(component.id)
 
         Assert.assertEquals(component, foundComponent)
     }
@@ -111,7 +107,7 @@ class DataInstrumentedTest {
 
         val picture = Picture("456", user.id, place.id, "src.com", true, date)
         pictureDao?.insertPicture(picture)
-        val foundPicture = pictureDao?.findPictureById(picture.id)
+        val foundPicture = pictureDao?.getPictureById(picture.id)
 
         Assert.assertEquals(picture, foundPicture)
     }
@@ -123,7 +119,7 @@ class DataInstrumentedTest {
         val address = Address("street", "city", 123)
         val place = Place("123", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
         placeDao?.insertPlace(place)
-        val foundPlace = placeDao?.findPlaceById(place.id)
+        val foundPlace = placeDao?.getPlaceById(place.id)
 
         Assert.assertEquals(place, foundPlace)
     }
@@ -132,7 +128,7 @@ class DataInstrumentedTest {
     fun user_insert_test() {
         val user = User("1")
         userDao?.insertUser(user)
-        val foundUser = userDao?.findUserById(user.id)
+        val foundUser = userDao?.getUserById(user.id)
         Assert.assertEquals(user, foundUser)
     }
 
