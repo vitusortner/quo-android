@@ -17,7 +17,7 @@
                 android:id="@+id/generatedLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/home_cardview_margin"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/text_size_medium"
             android:backgroundTint="@color/colorAccentDark"
             android:src="@drawable/ic_add" />
 

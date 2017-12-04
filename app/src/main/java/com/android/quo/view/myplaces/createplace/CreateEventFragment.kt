@@ -21,6 +21,7 @@ import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -86,11 +87,14 @@ class CreateEventFragment : Fragment(), LocationListener {
                 Manifest.permission.ACCESS_COARSE_LOCATION),
                 ASK_MULTIPLE_PERMISSION_REQUEST_CODE
         )
-
         calendar = Calendar.getInstance()
 
         setDefaultValuesOnStart()
+        setupRxBindingViews()
 
+    }
+
+    private fun setupRxBindingViews(){
         /**
          * will show the calendar view
          */
@@ -152,7 +156,6 @@ class CreateEventFragment : Fragment(), LocationListener {
         compositeDisposable.add(RxView.clicks(galleryButton)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    //openPhoneGallery()
                     context.let { context ->
                         bottomSheetDialog = BottomSheetDialog(context!!)
                         val sheetView = activity?.layoutInflater!!.inflate(R.layout.layout_bottom_sheet_select_foto, null)
@@ -180,7 +183,6 @@ class CreateEventFragment : Fragment(), LocationListener {
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (motionEvent.rawX >= (locationEditText.right - locationEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
 //                  //TODO get gps location and convert in address
-                    println("location icon pressed")
                     locationProgressBar.visibility = VISIBLE
                     locationEditText.clearFocus()
                     getLocation()
@@ -199,7 +201,6 @@ class CreateEventFragment : Fragment(), LocationListener {
             }
             false
         }).subscribe())
-
     }
 
     override fun onDestroy() {
@@ -209,22 +210,22 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     fun getDefaultImageList(): ArrayList<Drawable> {
         val list = ArrayList<Drawable>()
-        list.add(resources.getDrawable(R.drawable.default_event_image1))
-        list.add(resources.getDrawable(R.drawable.default_event_image2))
-        list.add(resources.getDrawable(R.drawable.default_event_image3))
-        list.add(resources.getDrawable(R.drawable.default_event_image4))
-        list.add(resources.getDrawable(R.drawable.default_event_image5))
-        list.add(resources.getDrawable(R.drawable.default_event_image6))
-        list.add(resources.getDrawable(R.drawable.default_event_image7))
-        list.add(resources.getDrawable(R.drawable.default_event_image8))
-        list.add(resources.getDrawable(R.drawable.default_event_image9))
-
+        context?.let {
+            // TODO find a better way without !!
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image1)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image2)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image3)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image4)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image5)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image6)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image7)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image8)!!)
+            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image9)!!)
+        }
         return list
 
 
     }
-
-    // fun createBitmap(image: Int): Bitmap = BitmapFactory.decodeResource(context?.resources,image)
 
     fun hideKeyboard(activity: FragmentActivity?) {
         activity?.let { activity ->
@@ -317,7 +318,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                     null, null, null)
         }
 
-        if (cursor != null) {
+        cursor?.let { cursor ->
             if (cursor.moveToFirst()) {
                 val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
                 result = cursor.getString(columnIndex)
@@ -326,9 +327,9 @@ class CreateEventFragment : Fragment(), LocationListener {
         }
 
         if (result == null) {
-            result = "Not found"
+            result = getString(R.string.not_found)
         }
-        return result
+        return result as String
     }
 
     private fun setDefaultValuesOnStart() {
@@ -398,7 +399,6 @@ class CreateEventFragment : Fragment(), LocationListener {
      */
     override fun onLocationChanged(p0: Location?) {
         if (p0 != null) {
-            println("#####################" + p0.latitude)
             getAddressFromLocation(p0)
         }
     }

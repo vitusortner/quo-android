@@ -66,4 +66,13 @@
     <string name="place_tablayout_title_page">PAGE</string>
     <string name="place_tablayout_title_gallery">GALLERY</string>
     <string name="save">Save</string>
+    <string name="not_found">Not found</string>
+    <string name="create_place_tablayout_title_event">EVENT</string>
+    <string name="create_place_tablayout_title_page">PLACE</string>
+    <string name="create_place_tablayout_title_settings">SETTINGS</string>
+    <string name="add_content">Add Content</string>
+    <string name="photos">Photos</string>
+    <string name="allows_visitors_to_upload_photos">allows visitors to upload photos</string>
+    <string name="validate_gps">Validate GPS</string>
+    <string name="visitors_must_verify_their_location">visitors must verify their location</string>
 </resources>

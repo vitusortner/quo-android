@@ -4,14 +4,11 @@ package com.android.quo.view.myplaces.createplace
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.view.place.info.InfoFragment
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
-import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
 import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
@@ -34,8 +31,9 @@ class CreatePlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = CreatePlacePagerAdapter(childFragmentManager)
-        createPlaceViewPager.adapter = adapter
+        this.context?.let {
+            createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
+        }
         tabLayout.setupWithViewPager(createPlaceViewPager)
 
         setupToolbar()
@@ -57,13 +55,13 @@ class CreatePlaceFragment : Fragment() {
         compositDisposable.add(
                 RxToolbar.itemClicks(toolbar)
                         .subscribe {
-                            //TODO save 
+                            //TODO save
                         }
         )
     }
 
 
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         for (fragment in childFragmentManager.fragments) {

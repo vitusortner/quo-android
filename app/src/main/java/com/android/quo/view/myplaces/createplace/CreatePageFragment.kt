@@ -104,7 +104,7 @@ class CreatePageFragment : Fragment() {
         val layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, 600)
         val imageView = ImageView(this.context)
         imageView.layoutParams = layoutParams
-        imageView.background = drawable
+        imageView.setImageDrawable(drawable)
         return imageView
 
     }
@@ -153,7 +153,7 @@ class CreatePageFragment : Fragment() {
                     null, null, null)
         }
 
-        if (cursor != null) {
+        cursor?.let { cursor ->
             if (cursor.moveToFirst()) {
                 val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
                 result = cursor.getString(columnIndex)
@@ -162,9 +162,9 @@ class CreatePageFragment : Fragment() {
         }
 
         if (result == null) {
-            result = "Not found"
+            result = getString(R.string.not_found)
         }
-        return result
+        return result as String
     }
 
 }

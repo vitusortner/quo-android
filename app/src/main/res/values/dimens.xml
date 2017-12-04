@@ -99,6 +99,11 @@
 
     <!-- Main -->
     <dimen name="main_toolbar_elevation">4dp</dimen>
+    <dimen name="text_size_medium">16dp</dimen>
+    <dimen name="create_settings_padding">20dp</dimen>
+    <dimen name="create_settings_margin_large">40dp</dimen>
+    <dimen name="create_settings_margin">20dp</dimen>
+    <dimen name="view_line_height">1dp</dimen>
 </resources>
 
 
