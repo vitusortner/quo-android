@@ -227,7 +227,7 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     }
 
-    fun hideKeyboard(activity: FragmentActivity?) {
+    private fun hideKeyboard(activity: FragmentActivity?) {
         activity?.let { activity ->
             val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             //Find the currently focused view, so we can grab the correct window token from it.
@@ -246,6 +246,7 @@ class CreateEventFragment : Fragment(), LocationListener {
         val locationManager = activity?.getSystemService(LOCATION_SERVICE) as LocationManager?
         val locationListener = this
         locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
     }
 
     /**
