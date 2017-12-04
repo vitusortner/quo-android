@@ -44,7 +44,7 @@
                 android:layout_below="@+id/galleryButton"
                 android:hint="@string/event_name"
                 android:textColor="@color/colorAccent"
-                android:textSize="30sp"
+                android:textSize="@dimen/event_name_text_size"
                 android:theme="@style/EditTextTheme" />
 
             <EditText

@@ -72,17 +72,18 @@ class CreatePageFragment : Fragment() {
         compositeDisposable.dispose()
     }
 
-    private fun createCardView(view: View): CardView {
-        this.context.let { context ->
+    private fun createCardView(view: View): CardView? {
+        this.context?.let { context ->
             val layoutParams = LinearLayout.LayoutParams(MATCH_PARENT,
                     MATCH_PARENT)
             layoutParams.bottomMargin = 20
-            val cardView = CardView(context!!)
+            val cardView = CardView(context)
             cardView.layoutParams = layoutParams
             cardView.cardElevation = 15f
             cardView.addView(view)
             return cardView
         }
+        return null
     }
 
     private fun createEditText(): EditText {

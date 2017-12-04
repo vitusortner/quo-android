@@ -43,7 +43,7 @@ class CreatePlaceFragment : Fragment() {
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
         toolbar.inflateMenu(R.menu.create_place_menu)
-        toolbar.title = "New Place"
+        toolbar.title = getString(R.string.new_place)
 
         compositDisposable.add(
                 RxToolbar.navigationClicks(toolbar)

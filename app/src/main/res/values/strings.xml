@@ -75,4 +75,9 @@
     <string name="allows_visitors_to_upload_photos">allows visitors to upload photos</string>
     <string name="validate_gps">Validate GPS</string>
     <string name="visitors_must_verify_their_location">visitors must verify their location</string>
+    <string name="new_place">New Place</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="camera">Camera</string>
+    <string name="photo">Photo</string>
+    <string name="select_picture">Select Picture</string>
 </resources>
