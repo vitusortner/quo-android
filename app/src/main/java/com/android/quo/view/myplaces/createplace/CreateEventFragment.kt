@@ -72,6 +72,7 @@ class CreateEventFragment : Fragment(), LocationListener {
     private val timeFormat = "h:mm a"
     private var compositeDisposable = CompositeDisposable()
     private lateinit var bottomSheetDialog: BottomSheetDialog
+    private var foundLocation = false
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -185,6 +186,7 @@ class CreateEventFragment : Fragment(), LocationListener {
 //                  //TODO get gps location and convert in address
                     locationProgressBar.visibility = VISIBLE
                     locationEditText.clearFocus()
+                    foundLocation = false
                     getLocation()
                 }
             }
@@ -266,7 +268,7 @@ class CreateEventFragment : Fragment(), LocationListener {
         val knownName = addresses[0].featureName
 
         locationProgressBar.visibility = GONE
-        locationEditText.setText("$address $postalCode $city")
+        locationEditText.setText("$address $postalCode")
     }
 
     /**
@@ -400,7 +402,11 @@ class CreateEventFragment : Fragment(), LocationListener {
      */
     override fun onLocationChanged(p0: Location?) {
         if (p0 != null) {
-            getAddressFromLocation(p0)
+            if (!foundLocation){
+                foundLocation = true
+                getAddressFromLocation(p0)
+            }
+
         }
     }
 
