@@ -40,7 +40,7 @@ object SyncService {
                     qrCodeId = place.qrCodeId
             )
         }
-        // TODO delete all defore inserting?
+        // TODO delete all before inserting?
         QuoApplication.database.placeDao().insertAllPlaces(places)
 
         val components = data.flatMap { place ->
@@ -76,6 +76,7 @@ object SyncService {
                     timestamp = Date()
             )
         }
+        // TODO delete all before inserting?
         QuoApplication.database.pictureDao().insertAllPictures(pictures)
     }
 

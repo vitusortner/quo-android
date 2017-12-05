@@ -12,6 +12,8 @@ data class ServerPlace(
 
         val title: String,
 
+        val description: String,
+
         @SerializedName("start_date")
         val startDate: String,
 

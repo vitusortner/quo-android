@@ -1,14 +1,14 @@
 package com.android.quo.networking
 
-import com.android.quo.model.PlacePreviewList
 import com.android.quo.networking.model.ServerComponent
+import com.android.quo.networking.model.ServerFacebookSignup
 import com.android.quo.networking.model.ServerLogin
+import com.android.quo.networking.model.ServerPasswordChange
 import com.android.quo.networking.model.ServerPasswordReset
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
-import io.reactivex.Flowable
 import io.reactivex.Single
 import okhttp3.Headers
 import okhttp3.OkHttpClient
@@ -27,17 +27,26 @@ import retrofit2.http.Path
 interface ApiService {
 
     // TODO
-    @POST("")
+    @POST("user")
     fun login(@Body data: ServerLogin): Single<ServerUser>
 
     // TODO
-    @POST("")
+    @POST("user")
     fun singup(@Body data: ServerSignup): Single<ServerUser>
 
+    // TODO which route?
+    @POST("user")
+    fun signupWithFacebook(@Body data: ServerFacebookSignup): Single<ServerUser>
+
+    // TODO which route? PUT?
+    @POST("user")
+    fun changePassword(@Body data: ServerPasswordChange): Single<ServerUser>
+
     // TODO
-    @POST("")
+    @POST("user")
     fun resetPassword(@Body data: ServerPasswordReset)
 
+    // TODO delete user trough ID or email?
     @DELETE("users/{id}")
     fun deleteUser(@Path("id") userId: String)
 
@@ -45,11 +54,15 @@ interface ApiService {
     @GET("users")
     fun getUser(): Single<ServerUser>
 
+    // TO get called when user scans place
+    @POST("users/{id}/places")
+    fun addPlaceToUser(@Path("id") userId: String): Single<ServerPlace>
+
     @POST("places")
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
     @GET("places/{id}")
-    fun getPlace(@Path("id") placeId: String): Single<ServerPlace>
+    fun getPlace(@Path("id") qrCodeId: String): Single<List<ServerPlace>>
 
     @GET("users/{id}/places")
     fun getPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
@@ -63,12 +76,8 @@ interface ApiService {
     @POST("components")
     fun addComponent(@Body data: ServerComponent)
 
-
-    @GET("59fc37412d00002d3e12436b")
-    fun getPlacePreviewListHome(): Flowable<PlacePreviewList>
-
-    @GET("59ff44582e0000650bca5944")
-    fun getPlacePreviewListMyPlaces(): Flowable<PlacePreviewList>
+    @GET("places/{id}/components")
+    fun getComponents()
 
     companion object {
 

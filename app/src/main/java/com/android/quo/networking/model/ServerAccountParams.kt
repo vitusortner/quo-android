@@ -21,6 +21,11 @@ data class ServerFacebookSignup(
         val fbToken: String
 )
 
+data class ServerPasswordChange(
+        val email: String,
+        val password: String
+)
+
 data class ServerPasswordReset(
         val email: String
 )

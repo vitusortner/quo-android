@@ -20,6 +20,10 @@ data class Place(
 
         var title: String = "",
 
+        var description: String = "",
+
+        // TODO date required? seems like we only use it in the UI for calculating and stuff
+        // maybe "cast" in UI?
         @ColumnInfo(name = "start_date")
         var startDate: Date = Date(),
 
