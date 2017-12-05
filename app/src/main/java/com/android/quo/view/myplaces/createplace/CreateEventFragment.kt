@@ -35,9 +35,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding2.view.RxViewGroup
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
+import kotlinx.android.synthetic.main.fragment_create_event.eventNameEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView
 import kotlinx.android.synthetic.main.fragment_create_event.expirationCheckBox
 import kotlinx.android.synthetic.main.fragment_create_event.fromDateEditText
@@ -51,6 +53,7 @@ import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.cameraLayout
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.defaultImageListView
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.photosLayout
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -97,13 +100,25 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     private fun setupRxBindingViews(){
         /**
+         * focusChanges on EventName Edit Text
+         */
+        compositeDisposable.add(RxView.focusChanges(eventNameEditText)
+                .subscribe{
+                    /**
+                     * Save into DB-Object
+                     */
+                    CreatePlace.place.title = eventNameEditText.text.toString()
+                })
+
+
+        /**
          * will show the calendar view
          */
         compositeDisposable.add(RxView.clicks(fromDateEditText)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     currentEditText = fromDateEditText
-                    showCalendarView()
+                    showCalendarView(true)
                 })
 
         /**
@@ -113,7 +128,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     currentEditText = toDateEditText
-                    showCalendarView()
+                    showCalendarView(false)
                 })
 
         /**
@@ -123,7 +138,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .observeOn((AndroidSchedulers.mainThread()))
                 .subscribe {
                     currentEditText = fromTimeEditText
-                    showTimeView()
+                    showTimeView(true)
                 })
 
         /**
@@ -133,7 +148,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .observeOn((AndroidSchedulers.mainThread()))
                 .subscribe {
                     currentEditText = toTimeEditText
-                    showTimeView()
+                    showTimeView(false)
                 })
 
         /**
@@ -258,17 +273,21 @@ class CreateEventFragment : Fragment(), LocationListener {
         val addresses: List<Address>
         val geocoder = Geocoder(this.context, Locale.getDefault())
 
-        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
-        val address = addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
         val city = addresses[0].locality
-        val state = addresses[0].adminArea
-        val country = addresses[0].countryName
         val postalCode = addresses[0].postalCode
-        val knownName = addresses[0].featureName
+        val street = addresses[0].thoroughfare
+        val number = addresses[0].subThoroughfare
 
         locationProgressBar.visibility = GONE
-        locationEditText.setText("$address $postalCode")
+        locationEditText.setText("$street $number $postalCode $city")
+        /**
+         * Save into DB-Object
+         */
+        CreatePlace.place.address.city = city
+        CreatePlace.place.address.street = "${addresses[0].thoroughfare}  ${addresses[0].subThoroughfare}"
+        CreatePlace.place.address.zipCode = postalCode.toInt()
     }
 
     /**
@@ -353,13 +372,13 @@ class CreateEventFragment : Fragment(), LocationListener {
         return sdf.format(calendar.time)
     }
 
-    private fun showCalendarView() {
+    private fun showCalendarView(isStartDate: Boolean) {
         val date = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, monthOfYear)
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            updateCalendarLabel()
+            updateCalendarLabel(isStartDate)
         }
 
         DatePickerDialog(this.context,
@@ -371,16 +390,26 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .show()
     }
 
-    private fun updateCalendarLabel() {
+    private fun updateCalendarLabel(isStartDate: Boolean){
         val sdf = SimpleDateFormat(dateFormat, Locale.US)
+        val date = sdf.format(calendar.time)
+        /**
+         * Save into DB-Object
+         */
+        if (isStartDate){
+            CreatePlace.place.startDate = date
+        } else {
+            CreatePlace.place.endDate = date
+        }
         currentEditText.setText(sdf.format(calendar.time))
+
     }
 
-    private fun showTimeView() {
+    private fun showTimeView(isStartDate: Boolean) {
         val time = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
             calendar.set(Calendar.HOUR, hour)
             calendar.set(Calendar.MINUTE, minute)
-            updateTimeLabel()
+            updateTimeLabel(isStartDate)
         }
 
         TimePickerDialog(this.context,
@@ -392,8 +421,18 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .show()
     }
 
-    private fun updateTimeLabel() {
+    private fun updateTimeLabel(isStartDate: Boolean) {
         val sdf = SimpleDateFormat(timeFormat, Locale.US)
+        val time = sdf.format(calendar.time)
+        // TODO change start and endDate to time?!
+        /**
+         * Save into DB-Object
+         */
+        if (isStartDate){
+            CreatePlace.place.startDate = time
+        } else {
+            CreatePlace.place.endDate = time
+        }
         currentEditText.setText(sdf.format(calendar.time))
     }
 
@@ -405,6 +444,11 @@ class CreateEventFragment : Fragment(), LocationListener {
             if (!foundLocation){
                 foundLocation = true
                 getAddressFromLocation(p0)
+                /**
+                 * Save into DB-Object
+                 */
+                CreatePlace.place.latitude = p0.latitude.toString()
+                CreatePlace.place.longitude = p0.longitude.toString()
             }
 
         }

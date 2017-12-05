@@ -8,6 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.model.ServerAddress
+import com.android.quo.model.ServerComponent
+import com.android.quo.model.ServerPlace
+import com.android.quo.model.ServerSettings
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
@@ -21,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_place.toolbar
 
 class CreatePlaceFragment : Fragment() {
     private val compositDisposable = CompositeDisposable()
+    lateinit var place: ServerPlace
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -31,7 +36,18 @@ class CreatePlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.context?.let {
+        val serverAddress = ServerAddress("","",-1)
+        val serverSettings = ServerSettings(false,false)
+        val serverComponent = ServerComponent("","","",-1)
+        val serverComponents = ArrayList<ServerComponent>()
+        serverComponents.add(serverComponent)
+
+        place = ServerPlace("","","","","","",
+                "",serverAddress, serverSettings,"","",serverComponents)
+
+        place.copy(title = "createPlace")
+
+                this.context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
