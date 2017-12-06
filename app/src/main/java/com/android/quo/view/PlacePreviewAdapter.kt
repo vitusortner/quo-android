@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.db.entity.Place
 import com.android.quo.model.PlacePreview
 import com.android.quo.view.place.PlaceFragment
 import com.bumptech.glide.Glide
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
  * Created by vitusortner on 27.10.17.
  */
 class PlacePreviewAdapter(
-        private val list: List<PlacePreview>,
+        private val list: List<Place>,
         private val fragmentManager: FragmentManager
 ) : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
@@ -43,7 +44,7 @@ class PlacePreviewAdapter(
             private val fragmentManager: FragmentManager
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun bindItem(list: List<PlacePreview>, position: Int) {
+        fun bindItem(list: List<Place>, position: Int) {
             RxView.clicks(placePreviewCardView)
                     .subscribe {
                         fragmentManager
@@ -53,7 +54,7 @@ class PlacePreviewAdapter(
                                 .commit()
                     }
 
-            val imageUrl = list[position].imageUrl
+            val imageUrl = list[position].titlePicture
 
             Glide.with(containerView.context)
                     .load(imageUrl)
