@@ -6,12 +6,17 @@
     <android.support.v7.widget.CardView
         android:id="@+id/placePreviewCardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/home_cardview_margin"
         android:layout_marginLeft="@dimen/home_cardview_margin"
-        android:layout_marginRight="@dimen/home_cardview_margin">
+        android:layout_marginRight="@dimen/home_cardview_margin"
+        app:cardCornerRadius="2dp"
+        android:layout_centerHorizontal="true"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -28,20 +33,26 @@
                 style="@style/CardViewTitleFont"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorSecondary"
-                android:paddingBottom="15dp"
-                android:paddingEnd="5dp"
-                android:paddingStart="5dp" />
+                android:layout_above="@+id/placePreviewDescriptionTextView"
+                android:layout_alignParentStart="true"
+                android:background="@color/colorCardViewTitleBackground"
+                android:paddingBottom="4dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp" />
 
             <TextView
                 android:id="@+id/placePreviewDescriptionTextView"
                 style="@style/CardViewDescriptionFont"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/placePreviewImageView"
                 android:paddingBottom="@dimen/home_cardview_textview_padding"
-                android:paddingEnd="@dimen/home_cardview_textview_padding"
-                android:paddingStart="@dimen/home_cardview_textview_padding" />
-        </LinearLayout>
+                android:paddingEnd="13dp"
+                android:paddingStart="9dp"
+                android:paddingTop="7dp"/>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 </LinearLayout>
