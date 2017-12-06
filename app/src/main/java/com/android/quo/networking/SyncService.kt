@@ -1,5 +1,6 @@
 package com.android.quo.networking
 
+import android.util.Log
 import com.android.quo.QuoApplication
 import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
@@ -20,7 +21,7 @@ object SyncService {
     fun savePlaces(data: List<ServerPlace>) {
         val places = data.map { place ->
             Place(
-                    id = place.id,
+                    id = place.id ?: "",
                     // TODO has this check to be done on client side? or always send user id with request and check on server?
                     isHost = QuoApplication.database.userDao().getUserById(place.host) != null,
                     title = place.title,
@@ -29,33 +30,43 @@ object SyncService {
                     endDate = Date(),
                     latitude = place.latitude,
                     longitude = place.longitude,
-                    address = Address(
-                            street = place.address.street,
-                            city = place.address.city,
-                            zipCode = place.address.zipCode
-                    ),
-                    isPhotoUploadAllowed = place.settings.isPhotoUploadAllowed,
-                    hasToValidateGps = place.settings.hasToValidateGps,
-                    titlePicture = place.titlePicture,
-                    qrCodeId = place.qrCodeId
+                    address = place.address?.let {
+                        Address(
+                                street = place.address.street,
+                                city = place.address.city,
+                                zipCode = place.address.zipCode)
+                    },
+                    isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
+                    hasToValidateGps = place.settings?.hasToValidateGps,
+                    titlePicture = place.titlePicture ?: "",
+                    qrCodeId = place.qrCodeId ?: ""
             )
         }
-        // TODO delete all before inserting?
+        QuoApplication.database.placeDao().deleteAllPlaces()
         QuoApplication.database.placeDao().insertAllPlaces(places)
+        Log.i("sync", "place sync success!")
 
-        val components = data.flatMap { place ->
-            place.components.map { component ->
-                Component(
-                        id = component.id,
-                        picture = component.picture,
-                        text = component.text,
-                        placeId = place.id,
-                        position = component.position
-                )
+        val components = mutableListOf<Component>()
+        data.forEach { place ->
+            place.components?.let {
+                it.forEach {
+                    components.add(
+                            Component(
+                                    id = it.id ?: "",
+                                    picture = it.picture,
+                                    text = it.text,
+                                    placeId = place.id ?: "",
+                                    position = it.position ?: 0
+                            ))
+                }
             }
-
         }
-        QuoApplication.database.componentDao().insertAllComponents(components)
+
+        if (components.isNotEmpty()) {
+            QuoApplication.database.componentDao().deleteAllComponents()
+            QuoApplication.database.componentDao().insertAllComponents(components)
+        }
+        Log.i("sync", "component sync success!")
     }
 
     fun saveUser(data: ServerUser) {
@@ -76,8 +87,9 @@ object SyncService {
                     timestamp = Date()
             )
         }
-        // TODO delete all before inserting?
+        QuoApplication.database.pictureDao().deleteAllPictures()
         QuoApplication.database.pictureDao().insertAllPictures(pictures)
+        Log.i("sync", "picture sync success!")
     }
 
     // TODO move to extensions class

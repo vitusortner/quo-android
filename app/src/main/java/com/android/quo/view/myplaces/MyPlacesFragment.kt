@@ -60,7 +60,7 @@ class MyPlacesFragment : Fragment() {
      */
     private fun setupSwipeRefresh() =
             swipeRefreshLayout.setOnRefreshListener {
-                placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
+//                placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
                 swipeRefreshLayout.isRefreshing = false
             }
 

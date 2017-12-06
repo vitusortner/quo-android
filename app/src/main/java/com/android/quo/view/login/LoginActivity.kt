@@ -8,11 +8,8 @@ import android.os.Bundle
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.PlaceRepository
 import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.facebook.CallbackManager
@@ -53,8 +50,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         callbackManager = CallbackManager.Factory.create()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
-
-        PlaceRepository(QuoApplication.database.placeDao(), ApiService.instance)
 
         /**
          * handle Facebook result

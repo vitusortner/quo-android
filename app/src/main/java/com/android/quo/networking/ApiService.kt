@@ -19,6 +19,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 /**
@@ -27,15 +28,15 @@ import retrofit2.http.Path
 interface ApiService {
 
     // TODO
-    @POST("user")
+    @POST("users")
     fun login(@Body data: ServerLogin): Single<ServerUser>
 
     // TODO
-    @POST("user")
+    @POST("signup")
     fun singup(@Body data: ServerSignup): Single<ServerUser>
 
     // TODO which route?
-    @POST("user")
+    @POST("signupwithfacebook")
     fun signupWithFacebook(@Body data: ServerFacebookSignup): Single<ServerUser>
 
     // TODO which route? PUT?
@@ -46,43 +47,48 @@ interface ApiService {
     @POST("user")
     fun resetPassword(@Body data: ServerPasswordReset)
 
-    // TODO delete user trough ID or email?
+    // TODO delete user through ID or email?
     @DELETE("users/{id}")
     fun deleteUser(@Path("id") userId: String)
-
-    // TODO
-    @GET("users")
-    fun getUser(): Single<ServerUser>
-
-    // TO get called when user scans place
-    @POST("users/{id}/places")
-    fun addPlaceToUser(@Path("id") userId: String): Single<ServerPlace>
 
     @POST("places")
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
+    // TODO remove, not required
+    @GET("places")
+    fun getAllPlaces(): Single<List<ServerPlace>>
+
     @GET("places/{id}")
     fun getPlace(@Path("id") qrCodeId: String): Single<List<ServerPlace>>
 
-    @GET("users/{id}/places")
-    fun getPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+    @GET("users/{id}/visitedplaces")
+    fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+
+    @GET("users/{id}/myplaces")
+    fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
     @POST("pictures")
     fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>
+
+    @GET("pictures")
+    fun getAllPictures(): Single<List<ServerPicture>>
 
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
     @POST("components")
-    fun addComponent(@Body data: ServerComponent)
+    fun addComponent(@Body data: ServerComponent): Single<ServerComponent>
 
     @GET("places/{id}/components")
     fun getComponents()
 
+    @PUT("components/{id}")
+    fun updateComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>
+
     companion object {
 
         //        private const val BASE_URL = "http://www.mocky.io/v2/"
-        private const val BASE_URL = "http://localhost:3000/"
+        private const val BASE_URL = "http://10.0.2.2:3000/"
 
         private val okClient: OkHttpClient
             get() {
@@ -112,7 +118,7 @@ interface ApiService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(BASE_URL)
-                .client(okClient)
+//                .client(okClient)
                 .build()
 
         val instance: ApiService = ApiService.retrofit.create(ApiService::class.java)

@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
      */
     private fun setupSwipeRefresh() =
             swipeRefreshLayout.setOnRefreshListener {
-                placePreviewListViewModel.updatePlacePreviewList(HOME)
+//                placePreviewListViewModel.updatePlacePreviewList(HOME)
                 swipeRefreshLayout.isRefreshing = false
             }
 }

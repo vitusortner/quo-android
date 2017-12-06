@@ -6,12 +6,13 @@ import com.google.gson.annotations.SerializedName
  * Created by vitusortner on 30.11.17.
  */
 data class ServerPicture(
+        @SerializedName("_id")
         val id: String,
 
-        @SerializedName("owner_id")
+        @SerializedName("owner")
         val ownerId: String,
 
-        @SerializedName("place_od")
+        @SerializedName("place")
         val placeId: String,
 
         val src: String,

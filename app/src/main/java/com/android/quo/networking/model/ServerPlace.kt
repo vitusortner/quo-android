@@ -6,19 +6,20 @@ import com.google.gson.annotations.SerializedName
  * Created by vitusortner on 30.11.17.
  */
 data class ServerPlace(
-        val id: String,
+        @SerializedName("_id")
+        val id: String? = null,
 
         val host: String,
 
         val title: String,
 
-        val description: String,
+        val description: String? = null,
 
         @SerializedName("start_date")
         val startDate: String,
 
         @SerializedName("end_date")
-        val endDate: String,
+        val endDate: String? = null,
 
         @SerializedName("lat")
         val latitude: String,
@@ -26,15 +27,15 @@ data class ServerPlace(
         @SerializedName("long")
         val longitude: String,
 
-        val address: ServerAddress,
+        val address: ServerAddress? = null,
 
-        val settings: ServerSettings,
+        val settings: ServerSettings? = null,
 
         @SerializedName("title_picture")
-        val titlePicture: String,
+        val titlePicture: String? = null,
 
         @SerializedName("qr_code_id")
-        val qrCodeId: String,
+        val qrCodeId: String? = null,
 
-        val components: List<ServerComponent>
+        val components: List<ServerComponent>? = null
 )

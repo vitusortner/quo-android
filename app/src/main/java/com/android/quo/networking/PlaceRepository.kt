@@ -13,18 +13,42 @@ import io.reactivex.Single
  */
 class PlaceRepository(private val placeDao: PlaceDao, private val apiService: ApiService) {
 
-    init {
-        // TODO move to viewmodel
-        getPlaces("1").subscribe {
-            Log.i("data", "$it")
-        }
-    }
-
-    fun getPlaces(userId: String): Flowable<List<Place>> {
+    // TODO remove
+    fun getAllPlaces(): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
             object : Repository<List<Place>, List<ServerPlace>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlace>> = apiService.getAllPlaces()
+
+                override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
+
+                override fun sync(data: List<ServerPlace>) {
+                    SyncService.savePlaces(data)
+                }
+            }
+        }, BackpressureStrategy.BUFFER)
+    }
+
+    fun getMyPlaces(userId: String): Flowable<List<Place>> {
+        return Flowable.create({ emitter ->
+            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+
+                override fun getRemote(): Single<List<ServerPlace>> = apiService.getMyPlaces(userId)
+
+                override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
+
+                override fun sync(data: List<ServerPlace>) {
+                    SyncService.savePlaces(data)
+                }
+            }
+        }, BackpressureStrategy.BUFFER)
+    }
+
+    fun getVisitedPlaces(userId: String): Flowable<List<Place>> {
+        return Flowable.create({ emitter ->
+            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+
+                override fun getRemote(): Single<List<ServerPlace>> = apiService.getVisitedPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 

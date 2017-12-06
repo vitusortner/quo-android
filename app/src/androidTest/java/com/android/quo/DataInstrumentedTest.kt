@@ -75,9 +75,6 @@ class DataInstrumentedTest {
     }
 
     @Test
-    fun picture_insert_test() {
-        val date = Date()
-    @Test
     fun place_test() {
         val place = Place(1, 1L, 1L, 1L, "Title")
         database?.placeDao()?.insertPlace(place)
@@ -97,6 +94,10 @@ class DataInstrumentedTest {
                     boolean
                 }
     }
+
+    @Test
+    fun picture_insert_test() {
+        val date = Date()
 
         val user = User("1234")
         userDao?.insertUser(user)
@@ -130,32 +131,5 @@ class DataInstrumentedTest {
         userDao?.insertUser(user)
         val foundUser = userDao?.getUserById(user.id)
         Assert.assertEquals(user, foundUser)
-    }
-
-    @Test
-    fun user_place_join_insert_test() {
-        val date = Date()
-
-        val user = User("899898")
-        userDao?.insertUser(user)
-        val users = listOf(user)
-
-        val address = Address("street", "city", 123)
-        val place = Place("717171", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
-        val place2 = Place("9998888", false, "title", date, date, "12", "21", address, true, true, "src.com", "123")
-        placeDao?.insertPlace(place)
-        placeDao?.insertPlace(place2)
-        val places = listOf(place, place2)
-
-        val userPlaceJoin = UserPlaceJoin(user.id, place.id, date)
-        val userPlaceJoin2 = UserPlaceJoin(user.id, place2.id, date)
-        userPlaceJoinDao?.insertUserPlaceJoin(userPlaceJoin)
-        userPlaceJoinDao?.insertUserPlaceJoin(userPlaceJoin2)
-
-        val foundPlaces = userPlaceJoinDao?.getPlacesFromUser(user.id)
-        val foundUsers = userPlaceJoinDao?.getUsersFromPlace(place.id)
-
-        Assert.assertEquals(users, foundUsers)
-        Assert.assertEquals(places, foundPlaces)
     }
 }

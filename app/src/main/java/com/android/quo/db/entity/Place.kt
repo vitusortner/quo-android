@@ -23,7 +23,7 @@ data class Place(
         var description: String = "",
 
         // TODO date required? seems like we only use it in the UI for calculating and stuff
-        // maybe "cast" in UI?
+        // maybe "cast" in ZU
         @ColumnInfo(name = "start_date")
         var startDate: Date = Date(),
 
@@ -38,10 +38,10 @@ data class Place(
         var address: Address? = null,
 
         @ColumnInfo(name = "is_photo_upload_allowed")
-        var isPhotoUploadAllowed: Boolean = true,
+        var isPhotoUploadAllowed: Boolean? = true,
 
         @ColumnInfo(name = "has_to_validate_gps")
-        var hasToValidateGps: Boolean = true,
+        var hasToValidateGps: Boolean? = true,
 
         @ColumnInfo(name = "title_picture")
         var titlePicture: String = "",
