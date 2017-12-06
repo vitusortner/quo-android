@@ -10,7 +10,7 @@
         android:layout_marginBottom="@dimen/home_cardview_margin"
         android:layout_marginLeft="@dimen/home_cardview_margin"
         android:layout_marginRight="@dimen/home_cardview_margin"
-        app:cardCornerRadius="2dp"
+        app:cardCornerRadius="@dimen/home_cardview_corner_radius"
         android:layout_centerHorizontal="true"
         android:innerRadius="0dp"
         android:shape="ring"
@@ -36,10 +36,10 @@
                 android:layout_above="@+id/placePreviewDescriptionTextView"
                 android:layout_alignParentStart="true"
                 android:background="@color/colorCardViewTitleBackground"
-                android:paddingBottom="4dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp" />
+                android:paddingBottom="@dimen/home_cardview_padding_bottom"
+                android:paddingTop="@dimen/home_cardview_padding_top"
+                android:paddingEnd="@dimen/home_cardview_padding_end"
+                android:paddingStart="@dimen/home_cardview_padding_start" />
 
             <TextView
                 android:id="@+id/placePreviewDescriptionTextView"
@@ -48,10 +48,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/placePreviewImageView"
-                android:paddingBottom="@dimen/home_cardview_textview_padding"
-                android:paddingEnd="13dp"
-                android:paddingStart="9dp"
-                android:paddingTop="7dp"/>
+                android:paddingBottom="@dimen/home_cardview_textview_padding_bottom"
+                android:paddingEnd="@dimen/home_cardview_textview_padding_end"
+                android:paddingStart="@dimen/home_cardview_textview_padding_start"
+                android:paddingTop="@dimen/home_cardview_textview_padding_top"/>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

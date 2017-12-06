@@ -26,12 +26,12 @@
     </style>
 
     <style name="CardViewTitleFont">
-        <item name="android:textSize">24dp</item>
+        <item name="android:textSize">@dimen/home_cardview_title_textsize</item>
         <item name="android:textColor">@color/colorTextWhite</item>
     </style>
 
     <style name="CardViewDescriptionFont">
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">@dimen/home_cardview_description_textsize</item>
         <item name="android:textColor">@color/colorTextBlack</item>
     </style>
 
