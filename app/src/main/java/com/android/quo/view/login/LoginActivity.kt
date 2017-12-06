@@ -51,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
 
+
         /**
          * handle Facebook result
          */

@@ -28,7 +28,9 @@ class HomeFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,17 +49,22 @@ class HomeFragment : Fragment() {
     private fun observePlacePreviewList() =
             placePreviewListViewModel.getPlacePreviewList(HOME).observe(this, Observer { list ->
                 list?.let {
-                    placePreviewRecyclerView.adapter = PlacePreviewAdapter(list)
-                    placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
+                    activity?.let { activity ->
+                        placePreviewRecyclerView.adapter =
+                                PlacePreviewAdapter(list, activity.supportFragmentManager)
+                        placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
+                    }
                 }
             })
 
     /**
      * Update place preview list and stop refreshing animation
      */
-    private fun setupSwipeRefresh() =
-            swipeRefreshLayout.setOnRefreshListener {
-//                placePreviewListViewModel.updatePlacePreviewList(HOME)
-                swipeRefreshLayout.isRefreshing = false
-            }
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setOnRefreshListener {
+            placePreviewListViewModel.updatePlacePreviewList(HOME)
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
 }

@@ -51,7 +51,10 @@ dependencies {
     compile "com.android.support:palette-v7:$support_library_version"
     compile "com.github.florent37:glidepalette:2.1.1"
     compile 'com.facebook.android:facebook-login:4.28.0'
-    compile 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.0.0'
+    compile "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
+    compile "com.alexvasilkov:gesture-views:2.3.2"
+    implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version"
+    compile 'com.facebook.android:facebook-login:4.28.0'
 
     compile "android.arch.persistence.room:runtime:$architecture_components_version"
     kapt "android.arch.persistence.room:compiler:$architecture_components_version"
