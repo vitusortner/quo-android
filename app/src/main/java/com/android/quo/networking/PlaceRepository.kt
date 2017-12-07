@@ -11,9 +11,13 @@ import io.reactivex.Single
 /**
  * Created by vitusortner on 24.11.17.
  */
-class PlaceRepository(private val placeDao: PlaceDao, private val apiService: ApiService) {
+class PlaceRepository(
+        private val placeDao: PlaceDao,
+        private val apiService: ApiService,
+        private val syncService: SyncService
+) {
 
-    // TODO remove
+    // TODO remove after testing
     fun getAllPlaces(): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
             object : Repository<List<Place>, List<ServerPlace>>(emitter) {
@@ -23,7 +27,7 @@ class PlaceRepository(private val placeDao: PlaceDao, private val apiService: Ap
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    SyncService.savePlaces(data)
+                    syncService.savePlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
@@ -38,7 +42,7 @@ class PlaceRepository(private val placeDao: PlaceDao, private val apiService: Ap
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    SyncService.savePlaces(data)
+                    syncService.savePlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
@@ -53,7 +57,7 @@ class PlaceRepository(private val placeDao: PlaceDao, private val apiService: Ap
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    SyncService.savePlaces(data)
+                    syncService.savePlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
@@ -68,7 +72,7 @@ class PlaceRepository(private val placeDao: PlaceDao, private val apiService: Ap
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    SyncService.savePlaces(data)
+                    syncService.savePlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)

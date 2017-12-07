@@ -1,6 +1,7 @@
 package com.android.quo.view.home
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -12,10 +13,12 @@ import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
 import com.android.quo.networking.PlaceRepository
+import com.android.quo.networking.SyncService
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.HomeViewModel
+import com.android.quo.viewmodel.factory.HomeViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_home.placePreviewRecyclerView
+import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
 
 /**
@@ -23,11 +26,13 @@ import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
  */
 class HomeFragment : Fragment() {
 
-    private val placeDao = QuoApplication.database.placeDao()
+    private val database = QuoApplication.database
+    private val placeDao = database.placeDao()
     private val apiService = ApiService.instance
-    private val placeRepository = PlaceRepository(placeDao, apiService)
+    private val syncService = SyncService(database)
+    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
 
-    private val viewModel = HomeViewModel(placeRepository)
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -41,6 +46,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = VISIBLE
 
+        viewModel = ViewModelProviders.of(this, HomeViewModelFactory(placeRepository)).get(HomeViewModel::class.java)
+
         observePlacePreviewList()
         setupSwipeRefresh()
     }
@@ -52,8 +59,8 @@ class HomeFragment : Fragment() {
         viewModel.getPlaces().observe(this, Observer {
             it?.let { list ->
                 activity?.let { activity ->
-                    placePreviewRecyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
-                    placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
+                    recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
+                    recyclerView.layoutManager = LinearLayoutManager(this.context)
                 }
             }
         })
@@ -65,7 +72,7 @@ class HomeFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            //            placePreviewListViewModel.updatePlacePreviewList(HOME)
+            viewModel.loadPlaces()
             swipeRefreshLayout.isRefreshing = false
         }
     }

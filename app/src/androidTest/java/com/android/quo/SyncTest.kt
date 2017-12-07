@@ -40,6 +40,6 @@ class SyncTest {
                 components = listOf(component)
         )
 
-        SyncService.savePlaces(listOf(place))
+//        SyncService().savePlaces(listOf(place))
     }
 }

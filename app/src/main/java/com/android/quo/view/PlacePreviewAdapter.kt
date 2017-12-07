@@ -7,12 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.model.PlacePreview
 import com.android.quo.view.place.PlaceFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
-import com.github.florent37.glidepalette.BitmapPalette
-import com.github.florent37.glidepalette.GlidePalette
 import com.jakewharton.rxbinding2.view.RxView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewCardView

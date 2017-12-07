@@ -3,7 +3,6 @@ package com.android.quo.db.entity
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import java.util.*
 
 /**
  * Created by FlorianSchlueter on 17.11.2017.
@@ -25,5 +24,5 @@ data class Picture(
         @ColumnInfo(name = "is_visible")
         var isVisible: Boolean = false,
 
-        var timestamp: Date = Date()
+        var timestamp: String = ""
 )

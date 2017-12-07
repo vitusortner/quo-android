@@ -2,6 +2,7 @@ package com.android.quo.networking
 
 import android.util.Log
 import com.android.quo.QuoApplication
+import com.android.quo.db.AppDatabase
 import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
@@ -10,24 +11,20 @@ import com.android.quo.db.entity.User
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerUser
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Created by vitusortner on 30.11.17.
  */
-object SyncService {
+class SyncService(private val database: AppDatabase) {
 
     fun savePlaces(data: List<ServerPlace>) {
         val places = data.map { place ->
             Place(
                     id = place.id ?: "",
-                    // TODO has this check to be done on client side? or always send user id with request and check on server?
                     isHost = QuoApplication.database.userDao().getUserById(place.host) != null,
                     title = place.title,
-                    // TODO to date function required? (cast from string to date)
-                    startDate = Date(),
-                    endDate = Date(),
+                    startDate = place.startDate,
+                    endDate = place.endDate,
                     latitude = place.latitude,
                     longitude = place.longitude,
                     address = place.address?.let {
@@ -42,8 +39,8 @@ object SyncService {
                     qrCodeId = place.qrCodeId ?: ""
             )
         }
-        QuoApplication.database.placeDao().deleteAllPlaces()
-        QuoApplication.database.placeDao().insertAllPlaces(places)
+        database.placeDao().deleteAllPlaces()
+        database.placeDao().insertAllPlaces(places)
         Log.i("sync", "place sync success!")
 
         val components = mutableListOf<Component>()
@@ -63,16 +60,16 @@ object SyncService {
         }
 
         if (components.isNotEmpty()) {
-            QuoApplication.database.componentDao().deleteAllComponents()
-            QuoApplication.database.componentDao().insertAllComponents(components)
+            database.componentDao().deleteAllComponents()
+            database.componentDao().insertAllComponents(components)
+            Log.i("sync", "component sync success!")
         }
-        Log.i("sync", "component sync success!")
     }
 
     fun saveUser(data: ServerUser) {
         // TODO write token to key chain
         val user = User(data.id)
-        QuoApplication.database.userDao().insertUser(user)
+        database.userDao().insertUser(user)
     }
 
     fun savePictures(data: List<ServerPicture>) {
@@ -83,23 +80,11 @@ object SyncService {
                     placeId = picture.placeId,
                     src = picture.src,
                     isVisible = picture.isVisible,
-                    // TODO timestamp/date
-                    timestamp = Date()
+                    timestamp = picture.timestamp
             )
         }
-        QuoApplication.database.pictureDao().deleteAllPictures()
-        QuoApplication.database.pictureDao().insertAllPictures(pictures)
+        database.pictureDao().deleteAllPictures()
+        database.pictureDao().insertAllPictures(pictures)
         Log.i("sync", "picture sync success!")
-    }
-
-    // TODO move to extensions class
-    private fun String?.toDate(): Date? {
-        this?.let {
-            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-            simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
-            return simpleDateFormat.parse(it)
-        } ?: run {
-            return null
-        }
     }
 }

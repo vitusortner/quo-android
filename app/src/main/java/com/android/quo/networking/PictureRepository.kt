@@ -10,7 +10,11 @@ import io.reactivex.Single
 /**
  * Created by vitusortner on 05.12.17.
  */
-class PictureRepository(private val pictureDao: PictureDao, private val apiService: ApiService) {
+class PictureRepository(
+        private val pictureDao: PictureDao,
+        private val apiService: ApiService,
+        private val syncService: SyncService
+) {
 
     fun getPictures(placeId: String): Flowable<List<Picture>> {
         return Flowable.create({ emitter ->
@@ -21,12 +25,13 @@ class PictureRepository(private val pictureDao: PictureDao, private val apiServi
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getPictures(placeId)
 
                 override fun sync(data: List<ServerPicture>) {
-                    SyncService.savePictures(data)
+                    syncService.savePictures(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
     }
 
+    // TODO remove after testing
     fun getAllPictures(): Flowable<List<Picture>> {
         return Flowable.create({ emitter ->
             object : Repository<List<Picture>, List<ServerPicture>>(emitter) {
@@ -36,7 +41,7 @@ class PictureRepository(private val pictureDao: PictureDao, private val apiServi
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getAllPictures()
 
                 override fun sync(data: List<ServerPicture>) {
-                    SyncService.savePictures(data)
+                    syncService.savePictures(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)

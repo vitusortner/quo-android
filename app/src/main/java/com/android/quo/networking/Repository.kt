@@ -4,6 +4,7 @@ import android.util.Log
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -14,6 +15,7 @@ abstract class Repository<LocalType, RemoteType>(emitter: FlowableEmitter<LocalT
 
     init {
         getLocal()
+                .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
                 .subscribe(emitter::onNext)
 

@@ -2,15 +2,15 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Place
 import com.android.quo.networking.PlaceRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
  * Created by vitusortner on 06.12.17.
  */
-class HomeViewModel(private val placeRepository: PlaceRepository) {
+class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
 
     private var places: MutableLiveData<List<Place>>? = null
 
@@ -22,9 +22,8 @@ class HomeViewModel(private val placeRepository: PlaceRepository) {
         return places as MutableLiveData<List<Place>>
     }
 
-    private fun loadPlaces() {
+    fun loadPlaces() {
         placeRepository.getAllPlaces()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     places?.value = it
                 }, {
