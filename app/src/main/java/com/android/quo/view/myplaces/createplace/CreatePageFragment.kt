@@ -29,7 +29,7 @@ import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
-import kotlinx.android.synthetic.main.fragment_create_page.placePreviewCardView
+import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewCardView
 import kotlinx.android.synthetic.main.fragment_create_page.roundEditButton
 import kotlinx.android.synthetic.main.fragment_create_page.roundGalleryButton
 import kotlinx.android.synthetic.main.fragment_create_page.view.generatedLayout
@@ -59,8 +59,14 @@ class CreatePageFragment : Fragment() {
 
         compositeDisposable.add(RxView.clicks(roundEditButton)
                 .subscribe {
-                    placePreviewCardView.visibility = GONE
+                    pagePreviewCardView.visibility = GONE
                     view.generatedLayout.addView(createCardView(createEditText()))
+                })
+
+        compositeDisposable.add(RxView.clicks(pagePreviewCardView)
+                .subscribe {
+                    roundEditButton.visibility = GONE
+                    roundGalleryButton.visibility = GONE
                 })
 
         compositeDisposable.add(RxView.clicks(roundGalleryButton)
@@ -95,7 +101,7 @@ class CreatePageFragment : Fragment() {
         editText.gravity = TOP
         editText.minLines = 10
         editText.setSingleLine(false)
-        editText.setBackgroundColor(resources.getColor(R.color.colorTextWhite))
+        editText.setBackgroundColor(resources.getColor(R.color.colorPrimary))
         editText.setTextColor(resources.getColor(R.color.colorTextGray))
         return editText
 
@@ -136,7 +142,7 @@ class CreatePageFragment : Fragment() {
                             bitmap, bitmap.width / 2, bitmap.height / 2, false)
                     val bitmapDrawable = BitmapDrawable(resources, scaledBitmap)
 
-                    placePreviewCardView.visibility = GONE
+                    pagePreviewCardView.visibility = GONE
                     generatedLayout.addView(createCardView(createImageView(bitmapDrawable)))
 
                 }

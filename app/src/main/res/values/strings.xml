@@ -68,7 +68,7 @@
     <string name="save">Save</string>
     <string name="not_found">Not found</string>
     <string name="create_place_tablayout_title_event">EVENT</string>
-    <string name="create_place_tablayout_title_page">PLACE</string>
+    <string name="create_place_tablayout_title_page">PAGE</string>
     <string name="create_place_tablayout_title_settings">SETTINGS</string>
     <string name="add_content">Add Content</string>
     <string name="photos">Photos</string>

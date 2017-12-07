@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_content"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorAccent" />
 
         <TextView
             android:id="@+id/photosTextView"
@@ -23,7 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/addContentTextView"
             android:layout_marginTop="@dimen/create_settings_margin_large"
-            android:text="@string/photos" />
+            android:text="@string/photos"
+            android:textColor="@color/colorTextBlack" />
 
         <TextView
             android:id="@+id/photosUnderlineTextView"
@@ -61,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/create_settings_margin"
             android:text="@string/location"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorAccent" />
 
         <TextView
             android:id="@+id/gpsTextView"
@@ -69,7 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/locationTextView"
             android:layout_marginTop="@dimen/create_settings_margin_large"
-            android:text="@string/validate_gps" />
+            android:text="@string/validate_gps"
+            android:textColor="@color/colorTextBlack" />
 
         <TextView
             android:id="@+id/gpsUnderlineTextView"

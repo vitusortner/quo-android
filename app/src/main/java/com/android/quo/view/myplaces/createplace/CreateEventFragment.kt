@@ -95,7 +95,7 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     }
 
-    private fun setupRxBindingViews(){
+    private fun setupRxBindingViews() {
         /**
          * will show the calendar view
          */
@@ -157,21 +157,23 @@ class CreateEventFragment : Fragment(), LocationListener {
         compositeDisposable.add(RxView.clicks(galleryButton)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    context.let { context ->
-                        bottomSheetDialog = BottomSheetDialog(context!!)
-                        val sheetView = activity?.layoutInflater!!.inflate(R.layout.layout_bottom_sheet_select_foto, null)
-                        sheetView.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList(), headerImageView)
-                        val linearLayoutManager = LinearLayoutManager(this.context)
-                        linearLayoutManager.orientation = LinearLayout.HORIZONTAL
-                        sheetView.defaultImageListView.layoutManager = linearLayoutManager
-                        bottomSheetDialog.setContentView(sheetView)
-                        bottomSheetDialog.show()
+                    context?.let { context ->
+                        bottomSheetDialog = BottomSheetDialog(context)
+                        val sheetView = activity?.let { it.layoutInflater.inflate(R.layout.layout_bottom_sheet_select_foto, null) }
+                        sheetView?.let {
+                            it.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList(), headerImageView)
+                            val linearLayoutManager = LinearLayoutManager(this.context)
+                            linearLayoutManager.orientation = LinearLayout.HORIZONTAL
+                            it.defaultImageListView?.layoutManager = linearLayoutManager
+                            bottomSheetDialog.setContentView(sheetView)
+                            bottomSheetDialog.show()
 
-                        compositeDisposable.add(RxView.clicks(sheetView.photosLayout)
-                                .subscribe { openPhoneGallery() })
+                            compositeDisposable.add(RxView.clicks(it.photosLayout)
+                                    .subscribe { openPhoneGallery() })
 
-                        compositeDisposable.add(RxView.clicks(sheetView.cameraLayout)
-                                .subscribe { openPhoneCamera() })
+                            compositeDisposable.add(RxView.clicks(it.cameraLayout)
+                                    .subscribe { openPhoneCamera() })
+                        }
 
                     }
                 })
@@ -197,7 +199,7 @@ class CreateEventFragment : Fragment(), LocationListener {
         /**
          * disable main scroller if user will scroll in description box
          */
-        compositeDisposable.addAll(RxView.touches(descriptionEditText, { motionEvent ->
+        compositeDisposable.add(RxView.touches(descriptionEditText, { motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                 eventScrollView.requestDisallowInterceptTouchEvent(true)
             }
@@ -212,21 +214,19 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     fun getDefaultImageList(): ArrayList<Drawable> {
         val list = ArrayList<Drawable>()
-        context?.let {
-            // TODO find a better way without !!
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image1)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image2)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image3)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image4)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image5)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image6)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image7)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image8)!!)
-            list.add(ContextCompat.getDrawable(it, R.drawable.default_event_image9)!!)
+        context?.let { context ->
+            ContextCompat.getDrawable(context, R.drawable.default_event_image1)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image2)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image3)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image4)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image5)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image6)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image7)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image8)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image9)?.let { list.add(it) }
+
         }
         return list
-
-
     }
 
     private fun hideKeyboard(activity: FragmentActivity?) {
@@ -279,17 +279,13 @@ class CreateEventFragment : Fragment(), LocationListener {
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        this.activity?.let { activity ->
-            activity.startActivityForResult(galleryIntent, RESULT_GALLERY)
-        }
+        this.activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
     private fun openPhoneCamera() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-        this.activity?.let { activity ->
-            activity.startActivityForResult(cameraIntent, RESULT_CAMERA)
-        }
+        this.activity?.startActivityForResult(cameraIntent, RESULT_CAMERA)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -402,7 +398,7 @@ class CreateEventFragment : Fragment(), LocationListener {
      */
     override fun onLocationChanged(p0: Location?) {
         if (p0 != null) {
-            if (!foundLocation){
+            if (!foundLocation) {
                 foundLocation = true
                 getAddressFromLocation(p0)
             }

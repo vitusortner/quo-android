@@ -16,10 +16,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/colorPrimary"
-        android:fitsSystemWindows="true"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/colorAccent"
         app:tabMode="fixed"
+        android:elevation="@dimen/main_toolbar_elevation"
         app:tabSelectedTextColor="@color/colorAccent"
         app:tabTextColor="@color/colorAccent" />
 
