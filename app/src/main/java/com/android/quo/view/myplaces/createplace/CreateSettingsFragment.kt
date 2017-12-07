@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxCompoundButton
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_settings.gpsSwitch
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_create_settings.photosSwitch
  * Created by Jung on 27.11.17.
  */
 
-class CreateSettingsFragment: Fragment(){
+class CreateSettingsFragment : Fragment() {
     private var compositeDisposable = CompositeDisposable()
     override fun onCreateView(
             inflater: LayoutInflater,

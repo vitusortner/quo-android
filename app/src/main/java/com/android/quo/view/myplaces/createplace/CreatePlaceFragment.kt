@@ -4,6 +4,7 @@ package com.android.quo.view.myplaces.createplace
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.android.quo.model.ServerAddress
 import com.android.quo.model.ServerComponent
 import com.android.quo.model.ServerPlace
 import com.android.quo.model.ServerSettings
+import com.android.quo.view.myplaces.createplace.CreatePlace.components
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
@@ -36,16 +38,16 @@ class CreatePlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val serverAddress = ServerAddress("","",-1)
-        val serverSettings = ServerSettings(false,false)
-        val serverComponent = ServerComponent("","","",-1)
-        val serverComponents = ArrayList<ServerComponent>()
-        serverComponents.add(serverComponent)
-
-        place = ServerPlace("","","","","","",
-                "",serverAddress, serverSettings,"","",serverComponents)
-
-        place.copy(title = "createPlace")
+//        val serverAddress = ServerAddress("","",-1)
+//        val serverSettings = ServerSettings(false,false)
+//        val serverComponent = ServerComponent("","","",-1)
+//        val serverComponents = ArrayList<ServerComponent>()
+//        serverComponents.add(serverComponent)
+//
+//        place = ServerPlace("","","","","","",
+//                "",serverAddress, serverSettings,"","",serverComponents)
+//
+//        place.copy(title = "createPlace")
 
                 this.context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
@@ -72,6 +74,14 @@ class CreatePlaceFragment : Fragment() {
                 RxToolbar.itemClicks(toolbar)
                         .subscribe {
                             //TODO save
+                            for (c in components){
+                                println(c.text)
+                            }
+
+                            fragmentManager?.beginTransaction()
+                                    ?.replace(R.id.content, QrCodeFragment())
+                                    ?.addToBackStack(null)
+                                    ?.commit()
                         }
         )
     }

@@ -25,7 +25,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.quo.R
+import com.android.quo.model.ServerComponent
+import com.android.quo.view.myplaces.createplace.CreatePlace.components
 import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
@@ -60,12 +63,25 @@ class CreatePageFragment : Fragment() {
         compositeDisposable.add(RxView.clicks(roundEditButton)
                 .subscribe {
                     placePreviewCardView.visibility = GONE
-                    view.generatedLayout.addView(createCardView(createEditText()))
+                    val editText = createEditText()
+                    editText.setTag(id, view.generatedLayout.childCount + 1)
+                    view.generatedLayout.addView(createCardView(editText))
+                    components.add(ServerComponent(view.generatedLayout.childCount.toString(), "", "", view.generatedLayout.childCount - 1))
+
+                    compositeDisposable.add(RxTextView.afterTextChangeEvents(editText)
+                            .subscribe {
+                                components
+                                        .filter { c -> c.id == it.view().getTag(id).toString() }
+                                        .forEach { c ->
+                                            c.text = it.view().text.toString()
+                                        }
+                            })
                 })
 
         compositeDisposable.add(RxView.clicks(roundGalleryButton)
                 .subscribe { openPhoneGallery() })
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -138,6 +154,8 @@ class CreatePageFragment : Fragment() {
 
                     placePreviewCardView.visibility = GONE
                     generatedLayout.addView(createCardView(createImageView(bitmapDrawable)))
+                    //TODO create name for image
+                    components.add(ServerComponent(generatedLayout.childCount.toString(), "name", "", generatedLayout.childCount - 1))
 
                 }
             }

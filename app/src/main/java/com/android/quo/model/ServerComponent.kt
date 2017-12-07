@@ -7,9 +7,9 @@ package com.android.quo.model
 data class ServerComponent(
         val id: String,
 
-        val picture: String?,
+        var picture: String?,
 
-        val text: String?,
+        var text: String?,
 
         val position: Int
 )

@@ -11,6 +11,7 @@ import com.android.quo.model.ServerSettings
 
 object CreatePlace {
     var place: ServerPlace
+    val components = java.util.ArrayList<ServerComponent>()
 
     init {
         val serverAddress = ServerAddress("","",-1)
@@ -22,7 +23,7 @@ object CreatePlace {
         place = ServerPlace("","","","","","",
                 "",serverAddress, serverSettings,"","",serverComponents)
 
-        place.copy(title = "createPlace")
+        place = place.copy(title = "createPlace")
 
     }
 
