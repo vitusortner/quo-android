@@ -27,34 +27,27 @@ import retrofit2.http.Path
  */
 interface ApiService {
 
-    // TODO
     @POST("users")
     fun login(@Body data: ServerLogin): Single<ServerUser>
 
-    // TODO
     @POST("signup")
     fun singup(@Body data: ServerSignup): Single<ServerUser>
 
-    // TODO which route?
     @POST("signupwithfacebook")
     fun signupWithFacebook(@Body data: ServerFacebookSignup): Single<ServerUser>
 
-    // TODO which route? PUT?
     @POST("user")
     fun changePassword(@Body data: ServerPasswordChange): Single<ServerUser>
 
-    // TODO
     @POST("user")
     fun resetPassword(@Body data: ServerPasswordReset)
 
-    // TODO delete user through ID or email?
     @DELETE("users/{id}")
     fun deleteUser(@Path("id") userId: String)
 
     @POST("places")
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
-    // TODO remove, not required
     @GET("places")
     fun getAllPlaces(): Single<List<ServerPlace>>
 
@@ -87,7 +80,6 @@ interface ApiService {
 
     companion object {
 
-        //        private const val BASE_URL = "http://www.mocky.io/v2/"
         private const val BASE_URL = "http://10.0.2.2:3000/"
 
         private val okClient: OkHttpClient
@@ -118,6 +110,7 @@ interface ApiService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(BASE_URL)
+                // no headers used right now
 //                .client(okClient)
                 .build()
 

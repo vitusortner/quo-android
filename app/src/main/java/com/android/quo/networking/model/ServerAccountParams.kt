@@ -15,7 +15,6 @@ data class ServerSignup(
         val password: String
 )
 
-// TODO which fields are required?
 data class ServerFacebookSignup(
         @SerializedName("fb_token")
         val fbToken: String

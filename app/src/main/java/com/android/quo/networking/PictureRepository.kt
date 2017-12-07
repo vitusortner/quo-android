@@ -31,7 +31,6 @@ class PictureRepository(
         }, BackpressureStrategy.BUFFER)
     }
 
-    // TODO remove after testing
     fun getAllPictures(): Flowable<List<Picture>> {
         return Flowable.create({ emitter ->
             object : Repository<List<Picture>, List<ServerPicture>>(emitter) {

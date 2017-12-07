@@ -17,7 +17,6 @@ class PlaceRepository(
         private val syncService: SyncService
 ) {
 
-    // TODO remove after testing
     fun getAllPlaces(): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
             object : Repository<List<Place>, List<ServerPlace>>(emitter) {
