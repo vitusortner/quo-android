@@ -30,6 +30,9 @@ interface PictureDao {
     @Delete
     fun deletePicture(picture: Picture)
 
+    @Query("DELETE FROM picture WHERE place_id = :placeId")
+    fun deletePicturesOfPlace(placeId: String)
+
     @Query("DELETE FROM picture")
     fun deleteAllPictures()
 }

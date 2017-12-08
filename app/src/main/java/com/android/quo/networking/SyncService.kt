@@ -1,7 +1,6 @@
 package com.android.quo.networking
 
 import android.util.Log
-import com.android.quo.QuoApplication
 import com.android.quo.db.AppDatabase
 import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
@@ -17,11 +16,19 @@ import com.android.quo.networking.model.ServerUser
  */
 class SyncService(private val database: AppDatabase) {
 
-    fun savePlaces(data: List<ServerPlace>) {
+    fun saveMyPlaces(data: List<ServerPlace>) {
+        savePlaces(data, true)
+    }
+
+    fun saveVisitedPlaces(data: List<ServerPlace>) {
+        savePlaces(data, false)
+    }
+
+    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
         val places = data.map { place ->
             Place(
                     id = place.id ?: "",
-                    isHost = QuoApplication.database.userDao().getUserById(place.host) != null,
+                    isHost = isHost,
                     title = place.title,
                     startDate = place.startDate,
                     endDate = place.endDate,
@@ -39,10 +46,14 @@ class SyncService(private val database: AppDatabase) {
                     qrCodeId = place.qrCodeId ?: ""
             )
         }
-        database.placeDao().deleteAllPlaces()
+        database.placeDao().deletePlaces(isHost)
         database.placeDao().insertAllPlaces(places)
         Log.i("sync", "place sync success!")
 
+        saveComponents(data)
+    }
+
+    private fun saveComponents(data: List<ServerPlace>) {
         val components = mutableListOf<Component>()
         data.forEach { place ->
             place.components?.let {
@@ -57,13 +68,14 @@ class SyncService(private val database: AppDatabase) {
                             ))
                 }
             }
+            place.id?.let {
+                database.componentDao().deleteComponentsFromPlace(it)
+            }
         }
-
         if (components.isNotEmpty()) {
-            database.componentDao().deleteAllComponents()
             database.componentDao().insertAllComponents(components)
-            Log.i("sync", "component sync success!")
         }
+        Log.i("sync", "component sync success!")
     }
 
     fun saveUser(data: ServerUser) {
@@ -73,18 +85,21 @@ class SyncService(private val database: AppDatabase) {
     }
 
     fun savePictures(data: List<ServerPicture>) {
-        val pictures = data.map { picture ->
-            Picture(
-                    id = picture.id,
-                    ownerId = picture.ownerId,
-                    placeId = picture.placeId,
-                    src = picture.src,
-                    isVisible = picture.isVisible,
-                    timestamp = picture.timestamp
-            )
+        if (data.isNotEmpty()) {
+            val pictures = data.map { picture ->
+                Picture(
+                        id = picture.id,
+                        ownerId = picture.ownerId,
+                        placeId = picture.placeId,
+                        src = picture.src,
+                        isVisible = picture.isVisible,
+                        timestamp = picture.timestamp
+                )
+            }
+            // delete pictures of given place
+            database.pictureDao().deletePicturesOfPlace(data[0].placeId)
+            database.pictureDao().insertAllPictures(pictures)
         }
-        database.pictureDao().deleteAllPictures()
-        database.pictureDao().insertAllPictures(pictures)
         Log.i("sync", "picture sync success!")
     }
 }
