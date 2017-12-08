@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.android.quo.R
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable
@@ -36,14 +37,20 @@ class CreatePlaceFragment : Fragment() {
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
 
+        /**
+         * change status bar color
+         */
+        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
+
         setupToolbar()
 
     }
 
     private fun setupToolbar() {
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
+        toolbar.setNavigationIcon(R.drawable.ic_back)
         toolbar.inflateMenu(R.menu.create_place_menu)
         toolbar.title = getString(R.string.new_place)
+        toolbar.setTitleTextColor(resources.getColor(R.color.colorTextWhite))
 
         compositDisposable.add(
                 RxToolbar.navigationClicks(toolbar)
@@ -67,6 +74,12 @@ class CreatePlaceFragment : Fragment() {
         for (fragment in childFragmentManager.fragments) {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        activity?.window?.statusBarColor = resources.getColor(R.color.colorPrimaryDark)
     }
 
     override fun onDestroy() {

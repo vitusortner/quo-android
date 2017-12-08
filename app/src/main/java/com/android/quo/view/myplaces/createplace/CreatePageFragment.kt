@@ -41,7 +41,7 @@ import kotlinx.android.synthetic.main.fragment_create_page.view.generatedLayout
 
 class CreatePageFragment : Fragment() {
     private var compositeDisposable = CompositeDisposable()
-    private val RESULT_GALLERY = 0
+    private val RESULT_GALLERY = 2
 
     override fun onCreateView(
             inflater: LayoutInflater,
