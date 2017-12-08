@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -27,9 +28,15 @@ import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.model.ServerComponent
 import com.android.quo.view.myplaces.createplace.CreatePlace.components
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
 import kotlinx.android.synthetic.main.fragment_create_page.placePreviewCardView
@@ -80,6 +87,15 @@ class CreatePageFragment : Fragment() {
 
         compositeDisposable.add(RxView.clicks(roundGalleryButton)
                 .subscribe { openPhoneGallery() })
+
+        generateQrCodeObservable()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe{
+                    //TODO 
+                }
+
+
     }
 
 
@@ -186,4 +202,21 @@ class CreatePageFragment : Fragment() {
         return result as String
     }
 
+
+    private fun generateQrCodeObservable(): Observable<Bitmap> {
+        return Observable.create {
+            var data = ""
+            val width = 1024
+            val height = 1024
+            var multiFormatWriter = MultiFormatWriter()
+            val bm = multiFormatWriter.encode(data, BarcodeFormat.QR_CODE, width, height)
+            val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+            for (i in 0 until width) {
+                for (j in 0 until height) {
+                    imageBitmap.setPixel(i, j, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
+                }
+            }
+        }
+    }
 }
