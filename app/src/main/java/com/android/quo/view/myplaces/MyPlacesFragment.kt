@@ -37,6 +37,7 @@ class MyPlacesFragment : Fragment() {
      * Observe place preview list and set adapter for place preview recycler view
      */
     private fun observePlacePreviewList() {
+        // TODO
 //        placePreviewListViewModel.getPlacePreviewList(MY_PLACES).observe(this, Observer { list ->
 //            list?.let {
 //                activity?.let { activity ->
@@ -54,6 +55,7 @@ class MyPlacesFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
+            // TODO
 //            placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
             swipeRefreshLayout.isRefreshing = false
         }
