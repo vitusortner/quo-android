@@ -1,12 +1,15 @@
 package com.android.quo.view.myplaces
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.view.PlacePreviewAdapter
+import com.android.quo.view.myplaces.createplace.CreatePlaceFragment
+import com.android.quo.viewmodel.PlacePreviewListViewModel
+import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.MY_PLACES
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
@@ -63,8 +66,9 @@ class MyPlacesFragment : Fragment() {
 
     private fun setupFloatingActionButton() =
             floatingActionButton.setOnClickListener {
-                Snackbar.make(floatingActionButton, "Floating action button clicked", Snackbar.LENGTH_LONG)
-                        .setAction("HIDE", { })
-                        .show()
+                fragmentManager?.beginTransaction()
+                        ?.replace(R.id.content, CreatePlaceFragment())
+                        ?.addToBackStack(null)
+                        ?.commit()
             }
 }

@@ -65,7 +65,7 @@
             android:layout_below="@+id/passwordWrapper"
             android:layout_marginTop="@dimen/login_button_margin_top"
             android:text="@string/login"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/login_button_text_size" />
 
         <Button
