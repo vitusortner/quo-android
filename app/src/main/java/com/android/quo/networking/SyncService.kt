@@ -36,11 +36,11 @@ class SyncService(private val database: AppDatabase) {
                         endDate = place.endDate,
                         latitude = place.latitude,
                         longitude = place.longitude,
-                        address = place.address?.let {
+                        address = place.address?.let { address ->
                             Address(
-                                    street = place.address.street,
-                                    city = place.address.city,
-                                    zipCode = place.address.zipCode)
+                                    street = address.street,
+                                    city = address.city,
+                                    zipCode = address.zipCode)
                         },
                         isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
                         hasToValidateGps = place.settings?.hasToValidateGps,
@@ -50,8 +50,9 @@ class SyncService(private val database: AppDatabase) {
             }
             database.placeDao().deletePlaces(isHost)
             database.placeDao().insertAllPlaces(places.reversed())
+            Log.i("sync", "place sync success! new items: $places")
         }
-        Log.i("sync", "place sync success!")
+        Log.i("sync", "noting to sync!")
     }
 
     fun saveComponents(data: List<ServerComponent>, placeId: String) {
@@ -66,8 +67,9 @@ class SyncService(private val database: AppDatabase) {
             }
             database.componentDao().deleteComponentsFromPlace(placeId)
             database.componentDao().insertAllComponents(components.reversed())
+            Log.i("sync", "component sync success! new items: $components")
         }
-        Log.i("sync", "component sync success!")
+        Log.i("sync", "nothing to sync!")
     }
 
     fun saveUser(data: ServerUser) {
@@ -91,7 +93,8 @@ class SyncService(private val database: AppDatabase) {
             // delete pictures of given place
             database.pictureDao().deletePicturesOfPlace(data[0].placeId)
             database.pictureDao().insertAllPictures(pictures.reversed())
+            Log.i("sync", "picture sync success! new items: $pictures")
         }
-        Log.i("sync", "picture sync success!")
+        Log.i("sync", "nothing to sync!")
     }
 }
