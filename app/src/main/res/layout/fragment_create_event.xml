@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/eventScrollView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/headerImageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/event_header_image_height"
+            android:adjustViewBounds="true"
+            android:background="@drawable/default_event_image1"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/event_layout_margin"
+            android:layout_marginStart="@dimen/event_layout_margin"
+            android:scrollbars="vertical">
+
+            <ImageButton
+                android:id="@+id/galleryButton"
+                android:layout_width="@dimen/round_button_normal_size"
+                android:layout_height="@dimen/round_button_normal_size"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/event_gallery_button_marginTop"
+                android:background="@drawable/round_button"
+                android:elevation="@dimen/event_gallery_button_elevation"
+                android:padding="@dimen/event_gallery_button_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_camera" />
+
+            <EditText
+                android:id="@+id/eventNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_edit_text_large_width"
+                android:layout_below="@+id/galleryButton"
+                android:hint="@string/event_name"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/event_name_text_size"
+                android:theme="@style/EditTextTheme" />
+
+            <EditText
+                android:id="@+id/locationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_edit_text_large_width"
+                android:layout_below="@id/eventNameEditText"
+                android:layout_marginTop="@dimen/event_small_margin_top"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_location"
+                android:focusable="true"
+                android:hint="@string/location"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTextTheme" />
+
+            <ProgressBar
+                android:id="@+id/locationProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/locationEditText"
+                android:layout_alignStart="@id/locationEditText"
+                android:layout_alignTop="@id/locationEditText"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/fromTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/locationEditText"
+                android:layout_marginTop="@dimen/event_large_margin_top"
+                android:text="@string/from"
+                android:textColor="@color/colorTextGray" />
+
+            <EditText
+                android:id="@+id/fromDateEditText"
+                android:layout_width="@dimen/event_date_edit_text_width"
+                android:layout_height="@dimen/event_edit_text_small_height"
+                android:layout_below="@id/fromTextView"
+                android:layout_marginTop="@dimen/event_small_margin_top"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTextTheme" />
+
+            <EditText
+                android:id="@+id/fromTimeEditText"
+                android:layout_width="@dimen/event_time_edit_text_width"
+                android:layout_height="@dimen/event_edit_text_small_height"
+                android:layout_below="@id/fromTextView"
+                android:layout_marginStart="@dimen/event_time_marginStart"
+                android:layout_marginTop="@dimen/event_small_margin_top"
+                android:layout_toEndOf="@id/fromDateEditText"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTextTheme" />
+
+            <TextView
+                android:id="@+id/toTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fromTimeEditText"
+                android:layout_marginTop="@dimen/event_small_margin_top"
+                android:text="@string/to"
+                android:textColor="@color/colorTextGray" />
+
+            <EditText
+                android:id="@+id/toDateEditText"
+                android:layout_width="@dimen/event_date_edit_text_width"
+                android:layout_height="@dimen/event_edit_text_small_height"
+                android:layout_below="@id/toTextView"
+                android:layout_marginTop="@dimen/event_small_margin_top"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTextTheme" />
+
+            <EditText
+                android:id="@+id/toTimeEditText"
+                android:layout_width="@dimen/event_time_edit_text_width"
+                android:layout_height="@dimen/event_edit_text_small_height"
+                android:layout_below="@id/toTextView"
+                android:layout_marginStart="@dimen/event_time_marginStart"
+                android:layout_marginTop="@dimen/event_small_margin_top"
+                android:layout_toEndOf="@id/toDateEditText"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_dropdown_arrow"
+                android:focusable="false"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTextTheme" />
+
+            <CheckBox
+                android:id="@+id/expirationCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/toTimeEditText"
+                android:layout_marginStart="@dimen/event_expiration_check_box_marginStart"
+                android:layout_marginTop="@dimen/event_middle_margin_top"
+                android:paddingStart="@dimen/checkbox_padding_left"
+                android:text="@string/no_expiration_date"
+                android:textColor="@color/colorAccent"
+                tools:ignore="RtlSymmetry" />
+
+            <EditText
+                android:id="@+id/descriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_description_height"
+                android:layout_below="@id/expirationCheckBox"
+                android:layout_marginBottom="@dimen/event_description_marginBottom"
+                android:layout_marginTop="@dimen/event_middle_margin_top"
+                android:background="@drawable/description_edit_text"
+                android:gravity="top|start"
+                android:hint="@string/description"
+                android:inputType="textMultiLine"
+                android:lines="5"
+                android:maxLines="10"
+                android:minLines="1"
+                android:padding="@dimen/event_description_padding"
+                android:scrollbars="vertical"
+                android:textColor="@color/colorAccent"
+                android:theme="@style/EditTextTheme" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

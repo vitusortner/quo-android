@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/photoRelativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/create_settings_padding">
+
+        <TextView
+            android:id="@+id/addContentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_content"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/photosTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addContentTextView"
+            android:layout_marginTop="@dimen/create_settings_margin_large"
+            android:text="@string/photos"
+            android:textColor="@color/colorTextBlack" />
+
+        <TextView
+            android:id="@+id/photosUnderlineTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/photosTextView"
+            android:text="@string/allows_visitors_to_upload_photos"
+            android:textColor="@color/colorTextGray" />
+
+        <Switch
+            android:id="@+id/photosSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/photosTextView"
+            android:layout_marginStart="@dimen/create_settings_margin"
+            android:theme="@style/SwitchStyle" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/grayLineView"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/view_line_height"
+        android:layout_marginTop="@dimen/create_settings_margin"
+        android:background="@color/colorTextGray" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/create_settings_padding">
+
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/create_settings_margin"
+            android:text="@string/location"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/gpsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/locationTextView"
+            android:layout_marginTop="@dimen/create_settings_margin_large"
+            android:text="@string/validate_gps"
+            android:textColor="@color/colorTextBlack" />
+
+        <TextView
+            android:id="@+id/gpsUnderlineTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gpsTextView"
+            android:text="@string/visitors_must_verify_their_location"
+            android:textColor="@color/colorTextGray" />
+
+        <Switch
+            android:id="@+id/gpsSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/gpsTextView"
+            android:layout_marginStart="@dimen/create_settings_margin"
+            android:theme="@style/SwitchStyle" />
+
+    </RelativeLayout>
+</LinearLayout>
