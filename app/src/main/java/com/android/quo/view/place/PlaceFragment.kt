@@ -1,19 +1,12 @@
 package com.android.quo.view.place
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.QuoApplication
 import com.android.quo.R
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.PictureRepository
-import com.android.quo.networking.SyncService
 import com.android.quo.view.place.info.InfoFragment
-import com.android.quo.viewmodel.PlaceViewModel
-import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable

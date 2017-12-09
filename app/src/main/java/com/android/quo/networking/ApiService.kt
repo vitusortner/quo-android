@@ -73,7 +73,7 @@ interface ApiService {
     fun addComponent(@Body data: ServerComponent): Single<ServerComponent>
 
     @GET("places/{id}/components")
-    fun getComponents()
+    fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>
 
     @PUT("components/{id}")
     fun updateComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>

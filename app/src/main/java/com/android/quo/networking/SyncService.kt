@@ -7,6 +7,7 @@ import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
 import com.android.quo.db.entity.User
+import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerUser
@@ -25,54 +26,45 @@ class SyncService(private val database: AppDatabase) {
     }
 
     private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
-        val places = data.map { place ->
-            Place(
-                    id = place.id ?: "",
-                    isHost = isHost,
-                    title = place.title,
-                    startDate = place.startDate,
-                    endDate = place.endDate,
-                    latitude = place.latitude,
-                    longitude = place.longitude,
-                    address = place.address?.let {
-                        Address(
-                                street = place.address.street,
-                                city = place.address.city,
-                                zipCode = place.address.zipCode)
-                    },
-                    isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
-                    hasToValidateGps = place.settings?.hasToValidateGps,
-                    titlePicture = place.titlePicture ?: "",
-                    qrCodeId = place.qrCodeId ?: ""
-            )
+        if (data.isNotEmpty()) {
+            val places = data.map { place ->
+                Place(
+                        id = place.id ?: "",
+                        isHost = isHost,
+                        title = place.title,
+                        startDate = place.startDate,
+                        endDate = place.endDate,
+                        latitude = place.latitude,
+                        longitude = place.longitude,
+                        address = place.address?.let {
+                            Address(
+                                    street = place.address.street,
+                                    city = place.address.city,
+                                    zipCode = place.address.zipCode)
+                        },
+                        isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
+                        hasToValidateGps = place.settings?.hasToValidateGps,
+                        titlePicture = place.titlePicture ?: "",
+                        qrCodeId = place.qrCodeId ?: ""
+                )
+            }
+            database.placeDao().deletePlaces(isHost)
+            database.placeDao().insertAllPlaces(places.reversed())
         }
-        database.placeDao().deletePlaces(isHost)
-        database.placeDao().insertAllPlaces(places.reversed())
         Log.i("sync", "place sync success!")
-
-        saveComponents(data)
     }
 
-    private fun saveComponents(data: List<ServerPlace>) {
-        val components = mutableListOf<Component>()
-        data.forEach { place ->
-            place.components?.let {
-                it.forEach {
-                    components.add(
-                            Component(
-                                    id = it.id ?: "",
-                                    picture = it.picture,
-                                    text = it.text,
-                                    placeId = place.id ?: "",
-                                    position = it.position ?: 0
-                            ))
-                }
+    fun saveComponents(data: List<ServerComponent>, placeId: String) {
+        if (data.isNotEmpty()) {
+            val components = data.map { component ->
+                Component(
+                        id = component.id ?: "",
+                        picture = component.picture,
+                        text = component.text,
+                        placeId = placeId
+                )
             }
-            place.id?.let {
-                database.componentDao().deleteComponentsFromPlace(it)
-            }
-        }
-        if (components.isNotEmpty()) {
+            database.componentDao().deleteComponentsFromPlace(placeId)
             database.componentDao().insertAllComponents(components.reversed())
         }
         Log.i("sync", "component sync success!")

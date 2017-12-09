@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
-import com.android.quo.networking.PictureRepository
+import com.android.quo.networking.repository.PictureRepository
 import com.android.quo.networking.SyncService
 import com.android.quo.viewmodel.PlaceViewModel
 import com.android.quo.viewmodel.factory.PlaceViewModelFactory
