@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import com.jakewharton.rxbinding2.view.RxView
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewCardView
+import kotlinx.android.synthetic.main.place_preview_cardview.pagePreviewCardView
 import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewDescriptionTextView
 import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewImageView
 import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTextView
@@ -42,7 +42,7 @@ class PlacePreviewAdapter(
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bindItem(list: List<Place>, position: Int) {
-            RxView.clicks(placePreviewCardView)
+            RxView.clicks(pagePreviewCardView)
                     .subscribe {
                         fragmentManager
                                 .beginTransaction()

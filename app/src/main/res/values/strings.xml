@@ -37,16 +37,47 @@
     <string name="qr_code_camera_permission_denied_message">You need to take picture permission. The feature will be " +
                                 "disabled. To enable it, go on settings and allow the camera " +
                                 "permission for the application</string>
-    <string name="qr_code_error_title">Error</string>
-    <string name="qr_code_error_message">We are sorry ! There is not QR Code in image</string>
-    <string name="qr_code_done">DONE</string>
+    <string name="error_qr_code_title">Error</string>
+    <string name="error_qr_code_message">We are sorry ! There is not QR Code in image</string>
+    <string name="done">DONE</string>
     <string name="qr_code_flash_on">flash on</string>
     <string name="qr_code_flash_off">flash off</string>
     <string name="qr_code_photos">photos</string>
     <string name="qr_code_cancel">cancel</string>
+    <string name="qr_code_error_title">Error</string>
+    <string name="qr_code_error_message">We are sorry ! There is not QR Code in image</string>
+    <string name="qr_code_done">DONE</string>
+
+
+    <!-- CREATE EVENT -->
+    <string name="to">To</string>
+    <string name="from">From</string>
+    <string name="location">Location</string>
+    <string name="event_name">Event name</string>
+    <string name="description">Description</string>
+    <string name="no_expiration_date">No Expiration Date</string>
+
+    <!-- CREATE PAGE -->
+    <string name="page_temp_line1_text">What do you want to</string>
+    <string name="page_temp_line2_text"> tell or show your visitors?</string>
 
     <!-- PLACE -->
     <string name="place_info_menu">Information</string>
     <string name="place_tablayout_title_page">PAGE</string>
     <string name="place_tablayout_title_gallery">GALLERY</string>
+    <string name="save">Save</string>
+    <string name="not_found">Not found</string>
+    <string name="create_place_tablayout_title_event">EVENT</string>
+    <string name="create_place_tablayout_title_page">PAGE</string>
+    <string name="create_place_tablayout_title_settings">SETTINGS</string>
+    <string name="add_content">Add Content</string>
+    <string name="photos">Photos</string>
+    <string name="allows_visitors_to_upload_photos">allows visitors to upload photos</string>
+    <string name="validate_gps">Validate GPS</string>
+    <string name="visitors_must_verify_their_location">visitors must verify their location</string>
+    <string name="new_place">New Place</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="camera">Camera</string>
+    <string name="photo">Photo</string>
+    <string name="select_picture">Select Picture</string>
 </resources>
