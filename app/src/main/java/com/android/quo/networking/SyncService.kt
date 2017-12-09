@@ -47,7 +47,7 @@ class SyncService(private val database: AppDatabase) {
             )
         }
         database.placeDao().deletePlaces(isHost)
-        database.placeDao().insertAllPlaces(places)
+        database.placeDao().insertAllPlaces(places.reversed())
         Log.i("sync", "place sync success!")
 
         saveComponents(data)
@@ -73,7 +73,7 @@ class SyncService(private val database: AppDatabase) {
             }
         }
         if (components.isNotEmpty()) {
-            database.componentDao().insertAllComponents(components)
+            database.componentDao().insertAllComponents(components.reversed())
         }
         Log.i("sync", "component sync success!")
     }
@@ -98,7 +98,7 @@ class SyncService(private val database: AppDatabase) {
             }
             // delete pictures of given place
             database.pictureDao().deletePicturesOfPlace(data[0].placeId)
-            database.pictureDao().insertAllPictures(pictures)
+            database.pictureDao().insertAllPictures(pictures.reversed())
         }
         Log.i("sync", "picture sync success!")
     }
