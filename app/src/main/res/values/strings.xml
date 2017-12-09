@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">QUO</string>
-    <string name="menu_qrcode">QR Scanner</string>
+    <string name="menu_qrcode">QR Code Scanner</string>
     <string name="menu_home">Home</string>
-    <string name="menu_places">My Places</string>
+    <string name="menu_places">Places</string>
 
     <!-- Login -->
     <string name="email">e-mail</string>
