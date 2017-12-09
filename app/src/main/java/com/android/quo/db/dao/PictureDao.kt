@@ -17,7 +17,6 @@ interface PictureDao {
     @Query("SELECT * FROM picture WHERE place_id = :placeId")
     fun getPictures(placeId: String): Flowable<List<Picture>>
 
-    // TODO remove
     @Query("SELECT * FROM picture")
     fun getAllPictures(): Flowable<List<Picture>>
 

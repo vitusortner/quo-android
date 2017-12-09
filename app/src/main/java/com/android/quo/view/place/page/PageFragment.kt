@@ -47,14 +47,10 @@ class PageFragment : Fragment() {
 
         viewModel.getComponents().observe(this, Observer {
             it?.let {
-                // TODO handle data, create components views
+                // TODO handle data, create components dependend on data
                 Log.i("data", "$it")
             }
         })
-
-        // TODO viewmodel data
-        titleTextView.text = "Rules"
-        contentTextView.text = "1 Go Crazy\n2 No Rules"
 
         setupSwipeRefresh()
     }
