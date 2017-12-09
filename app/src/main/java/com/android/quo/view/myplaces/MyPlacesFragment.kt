@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.myplaces.createplace.CreatePlaceFragment
-import com.android.quo.viewmodel.PlacePreviewListViewModel
-import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.MY_PLACES
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
