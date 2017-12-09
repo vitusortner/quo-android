@@ -26,7 +26,7 @@ class PlaceRepository(
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    syncService.savePlaces(data)
+                    syncService.saveVisitedPlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
@@ -41,7 +41,7 @@ class PlaceRepository(
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    syncService.savePlaces(data)
+                    syncService.saveMyPlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
@@ -56,7 +56,7 @@ class PlaceRepository(
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    syncService.savePlaces(data)
+                    syncService.saveVisitedPlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)
@@ -71,7 +71,7 @@ class PlaceRepository(
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
                 override fun sync(data: List<ServerPlace>) {
-                    syncService.savePlaces(data)
+                    syncService.saveVisitedPlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)

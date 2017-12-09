@@ -16,7 +16,8 @@ import android.arch.persistence.room.PrimaryKey
                         parentColumns = arrayOf("id"),
                         childColumns = arrayOf("place_id"),
                         onDelete = ForeignKey.CASCADE)
-        ))
+        )
+)
 data class Component(
         @PrimaryKey
         var id: String = "",

@@ -26,6 +26,9 @@ interface PlaceDao {
     @Delete
     fun deletePlace(place: Place)
 
+    @Query("DELETE FROM place WHERE is_host = :isHost")
+    fun deletePlaces(isHost: Boolean)
+
     @Query("DELETE FROM place")
     fun deleteAllPlaces()
 }
