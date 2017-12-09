@@ -48,11 +48,14 @@ class SyncService(private val database: AppDatabase) {
                         qrCodeId = place.qrCodeId ?: ""
                 )
             }
+            // delete places before inserting updated places
             database.placeDao().deletePlaces(isHost)
             database.placeDao().insertAllPlaces(places.reversed())
-            Log.i("sync", "place sync success! new items: $places")
+
+            Log.i("sync", "place sync success! $places")
+        } else {
+            Log.i("sync", "no places to sync!")
         }
-        Log.i("sync", "noting to sync!")
     }
 
     fun saveComponents(data: List<ServerComponent>, placeId: String) {
@@ -65,20 +68,17 @@ class SyncService(private val database: AppDatabase) {
                         placeId = placeId
                 )
             }
-            database.componentDao().deleteComponentsFromPlace(placeId)
+            // delete components of place before inserting updated comonents
+            database.componentDao().deleteComponentsOfPlace(placeId)
             database.componentDao().insertAllComponents(components.reversed())
-            Log.i("sync", "component sync success! new items: $components")
+
+            Log.i("sync", "component sync success! $components")
+        } else {
+            Log.i("sync", "no components to sync!")
         }
-        Log.i("sync", "nothing to sync!")
     }
 
-    fun saveUser(data: ServerUser) {
-        // TODO write token to key chain
-        val user = User(data.id)
-        database.userDao().insertUser(user)
-    }
-
-    fun savePictures(data: List<ServerPicture>) {
+    fun savePictures(data: List<ServerPicture>, placeId: String) {
         if (data.isNotEmpty()) {
             val pictures = data.map { picture ->
                 Picture(
@@ -90,11 +90,19 @@ class SyncService(private val database: AppDatabase) {
                         timestamp = picture.timestamp
                 )
             }
-            // delete pictures of given place
-            database.pictureDao().deletePicturesOfPlace(data[0].placeId)
+            // delete pictures of given place before inserting updated pictures
+            database.pictureDao().deletePicturesOfPlace(placeId)
             database.pictureDao().insertAllPictures(pictures.reversed())
-            Log.i("sync", "picture sync success! new items: $pictures")
+
+            Log.i("sync", "picture sync success! $pictures")
+        } else {
+            Log.i("sync", "no pictures to sync!")
         }
-        Log.i("sync", "nothing to sync!")
+    }
+
+    fun saveUser(data: ServerUser) {
+        // TODO write token to key chain
+        val user = User(data.id)
+        database.userDao().insertUser(user)
     }
 }

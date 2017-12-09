@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
-import com.android.quo.networking.repository.PictureRepository
 import com.android.quo.networking.SyncService
-import com.android.quo.viewmodel.PlaceViewModel
-import com.android.quo.viewmodel.factory.PlaceViewModelFactory
+import com.android.quo.networking.repository.PictureRepository
+import com.android.quo.viewmodel.GalleryViewModel
+import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
 import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
 
@@ -29,7 +29,7 @@ class GalleryFragment : Fragment() {
     private val syncService = SyncService(database)
     private val pictureRepository = PictureRepository(pictureDao, apiService, syncService)
 
-    private lateinit var viewModel: PlaceViewModel
+    private lateinit var viewModel: GalleryViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -40,20 +40,17 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // TODO real viewmodel data handling (LiveData)
-        this.parentFragment?.let { parentFragment ->
-            viewModel = ViewModelProviders
-                    .of(parentFragment, PlaceViewModelFactory(pictureRepository))
-                    .get(PlaceViewModel::class.java)
+        viewModel = ViewModelProviders
+                .of(this, GalleryViewModelFactory(pictureRepository))
+                .get(GalleryViewModel::class.java)
 
-            activity?.let { activity ->
-                viewModel.getPictures().observe(this, Observer {
-                    it?.let {
-                        recyclerView.adapter = GalleryAdapter(activity, it)
-                        recyclerView.layoutManager = GridLayoutManager(this.context, 3)
-                    }
-                })
-            }
+        activity?.let { activity ->
+            viewModel.getPictures().observe(this, Observer {
+                it?.let {
+                    recyclerView.adapter = GalleryAdapter(activity, it)
+                    recyclerView.layoutManager = GridLayoutManager(this.context, 3)
+                }
+            })
         }
 
         setupSwipeRefresh()
@@ -62,7 +59,7 @@ class GalleryFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            // TODO updata data
+            viewModel.updatePictures()
             swipeRefreshLayout.isRefreshing = false
         }
     }

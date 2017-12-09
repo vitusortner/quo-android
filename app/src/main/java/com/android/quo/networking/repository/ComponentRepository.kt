@@ -12,7 +12,7 @@ import io.reactivex.Single
 /**
  * Created by vitusortner on 09.12.17.
  */
-class ComponentsRepository(
+class ComponentRepository(
         private val componentDao: ComponentDao,
         private val apiService: ApiService,
         private val syncService: SyncService

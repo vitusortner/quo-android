@@ -26,9 +26,7 @@ class PictureRepository(
 
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getPictures(placeId)
 
-                override fun sync(data: List<ServerPicture>) {
-                    syncService.savePictures(data)
-                }
+                override fun sync(data: List<ServerPicture>) = syncService.savePictures(data, placeId)
             }
         }, BackpressureStrategy.BUFFER)
     }
@@ -42,7 +40,7 @@ class PictureRepository(
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getAllPictures()
 
                 override fun sync(data: List<ServerPicture>) {
-                    syncService.savePictures(data)
+                    syncService.savePictures(data, "5a2a87c6ba3a14853a8f2ca6")
                 }
             }
         }, BackpressureStrategy.BUFFER)

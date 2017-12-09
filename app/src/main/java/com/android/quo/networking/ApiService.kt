@@ -54,10 +54,10 @@ interface ApiService {
     @GET("places/{id}")
     fun getPlace(@Path("id") qrCodeId: String): Single<List<ServerPlace>>
 
-    @GET("users/{id}/visitedplaces")
+    @GET("users/{id}/visited_places")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
-    @GET("users/{id}/myplaces")
+    @GET("users/{id}/hosted_places")
     fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
     @POST("pictures")

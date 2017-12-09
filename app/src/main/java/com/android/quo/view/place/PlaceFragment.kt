@@ -31,12 +31,13 @@ class PlaceFragment : Fragment() {
     ): View {
         return inflater.inflate(R.layout.fragment_place, container, false)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // show bottom navigation bar when coming from fragment with hidden bottom nav bar
         if (activity?.bottomNavigationView?.visibility == View.GONE) {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
+
+        // TODO real viewmodel data handling (LiveData)
 
         // TODO proper viewmodel handling
 //            viewModel?.getPlace.observe(it, Observer { place ->
