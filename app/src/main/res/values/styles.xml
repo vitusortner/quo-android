@@ -53,7 +53,7 @@
 
     <style name="RadioButtonStyle">
         <item name="android:textColor">@color/colorTextGray</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
