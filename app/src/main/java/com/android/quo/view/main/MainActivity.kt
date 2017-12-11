@@ -10,6 +10,7 @@ import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
+import com.android.quo.db.entity.Place
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.myplaces.MyPlacesFragment
 import com.android.quo.view.place.PlaceFragment
@@ -35,12 +36,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * get place object from intent and hand it over to the place fragment
+     * start place fragment
+     */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        if (intent.getStringExtra("extra") == "extra") {
+        if (intent.getParcelableExtra<Place>("place") !== null) {
+            val place = intent.getParcelableExtra<Place>("place")
+            val bundle = Bundle()
+            bundle.putParcelable("place", place)
+            val fragment = PlaceFragment()
+            fragment.arguments = bundle
+
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.content, PlaceFragment())
+                    .replace(R.id.content, fragment)
                     .addToBackStack(null)
                     .commit()
         }

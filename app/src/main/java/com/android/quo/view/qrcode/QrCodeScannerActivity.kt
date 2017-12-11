@@ -19,17 +19,19 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
-import android.webkit.URLUtil
 import com.android.quo.R
+import com.android.quo.db.entity.Address
+import com.android.quo.db.entity.Place
 import com.android.quo.model.QrCodeScannerDialog
+import com.android.quo.networking.ApiService
 import com.android.quo.view.main.MainActivity
-import com.android.quo.view.place.PlaceFragment
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.Result
 import com.google.zxing.common.HybridBinarizer
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.cancelButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashTextView
@@ -121,30 +123,64 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
      * Gets called, when QR Code scanner returns result
      */
     override fun handleResult(result: Result) {
-//        handleQrCode(result.text)
-        val url = result.text
+        handleQrCode(result.text)
+    }
 
+    /**
+     * Opens place fragment, if supplied URI string start with "quo://", else opens dialog
+     */
+    private fun handleQrCode(uriString: String) {
         when {
-            url.startsWith("quo://") -> {
-                val qrCodeId = url.split("/").last()
-                // fetch place, open place view
-                Log.i("qr code", qrCodeId)
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("extra", "extra")
-                startActivity(intent)
+            uriString.startsWith("quo://") -> {
+                val qrCodeId = uriString.split("/").last()
+
+                // fetch place from qr code id, open place view
+                ApiService.instance.getPlace(qrCodeId)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ place ->
+                            Log.i("api", "$place")
+
+                            val place = Place(
+                                    id = place.id ?: "",
+                                    // TODO properly set isHost
+                                    isHost = false,
+                                    title = place.title,
+                                    startDate = place.startDate,
+                                    endDate = place.endDate,
+                                    latitude = place.latitude,
+                                    longitude = place.longitude,
+                                    address = place.address?.let { address ->
+                                        Address(
+                                                street = address.street,
+                                                city = address.city,
+                                                zipCode = address.zipCode)
+                                    },
+                                    isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
+                                    hasToValidateGps = place.settings?.hasToValidateGps,
+                                    titlePicture = place.titlePicture ?: "",
+                                    qrCodeId = place.qrCodeId ?: ""
+                            )
+
+
+                            val intent = Intent(this, MainActivity::class.java)
+                            intent.putExtra("place", place)
+                            startActivity(intent)
+                        }, {
+                            Log.e("api", "$it")
+                        })
             }
-            url.startsWith("http") -> {
+            uriString.startsWith("http") -> {
                 val dialog = QrCodeScannerDialog(
                         getString(R.string.qr_code_found_third_party_title),
                         getString(R.string.qr_code_found_third_party_message),
-                        url)
+                        uriString)
                 openUrlDialogFromQRCode(dialog)
             }
             else -> {
                 val dialog = QrCodeScannerDialog(
                         getString(R.string.qr_code_not_found_third_party_title),
                         getString(R.string.qr_code_not_found_third_party_message),
-                        url)
+                        uriString)
                 openUrlDialogFromQRCode(dialog)
             }
         }
@@ -159,13 +195,11 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                 if (requestCode == RESULT_GALLERY) {
                     val selectedImageUri = data?.data
                     val reader = MultiFormatReader()
-
                     val path = selectedImageUri?.let { getPath(it) }
                     val bitmap = BitmapFactory.decodeFile(path)
-
                     val result = reader.decode(getBinaryBitmap(bitmap))
-                    val qrCode = result?.let { handleQrCode(it.text) }
-                    qrCode?.let { openUrlDialogFromQRCode(it) }
+
+                    handleQrCode(result.text)
                 }
             }
         } catch (e: NotFoundException) {
@@ -199,21 +233,6 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         urlAlert.show()
     }
 
-    private fun handleQrCode(url: String): QrCodeScannerDialog {
-        if (url.contains("http")) {
-            return QrCodeScannerDialog(
-                    getString(R.string.qr_code_found_third_party_title),
-                    getString(R.string.qr_code_found_third_party_message),
-                    url)
-        } else {
-            //TODO open places page after the code is scanned
-        }
-        return QrCodeScannerDialog(
-                getString(R.string.qr_code_not_found_third_party_title),
-                getString(R.string.qr_code_not_found_third_party_message),
-                url)
-    }
-
     private fun getPath(uri: Uri): String {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
@@ -239,7 +258,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         return BinaryBitmap(HybridBinarizer(source))
     }
 
-    fun getLastImageFromGallery(): RoundedBitmapDrawable {
+    private fun getLastImageFromGallery(): RoundedBitmapDrawable {
         val projection = arrayOf(
                 MediaStore.Images.ImageColumns._ID,
                 MediaStore.Images.ImageColumns.DATA,

@@ -63,14 +63,14 @@ class PlaceRepository(
 
     fun getPlace(qrCodeId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+            object : Repository<List<Place>, ServerPlace>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getPlace(qrCodeId)
+                override fun getRemote(): Single<ServerPlace> = apiService.getPlace(qrCodeId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
-                override fun sync(data: List<ServerPlace>) {
-                    syncService.saveVisitedPlaces(data)
+                override fun sync(data: ServerPlace) {
+//                    syncService.saveVisitedPlaces(data)
                 }
             }
         }, BackpressureStrategy.BUFFER)

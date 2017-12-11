@@ -3,10 +3,12 @@ package com.android.quo.view.place
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.db.entity.Place
 import com.android.quo.extensions.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.bumptech.glide.Glide
@@ -32,6 +34,9 @@ class PlaceFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
+        val place = arguments?.getParcelable<Place>("place")
+        Log.i("general", "$place")
+
         return inflater.inflate(R.layout.fragment_place, container, false)
     }
 

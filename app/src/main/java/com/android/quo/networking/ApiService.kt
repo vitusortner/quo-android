@@ -51,8 +51,8 @@ interface ApiService {
     @GET("places")
     fun getAllPlaces(): Single<List<ServerPlace>>
 
-    @GET("places/{id}")
-    fun getPlace(@Path("id") qrCodeId: String): Single<List<ServerPlace>>
+    @GET("places/qrcode/{id}")
+    fun getPlace(@Path("id") qrCodeId: String): Single<ServerPlace>
 
     @GET("users/{id}/visited_places")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
