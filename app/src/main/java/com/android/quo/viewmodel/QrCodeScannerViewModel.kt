@@ -12,7 +12,7 @@ import android.provider.MediaStore
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import com.android.quo.R
-import com.android.quo.model.QrCodeScannerDialog
+import com.android.quo.dataclass.QrCodeScannerDialog
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.Result

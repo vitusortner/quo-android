@@ -16,7 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
 import com.android.quo.R
-import com.android.quo.model.QrCodeScannerDialog
+import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
