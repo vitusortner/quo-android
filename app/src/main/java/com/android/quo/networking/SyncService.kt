@@ -70,7 +70,7 @@ class SyncService(private val database: AppDatabase) {
             }
             // delete components of place before inserting updated comonents
             database.componentDao().deleteComponentsOfPlace(placeId)
-            database.componentDao().insertAllComponents(components.reversed())
+            database.componentDao().insertAllComponents(components.sortedBy { it.position })
 
             Log.i("sync", "component sync success! $components")
         } else {
