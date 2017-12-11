@@ -37,5 +37,5 @@ data class ServerPlace(
         @SerializedName("qr_code_id")
         val qrCodeId: String? = null,
 
-        val components: List<ServerComponent>? = null
+        val components: List<String>? = null
 )

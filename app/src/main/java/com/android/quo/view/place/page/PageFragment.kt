@@ -15,9 +15,7 @@ import com.android.quo.networking.SyncService
 import com.android.quo.networking.repository.ComponentRepository
 import com.android.quo.viewmodel.PageViewModel
 import com.android.quo.viewmodel.factory.PageViewModelFactory
-import kotlinx.android.synthetic.main.fragment_place_page.contentTextView
 import kotlinx.android.synthetic.main.fragment_place_page.swipeRefreshLayout
-import kotlinx.android.synthetic.main.fragment_place_page.titleTextView
 
 /**
  * Created by vitusortner on 12.11.17.
