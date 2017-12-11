@@ -3,24 +3,30 @@ package com.android.quo.view.qrcode
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
 import com.android.quo.R
 import com.android.quo.model.QrCodeScannerDialog
-import com.android.quo.viewmodel.QrCodeScannerViewModel
+import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
+import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.Result
+import com.google.zxing.common.HybridBinarizer
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.cancelButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashTextView
@@ -38,7 +44,6 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
     private val RESULT_GALLERY = 0
 
     private lateinit var scannerView: ZXingScannerView
-    private lateinit var qrCodeScannerViewModel: QrCodeScannerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +62,6 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
         supportActionBar?.hide()
 
-        qrCodeScannerViewModel = ViewModelProviders.of(this).
-                get(QrCodeScannerViewModel(application)::class.java)
-
         cancelButton.setOnClickListener {
             this.finish()
         }
@@ -77,7 +79,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            photosButton.background = qrCodeScannerViewModel.getLastImageFromGallery()
+            photosButton.background = getLastImageFromGallery()
         }
     }
 
@@ -112,8 +114,11 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
+    /**
+     * Gets called when QR Code scanner returns
+     */
     override fun handleResult(result: Result) {
-        openUrlDialogFromQRCode(qrCodeScannerViewModel.handleQrCode(result))
+        openUrlDialogFromQRCode(handleQrCode(result))
         scannerView.stopCamera()
     }
 
@@ -124,11 +129,11 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                     val selectedImageUri = data?.data
                     val reader = MultiFormatReader()
 
-                    val path = selectedImageUri?.let { qrCodeScannerViewModel.getPath(it) }
+                    val path = selectedImageUri?.let { getPath(it) }
                     val bitmap = BitmapFactory.decodeFile(path)
 
-                    val result = reader.decode(qrCodeScannerViewModel.getBinaryBitmap(bitmap))
-                    val qrCode = result?.let { qrCodeScannerViewModel.handleQrCode(it) }
+                    val result = reader.decode(getBinaryBitmap(bitmap))
+                    val qrCode = result?.let { handleQrCode(it) }
                     qrCode?.let { openUrlDialogFromQRCode(it) }
                 }
             }
@@ -161,5 +166,78 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
             this.onResume()
         })
         urlAlert.show()
+    }
+
+    private fun handleQrCode(url: Result): QrCodeScannerDialog {
+        if (url.toString().contains("http")) {
+            return QrCodeScannerDialog(
+                    getString(R.string.qr_code_found_third_party_title),
+                    getString(R.string.qr_code_found_third_party_message),
+                    url.toString())
+        } else {
+            //TODO open places page after the code is scanned
+        }
+        return QrCodeScannerDialog(
+                getString(R.string.qr_code_not_found_third_party_title),
+                getString(R.string.qr_code_not_found_third_party_message),
+                url.toString())
+    }
+
+    private fun getPath(uri: Uri): String {
+        var result: String? = null
+        val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = this.contentResolver.query(uri, mediaStoreData, null, null, null)
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
+            result = cursor.getString(columnIndex)
+        }
+        cursor.close()
+
+        if (result == null) {
+            // TODO string resource
+            result = "Not found"
+        }
+        return result
+    }
+
+    private fun getBinaryBitmap(bitmap: Bitmap): BinaryBitmap {
+        val intArray = IntArray(bitmap.width * bitmap.height);
+        //copy pixel data from the Bitmap into the 'intArray' array
+        bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+        val source = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
+        return BinaryBitmap(HybridBinarizer(source))
+    }
+
+    fun getLastImageFromGallery(): RoundedBitmapDrawable {
+        val projection = arrayOf(
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE)
+
+        val cursor = this.contentResolver
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
+                if (imagePath.isNotEmpty()) {
+                    val bitmap = BitmapFactory.decodeFile(imagePath)
+                    return setRoundCornerToBitmap(bitmap)
+                }
+            }
+        }
+        cursor.close()
+        val bitmap = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(Color.WHITE)
+        return setRoundCornerToBitmap(bitmap)
+    }
+
+    private fun setRoundCornerToBitmap(bitmap: Bitmap): RoundedBitmapDrawable {
+        val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(this.resources, bitmap)
+        roundedBitmapDrawable.cornerRadius = Math.max(bitmap.width, bitmap.height) / 2.0f
+        return roundedBitmapDrawable
     }
 }

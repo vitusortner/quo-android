@@ -45,7 +45,7 @@
     <string name="qr_code_photos">photos</string>
     <string name="qr_code_cancel">cancel</string>
     <string name="qr_code_error_title">Error</string>
-    <string name="qr_code_error_message">We are sorry ! There is not QR Code in image</string>
+    <string name="qr_code_error_message">We are sorry! There is not QR Code in image</string>
     <string name="qr_code_done">DONE</string>
 
 
