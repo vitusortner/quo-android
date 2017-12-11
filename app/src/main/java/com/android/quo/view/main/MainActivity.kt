@@ -12,6 +12,7 @@ import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.myplaces.MyPlacesFragment
+import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
@@ -31,6 +32,17 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        if (intent.getStringExtra("extra") == "extra") {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.content, PlaceFragment())
+                    .addToBackStack(null)
+                    .commit()
         }
     }
 

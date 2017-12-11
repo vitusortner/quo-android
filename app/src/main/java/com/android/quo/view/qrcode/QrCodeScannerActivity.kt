@@ -19,8 +19,11 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
+import android.webkit.URLUtil
 import com.android.quo.R
 import com.android.quo.model.QrCodeScannerDialog
+import com.android.quo.view.main.MainActivity
+import com.android.quo.view.place.PlaceFragment
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
@@ -115,13 +118,41 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
     }
 
     /**
-     * Gets called when QR Code scanner returns
+     * Gets called, when QR Code scanner returns result
      */
     override fun handleResult(result: Result) {
-        openUrlDialogFromQRCode(handleQrCode(result))
-        scannerView.stopCamera()
+//        handleQrCode(result.text)
+        val url = result.text
+
+        when {
+            url.startsWith("quo://") -> {
+                val qrCodeId = url.split("/").last()
+                // fetch place, open place view
+                Log.i("qr code", qrCodeId)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("extra", "extra")
+                startActivity(intent)
+            }
+            url.startsWith("http") -> {
+                val dialog = QrCodeScannerDialog(
+                        getString(R.string.qr_code_found_third_party_title),
+                        getString(R.string.qr_code_found_third_party_message),
+                        url)
+                openUrlDialogFromQRCode(dialog)
+            }
+            else -> {
+                val dialog = QrCodeScannerDialog(
+                        getString(R.string.qr_code_not_found_third_party_title),
+                        getString(R.string.qr_code_not_found_third_party_message),
+                        url)
+                openUrlDialogFromQRCode(dialog)
+            }
+        }
     }
 
+    /**
+     * Gets called, when gallery returns image
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         try {
             if (resultCode != Activity.RESULT_CANCELED) {
@@ -133,7 +164,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                     val bitmap = BitmapFactory.decodeFile(path)
 
                     val result = reader.decode(getBinaryBitmap(bitmap))
-                    val qrCode = result?.let { handleQrCode(it) }
+                    val qrCode = result?.let { handleQrCode(it.text) }
                     qrCode?.let { openUrlDialogFromQRCode(it) }
                 }
             }
@@ -168,19 +199,19 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         urlAlert.show()
     }
 
-    private fun handleQrCode(url: Result): QrCodeScannerDialog {
-        if (url.toString().contains("http")) {
+    private fun handleQrCode(url: String): QrCodeScannerDialog {
+        if (url.contains("http")) {
             return QrCodeScannerDialog(
                     getString(R.string.qr_code_found_third_party_title),
                     getString(R.string.qr_code_found_third_party_message),
-                    url.toString())
+                    url)
         } else {
             //TODO open places page after the code is scanned
         }
         return QrCodeScannerDialog(
                 getString(R.string.qr_code_not_found_third_party_title),
                 getString(R.string.qr_code_not_found_third_party_message),
-                url.toString())
+                url)
     }
 
     private fun getPath(uri: Uri): String {
