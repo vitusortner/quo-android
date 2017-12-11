@@ -9,12 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import com.android.quo.QuoApplication
 import com.android.quo.R
+import com.android.quo.networking.ApiService
+import com.android.quo.networking.PlaceRepository
+import com.android.quo.networking.SyncService
 import com.android.quo.view.PlacePreviewAdapter
-import com.android.quo.viewmodel.PlacePreviewListViewModel
-import com.android.quo.viewmodel.PlacePreviewListViewModel.FragmentType.HOME
+import com.android.quo.viewmodel.HomeViewModel
+import com.android.quo.viewmodel.factory.HomeViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import kotlinx.android.synthetic.main.fragment_home.placePreviewRecyclerView
+import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
 
 /**
@@ -22,7 +26,13 @@ import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
  */
 class HomeFragment : Fragment() {
 
-    private lateinit var placePreviewListViewModel: PlacePreviewListViewModel
+    private val database = QuoApplication.database
+    private val placeDao = database.placeDao()
+    private val apiService = ApiService.instance
+    private val syncService = SyncService(database)
+    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -36,8 +46,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = VISIBLE
 
-        placePreviewListViewModel = ViewModelProviders.of(this)
-                .get(PlacePreviewListViewModel().javaClass)
+        viewModel = ViewModelProviders.of(this, HomeViewModelFactory(placeRepository)).get(HomeViewModel::class.java)
 
         observePlacePreviewList()
         setupSwipeRefresh()
@@ -46,16 +55,16 @@ class HomeFragment : Fragment() {
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlacePreviewList() =
-            placePreviewListViewModel.getPlacePreviewList(HOME).observe(this, Observer { list ->
-                list?.let {
-                    activity?.let { activity ->
-                        placePreviewRecyclerView.adapter =
-                                PlacePreviewAdapter(list, activity.supportFragmentManager)
-                        placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
-                    }
+    private fun observePlacePreviewList() {
+        viewModel.getPlaces().observe(this, Observer {
+            it?.let { list ->
+                activity?.let { activity ->
+                    recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
+                    recyclerView.layoutManager = LinearLayoutManager(this.context)
                 }
-            })
+            }
+        })
+    }
 
     /**
      * Update place preview list and stop refreshing animation
@@ -63,7 +72,7 @@ class HomeFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            placePreviewListViewModel.updatePlacePreviewList(HOME)
+            viewModel.loadPlaces()
             swipeRefreshLayout.isRefreshing = false
         }
     }

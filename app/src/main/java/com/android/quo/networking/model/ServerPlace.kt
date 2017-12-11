@@ -1,23 +1,25 @@
-package com.android.quo.model
+package com.android.quo.networking.model
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by Jung on 05.12.17.
+ * Created by vitusortner on 30.11.17.
  */
-
 data class ServerPlace(
-        var id: String,
+        @SerializedName("_id")
+        var id: String? = null,
 
         var host: String,
 
         var title: String,
 
+        var description: String? = null,
+
         @SerializedName("start_date")
         var startDate: String,
 
         @SerializedName("end_date")
-        var endDate: String,
+        var endDate: String? = null,
 
         @SerializedName("lat")
         var latitude: String,
@@ -25,15 +27,15 @@ data class ServerPlace(
         @SerializedName("long")
         var longitude: String,
 
-        var address: ServerAddress,
+        val address: ServerAddress? = null,
 
-        var settings: ServerSettings,
+        var settings: ServerSettings? = null,
 
         @SerializedName("title_picture")
-        var titlePicture: String,
+        var titlePicture: String? = null,
 
         @SerializedName("qr_code_id")
-        var qrCodeId: String,
+        var qrCodeId: String? = null,
 
-        var components: List<ServerComponent>
+        var components: List<ServerComponent>? = null
 )

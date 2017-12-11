@@ -1,8 +1,9 @@
-package com.android.quo.model
+package com.android.quo.networking.model
+
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by Jung on 05.12.17.
+ * Created by vitusortner on 30.11.17.
  */
 data class ServerAddress(
         var street: String,

@@ -18,6 +18,11 @@
         <item name="android:statusBarColor">@color/colorInfoToolbar</item>
     </style>
 
+    <style name="AccentActionBarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionMenuTextColor">@color/colorTextWhite</item>
+        <item name="android:actionMenuTextColor">@color/colorTextWhite</item>
+    </style>
+
     <style name="PlaceToolbarStyle">
         <item name="android:textColorPrimary">#FFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFF</item>
@@ -57,6 +62,7 @@
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
+
     <style name="EditTextStyle">
         <item name="android:textColor">@color/colorTextGray</item>
         <item name="android:textSize">16dp</item>

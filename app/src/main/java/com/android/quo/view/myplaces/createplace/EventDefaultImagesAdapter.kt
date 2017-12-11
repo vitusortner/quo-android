@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.event_default_image.defaultImageView
  * Created by Jung on 02.12.17.
  */
 
-class EventDefaultImagesAdapter(private val list: ArrayList<Drawable>, private val headerImageView: ImageView) :
+class EventDefaultImagesAdapter(private val list: List<Drawable>, private val headerImageView: ImageView) :
         RecyclerView.Adapter<EventDefaultImagesAdapter.EventDefaultImagesViewHolder>() {
 
     override fun onBindViewHolder(holder: EventDefaultImagesViewHolder, position: Int) {
@@ -36,10 +36,11 @@ class EventDefaultImagesAdapter(private val list: ArrayList<Drawable>, private v
     ) :
             RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun bindItem(list: ArrayList<Drawable>, position: Int) {
+        fun bindItem(list: List<Drawable>, position: Int) {
             RxView.clicks(defaultImageView)
                     .subscribe {
                         headerImageView.background = list[adapterPosition]
+                        CreatePlace.place.titlePicture = (adapterPosition + 1).toString()
                     }
             defaultImageView.background = list[position]
         }

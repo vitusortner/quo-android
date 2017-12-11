@@ -1,9 +1,11 @@
 package com.android.quo.view.myplaces.createplace
 
-import com.android.quo.model.ServerAddress
-import com.android.quo.model.ServerComponent
-import com.android.quo.model.ServerPlace
-import com.android.quo.model.ServerSettings
+import android.graphics.Bitmap
+import com.android.quo.networking.model.ServerAddress
+import com.android.quo.networking.model.ServerComponent
+import com.android.quo.networking.model.ServerPicture
+import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.model.ServerSettings
 
 /**
  * Created by Jung on 05.12.17.
@@ -11,7 +13,9 @@ import com.android.quo.model.ServerSettings
 
 object CreatePlace {
     var place: ServerPlace
-    val components = java.util.ArrayList<ServerComponent>()
+    val components = ArrayList<ServerComponent>()
+    val pictures = ArrayList<ServerPicture>()
+    lateinit var qrCode: Bitmap
 
     init {
         val serverAddress = ServerAddress("","",-1)
@@ -21,14 +25,12 @@ object CreatePlace {
         serverComponents.add(serverComponent)
 
         place = ServerPlace("","","","","","",
-                "",serverAddress, serverSettings,"","",serverComponents)
+                "","", serverAddress,serverSettings,"","", serverComponents)
 
-        place = place.copy(title = "createPlace")
-
-    }
-
-    fun savePlace() {
+       // place = place.copy(title = "createPlace")
 
     }
+
+
 
 }
