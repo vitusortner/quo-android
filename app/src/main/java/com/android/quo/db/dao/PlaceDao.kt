@@ -23,6 +23,9 @@ interface PlaceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPlaces(places: List<Place>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPlace(place: Place)
+
     @Delete
     fun deletePlace(place: Place)
 

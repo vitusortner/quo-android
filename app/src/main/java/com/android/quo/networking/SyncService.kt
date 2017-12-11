@@ -25,28 +25,19 @@ class SyncService(private val database: AppDatabase) {
         savePlaces(data, false)
     }
 
+    fun savePlace(data: ServerPlace) {
+        // TODO isHost
+        val place = mapToPlace(data, false)
+        database.placeDao().deletePlace(place)
+        database.placeDao().insertPlace(place)
+
+        Log.i("sync", "place sync success! $place")
+    }
+
     private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
         if (data.isNotEmpty()) {
-            val places = data.map { place ->
-                Place(
-                        id = place.id ?: "",
-                        isHost = isHost,
-                        title = place.title,
-                        startDate = place.startDate,
-                        endDate = place.endDate,
-                        latitude = place.latitude,
-                        longitude = place.longitude,
-                        address = place.address?.let { address ->
-                            Address(
-                                    street = address.street,
-                                    city = address.city,
-                                    zipCode = address.zipCode)
-                        },
-                        isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
-                        hasToValidateGps = place.settings?.hasToValidateGps,
-                        titlePicture = place.titlePicture ?: "",
-                        qrCodeId = place.qrCodeId ?: ""
-                )
+            val places = data.map { serverPlace ->
+                mapToPlace(serverPlace, isHost)
             }
             // delete places before inserting updated places
             database.placeDao().deletePlaces(isHost)
@@ -61,12 +52,7 @@ class SyncService(private val database: AppDatabase) {
     fun saveComponents(data: List<ServerComponent>, placeId: String) {
         if (data.isNotEmpty()) {
             val components = data.map { component ->
-                Component(
-                        id = component.id ?: "",
-                        picture = component.picture,
-                        text = component.text,
-                        placeId = placeId
-                )
+                mapToComponent(component, placeId)
             }
             // delete components of place before inserting updated comonents
             database.componentDao().deleteComponentsOfPlace(placeId)
@@ -80,15 +66,8 @@ class SyncService(private val database: AppDatabase) {
 
     fun savePictures(data: List<ServerPicture>, placeId: String) {
         if (data.isNotEmpty()) {
-            val pictures = data.map { picture ->
-                Picture(
-                        id = picture.id,
-                        ownerId = picture.ownerId,
-                        placeId = picture.placeId,
-                        src = picture.src,
-                        isVisible = picture.isVisible,
-                        timestamp = picture.timestamp
-                )
+            val pictures = data.map { serverPicture ->
+                mapToPicture(serverPicture)
             }
             // delete pictures of given place before inserting updated pictures
             database.pictureDao().deletePicturesOfPlace(placeId)
@@ -104,5 +83,47 @@ class SyncService(private val database: AppDatabase) {
         // TODO write token to key chain
         val user = User(data.id)
         database.userDao().insertUser(user)
+    }
+
+    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean): Place {
+        return Place(
+                id = serverPlace.id ?: "",
+                isHost = isHost,
+                title = serverPlace.title,
+                startDate = serverPlace.startDate,
+                endDate = serverPlace.endDate,
+                latitude = serverPlace.latitude,
+                longitude = serverPlace.longitude,
+                address = serverPlace.address?.let { address ->
+                    Address(
+                            street = address.street,
+                            city = address.city,
+                            zipCode = address.zipCode)
+                },
+                isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
+                hasToValidateGps = serverPlace.settings?.hasToValidateGps,
+                titlePicture = serverPlace.titlePicture ?: "",
+                qrCodeId = serverPlace.qrCodeId ?: ""
+        )
+    }
+
+    private fun mapToComponent(serverComponent: ServerComponent, placeId: String): Component {
+        return Component(
+                id = serverComponent.id ?: "",
+                picture = serverComponent.picture,
+                text = serverComponent.text,
+                placeId = placeId
+        )
+    }
+
+    private fun mapToPicture(serverPicture: ServerPicture): Picture {
+        return Picture(
+                id = serverPicture.id,
+                ownerId = serverPicture.ownerId,
+                placeId = serverPicture.placeId,
+                src = serverPicture.src,
+                isVisible = serverPicture.isVisible,
+                timestamp = serverPicture.timestamp
+        )
     }
 }
