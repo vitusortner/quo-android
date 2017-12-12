@@ -25,7 +25,9 @@ class PageViewModel(private val componentRepository: ComponentRepository) : View
     private fun loadComponents() {
         // TODO real place id
         componentRepository.getComponents("5a2a87c6ba3a14853a8f2ca6")
+                .distinctUntilChanged()
                 .subscribe({
+                    Log.i("page", "$it")
                     components?.value = it
                 }, {
                     Log.e("sync", it.toString())

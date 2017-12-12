@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,11 +32,16 @@ class GalleryFragment : Fragment() {
 
     private lateinit var viewModel: GalleryViewModel
 
+    private var placeId: String? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
+        placeId = arguments?.getString("placeId")
+        Log.i("place id", placeId ?: "")
+
         return inflater.inflate(R.layout.fragment_place_gallery, container, false)
     }
 
@@ -45,6 +51,7 @@ class GalleryFragment : Fragment() {
                 .get(GalleryViewModel::class.java)
 
         activity?.let { activity ->
+            // TODO show pictures of place
             viewModel.getPictures().observe(this, Observer {
                 it?.let {
                     recyclerView.adapter = GalleryAdapter(activity, it)

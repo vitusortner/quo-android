@@ -24,7 +24,9 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
 
     private fun loadPictures() {
         pictureRepository.getAllPictures()
+                .distinctUntilChanged()
                 .subscribe({
+                    Log.i("gallery", "$it")
                     pictures?.value = it
                 }, {
                     Log.e("sync", "$it")

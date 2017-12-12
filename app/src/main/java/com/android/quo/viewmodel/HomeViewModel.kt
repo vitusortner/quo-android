@@ -24,10 +24,12 @@ class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() 
 
     fun loadPlaces() {
         placeRepository.getAllPlaces()
+                .distinctUntilChanged()
                 .subscribe({
+                    Log.i("home", "$it")
                     places?.value = it
                 }, {
-                    Log.e("sync", it.toString())
+                    Log.e("sync", "$it")
                 })
     }
 }
