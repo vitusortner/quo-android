@@ -53,6 +53,7 @@ import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.cameraLayout
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.defaultImageListView
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.photosLayout
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -212,7 +213,7 @@ class CreateEventFragment : Fragment(), LocationListener {
 
         compositeDisposable.add(RxView.focusChanges(locationEditText)
                 .subscribe {
-                    getLocationFromAddress(locationEditText.text.toString())
+                   // getLocationFromAddress(locationEditText.text.toString())
                 })
 
         /**
@@ -239,8 +240,8 @@ class CreateEventFragment : Fragment(), LocationListener {
 
         CreatePlace.place.titlePicture?.let { titlePicture ->
             if (titlePicture.length == 1) {
-                headerImageView.setImageDrawable(getDefaultImageList()[titlePicture.toInt() - 1])
-            } else {
+                headerImageView.background = getDefaultImageList()[titlePicture.toInt() - 1]
+            } else if (titlePicture.isNotEmpty()) {
                 val uri = Uri.parse(titlePicture)
                 val path = getPath(uri)
                 val bitmap = BitmapFactory.decodeFile(path)
@@ -254,7 +255,7 @@ class CreateEventFragment : Fragment(), LocationListener {
         compositeDisposable.dispose()
     }
 
-    fun getDefaultImageList(): ArrayList<Drawable> {
+    private fun getDefaultImageList(): ArrayList<Drawable> {
         val list = ArrayList<Drawable>()
         context?.let { context ->
             ContextCompat.getDrawable(context, R.drawable.default_event_image1)?.let { list.add(it) }
@@ -315,8 +316,8 @@ class CreateEventFragment : Fragment(), LocationListener {
         CreatePlace.place.address?.street = "${addresses[0].thoroughfare}  ${addresses[0].subThoroughfare}"
         CreatePlace.place.address?.zipCode = postalCode.toInt()
 
-        CreatePlace.place.latitude = location.latitude.toString()
-        CreatePlace.place.longitude = location.longitude.toString()
+        CreatePlace.place.latitude = location.latitude
+        CreatePlace.place.longitude = location.longitude
     }
 
     /**
@@ -403,6 +404,7 @@ class CreateEventFragment : Fragment(), LocationListener {
 
         fromTimeEditText.hint = setCurrentTime()
         toTimeEditText.hint = setCurrentTime()
+
     }
 
     private fun setCurrentDate(): String {
@@ -475,6 +477,7 @@ class CreateEventFragment : Fragment(), LocationListener {
             CreatePlace.place.startDate = time
         } else {
             CreatePlace.place.endDate = time
+
         }
         currentEditText.setText(sdf.format(calendar.time))
     }

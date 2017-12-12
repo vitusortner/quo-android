@@ -36,7 +36,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_event.headerImageView
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
 import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewCardView
@@ -87,7 +86,6 @@ class CreatePageFragment : Fragment() {
                                         }
                             })
                     pagePreviewCardView.visibility = GONE
-                    view.generatedLayout.addView(createCardView(createEditText()))
                 })
 
         compositeDisposable.add(RxView.clicks(pagePreviewCardView)

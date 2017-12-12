@@ -22,10 +22,10 @@ data class ServerPlace(
         var endDate: String? = null,
 
         @SerializedName("lat")
-        var latitude: String,
+        var latitude: Double,
 
         @SerializedName("long")
-        var longitude: String,
+        var longitude: Double,
 
         val address: ServerAddress? = null,
 
@@ -37,5 +37,5 @@ data class ServerPlace(
         @SerializedName("qr_code_id")
         var qrCodeId: String? = null,
 
-        var components: List<ServerComponent>? = null
+        var components: ArrayList<ServerComponent>? = null
 )

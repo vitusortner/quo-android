@@ -25,7 +25,7 @@ object CreatePlace {
         serverComponents.add(serverComponent)
 
         place = ServerPlace("","","","","","",
-                "","", serverAddress,serverSettings,"","", serverComponents)
+                -1.0, -1.0, serverAddress,serverSettings,"1","", serverComponents)
 
        // place = place.copy(title = "createPlace")
 

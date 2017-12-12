@@ -78,11 +78,6 @@ class CreatePlaceFragment : Fragment() {
         )
     }
 
-    private fun savePlace() {
-        ApiService.instance.addPlace(CreatePlace.place)
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

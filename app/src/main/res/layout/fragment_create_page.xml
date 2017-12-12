@@ -2,12 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/colorPrimaryDark">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -60,7 +56,6 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/text_size_medium"
-            android:backgroundTint="@color/colorAccentDark"
             android:src="@drawable/ic_add" />
 
         <ImageButton
@@ -88,6 +83,4 @@
             android:padding="@dimen/event_gallery_button_padding"
             android:src="@drawable/ic_aa"
             android:visibility="gone" />
-
-    </RelativeLayout>
 </RelativeLayout>
