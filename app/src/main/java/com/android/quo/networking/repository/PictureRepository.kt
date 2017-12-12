@@ -1,7 +1,9 @@
-package com.android.quo.networking
+package com.android.quo.networking.repository
 
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.entity.Picture
+import com.android.quo.networking.ApiService
+import com.android.quo.networking.SyncService
 import com.android.quo.networking.model.ServerPicture
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -24,9 +26,7 @@ class PictureRepository(
 
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getPictures(placeId)
 
-                override fun sync(data: List<ServerPicture>) {
-                    syncService.savePictures(data)
-                }
+                override fun sync(data: List<ServerPicture>) = syncService.savePictures(data, placeId)
             }
         }, BackpressureStrategy.BUFFER)
     }
@@ -40,7 +40,8 @@ class PictureRepository(
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getAllPictures()
 
                 override fun sync(data: List<ServerPicture>) {
-                    syncService.savePictures(data)
+                    // TODO delete function getAllPictures after testing
+                    syncService.savePictures(data, "5a2a87c6ba3a14853a8f2ca6")
                 }
             }
         }, BackpressureStrategy.BUFFER)

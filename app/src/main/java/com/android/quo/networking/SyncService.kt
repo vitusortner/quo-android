@@ -7,6 +7,7 @@ import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
 import com.android.quo.db.entity.User
+import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerUser
@@ -25,66 +26,59 @@ class SyncService(private val database: AppDatabase) {
     }
 
     private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
-        val places = data.map { place ->
-            Place(
-                    id = place.id ?: "",
-                    isHost = isHost,
-                    title = place.title,
-                    startDate = place.startDate,
-                    endDate = place.endDate,
-                    latitude = place.latitude,
-                    longitude = place.longitude,
-                    address = place.address?.let {
-                        Address(
-                                street = place.address.street,
-                                city = place.address.city,
-                                zipCode = place.address.zipCode)
-                    },
-                    isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
-                    hasToValidateGps = place.settings?.hasToValidateGps,
-                    titlePicture = place.titlePicture ?: "",
-                    qrCodeId = place.qrCodeId ?: ""
-            )
-        }
-        database.placeDao().deletePlaces(isHost)
-        database.placeDao().insertAllPlaces(places)
-        Log.i("sync", "place sync success!")
-
-        saveComponents(data)
-    }
-
-    private fun saveComponents(data: List<ServerPlace>) {
-        val components = mutableListOf<Component>()
-        data.forEach { place ->
-            place.components?.let {
-                it.forEach {
-                    components.add(
-                            Component(
-                                    id = it.id ?: "",
-                                    picture = it.picture,
-                                    text = it.text,
-                                    placeId = place.id ?: "",
-                                    position = it.position ?: 0
-                            ))
-                }
+        if (data.isNotEmpty()) {
+            val places = data.map { place ->
+                Place(
+                        id = place.id ?: "",
+                        isHost = isHost,
+                        title = place.title,
+                        startDate = place.startDate,
+                        endDate = place.endDate,
+                        latitude = place.latitude,
+                        longitude = place.longitude,
+                        address = place.address?.let { address ->
+                            Address(
+                                    street = address.street,
+                                    city = address.city,
+                                    zipCode = address.zipCode)
+                        },
+                        isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
+                        hasToValidateGps = place.settings?.hasToValidateGps,
+                        titlePicture = place.titlePicture ?: "",
+                        qrCodeId = place.qrCodeId ?: ""
+                )
             }
-            place.id?.let {
-                database.componentDao().deleteComponentsFromPlace(it)
+            // delete places before inserting updated places
+            database.placeDao().deletePlaces(isHost)
+            database.placeDao().insertAllPlaces(places.reversed())
+
+            Log.i("sync", "place sync success! $places")
+        } else {
+            Log.i("sync", "no places to sync!")
+        }
+    }
+
+    fun saveComponents(data: List<ServerComponent>, placeId: String) {
+        if (data.isNotEmpty()) {
+            val components = data.map { component ->
+                Component(
+                        id = component.id ?: "",
+                        picture = component.picture,
+                        text = component.text,
+                        placeId = placeId
+                )
             }
+            // delete components of place before inserting updated comonents
+            database.componentDao().deleteComponentsOfPlace(placeId)
+            database.componentDao().insertAllComponents(components.reversed())
+
+            Log.i("sync", "component sync success! $components")
+        } else {
+            Log.i("sync", "no components to sync!")
         }
-        if (components.isNotEmpty()) {
-            database.componentDao().insertAllComponents(components)
-        }
-        Log.i("sync", "component sync success!")
     }
 
-    fun saveUser(data: ServerUser) {
-        // TODO write token to key chain
-        val user = User(data.id)
-        database.userDao().insertUser(user)
-    }
-
-    fun savePictures(data: List<ServerPicture>) {
+    fun savePictures(data: List<ServerPicture>, placeId: String) {
         if (data.isNotEmpty()) {
             val pictures = data.map { picture ->
                 Picture(
@@ -96,10 +90,19 @@ class SyncService(private val database: AppDatabase) {
                         timestamp = picture.timestamp
                 )
             }
-            // delete pictures of given place
-            database.pictureDao().deletePicturesOfPlace(data[0].placeId)
-            database.pictureDao().insertAllPictures(pictures)
+            // delete pictures of given place before inserting updated pictures
+            database.pictureDao().deletePicturesOfPlace(placeId)
+            database.pictureDao().insertAllPictures(pictures.reversed())
+
+            Log.i("sync", "picture sync success! $pictures")
+        } else {
+            Log.i("sync", "no pictures to sync!")
         }
-        Log.i("sync", "picture sync success!")
+    }
+
+    fun saveUser(data: ServerUser) {
+        // TODO write token to key chain
+        val user = User(data.id)
+        database.userDao().insertUser(user)
     }
 }

@@ -5,12 +5,12 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Picture
-import com.android.quo.networking.PictureRepository
+import com.android.quo.networking.repository.PictureRepository
 
 /**
- * Created by vitusortner on 19.11.17.
+ * Created by vitusortner on 09.12.17.
  */
-class PlaceViewModel(private val pictureRepository: PictureRepository) : ViewModel() {
+class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewModel() {
 
     private var pictures: MutableLiveData<List<Picture>>? = null
 
@@ -22,12 +22,16 @@ class PlaceViewModel(private val pictureRepository: PictureRepository) : ViewMod
         return pictures as MutableLiveData<List<Picture>>
     }
 
-    fun loadPictures() {
+    private fun loadPictures() {
         pictureRepository.getAllPictures()
                 .subscribe({
                     pictures?.value = it
                 }, {
                     Log.e("sync", it.toString())
                 })
+    }
+
+    fun updatePictures() {
+        loadPictures()
     }
 }

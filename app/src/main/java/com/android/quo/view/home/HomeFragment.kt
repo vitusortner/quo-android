@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
-import com.android.quo.networking.PlaceRepository
+import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.networking.SyncService
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.HomeViewModel
