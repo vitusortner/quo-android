@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.db.entity.Picture
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import com.jakewharton.rxbinding2.view.RxView
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.gallery_image_thumbnail.imageView
 /**
  * Created by vitusortner on 14.11.17.
  */
-class GalleryAdapter(private val activity: Activity, private val list: ArrayList<String>) :
+class GalleryAdapter(private val activity: Activity, private val list: List<Picture>) :
         RecyclerView.Adapter<GalleryAdapter.PlaceGalleryViewHolder>() {
 
     override fun getItemCount() = list.size
@@ -31,7 +32,7 @@ class GalleryAdapter(private val activity: Activity, private val list: ArrayList
     }
 
     override fun onBindViewHolder(holder: PlaceGalleryViewHolder, position: Int) {
-        val imageUrl = list[position]
+        val imageUrl = list[position].src
 
         Glide.with(holder.containerView.context)
                 .load(imageUrl)
@@ -41,7 +42,7 @@ class GalleryAdapter(private val activity: Activity, private val list: ArrayList
         RxView.clicks(holder.imageView)
                 .subscribe {
                     val intent = Intent(activity, ImagePagerActivity::class.java)
-                    intent.putExtra("list", list)
+                    intent.putExtra("list", ArrayList(list))
                     intent.putExtra("position", position)
                     holder.containerView.context.startActivity(intent)
                 }

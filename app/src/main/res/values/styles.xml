@@ -20,6 +20,11 @@
         <item name="android:statusBarColor">@color/colorInfoToolbar</item>
     </style>
 
+    <style name="AccentActionBarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionMenuTextColor">@color/colorTextWhite</item>
+        <item name="android:actionMenuTextColor">@color/colorTextWhite</item>
+    </style>
+
     <style name="PlaceToolbarStyle">
         <item name="android:textColorPrimary">#FFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFF</item>
@@ -35,11 +40,31 @@
         <item name="android:textColor">@color/colorTextBlack</item>
     </style>
 
+
+    <style name="DatePickerDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorAccentDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="TimePickerDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorAccentDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorAccentDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlNormal">@color/colorTextGray</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
+
     <style name="EditTextStyle">
         <item name="android:textColor">@color/colorTextGray</item>
         <item name="android:textSize">16dp</item>
@@ -47,8 +72,8 @@
 
     <style name="RadioButtonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlNormal">@color/colorTextGray</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
     <style name="RadioButtonStyle">
@@ -62,11 +87,12 @@
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
+
     </style>
 
 </resources>

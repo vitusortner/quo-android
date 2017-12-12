@@ -1,48 +1,33 @@
 package com.android.quo.viewmodel
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
+import com.android.quo.db.entity.Picture
+import com.android.quo.networking.PictureRepository
 
 /**
  * Created by vitusortner on 19.11.17.
  */
-class PlaceViewModel : ViewModel() {
+class PlaceViewModel(private val pictureRepository: PictureRepository) : ViewModel() {
 
-    // contains gallery images, info view content, page content
+    private var pictures: MutableLiveData<List<Picture>>? = null
 
-    val imageList = ArrayList<String>()
+    fun getPictures(): LiveData<List<Picture>> {
+        if (pictures == null) {
+            pictures = MutableLiveData()
+            loadPictures()
+        }
+        return pictures as MutableLiveData<List<Picture>>
+    }
 
-    init {
-        // TODO replace with smaller images
-        imageList.add("https://static.pexels.com/photos/196643/pexels-photo-196643.jpeg")
-        imageList.add("https://static.pexels.com/photos/185343/pexels-photo-185343.jpeg")
-        imageList.add("https://static.pexels.com/photos/185495/pexels-photo-185495.jpeg")
-        imageList.add("https://static.pexels.com/photos/185661/pexels-photo-185661.jpeg")
-        imageList.add("https://static.pexels.com/photos/185662/pexels-photo-185662.jpeg")
-        imageList.add("https://static.pexels.com/photos/185699/pexels-photo-185699.jpeg")
-        imageList.add("https://static.pexels.com/photos/185706/pexels-photo-185706.jpeg")
-        imageList.add("https://static.pexels.com/photos/185931/pexels-photo-185931.jpeg")
-        imageList.add("https://static.pexels.com/photos/640382/pexels-photo-640382.jpeg")
-        imageList.add("https://static.pexels.com/photos/640781/pexels-photo-640781.jpeg")
-        imageList.add("https://static.pexels.com/photos/640783/pexels-photo-640783.jpeg")
-        imageList.add("https://static.pexels.com/photos/185495/pexels-photo-185495.jpeg")
-        imageList.add("https://static.pexels.com/photos/185661/pexels-photo-185661.jpeg")
-        imageList.add("https://static.pexels.com/photos/185662/pexels-photo-185662.jpeg")
-        imageList.add("https://static.pexels.com/photos/185699/pexels-photo-185699.jpeg")
-        imageList.add("https://static.pexels.com/photos/185706/pexels-photo-185706.jpeg")
-        imageList.add("https://static.pexels.com/photos/185931/pexels-photo-185931.jpeg")
-        imageList.add("https://static.pexels.com/photos/640382/pexels-photo-640382.jpeg")
-        imageList.add("https://static.pexels.com/photos/640781/pexels-photo-640781.jpeg")
-        imageList.add("https://static.pexels.com/photos/640783/pexels-photo-640783.jpeg")
-        imageList.add("https://static.pexels.com/photos/196643/pexels-photo-196643.jpeg")
-        imageList.add("https://static.pexels.com/photos/185343/pexels-photo-185343.jpeg")
-        imageList.add("https://static.pexels.com/photos/185495/pexels-photo-185495.jpeg")
-        imageList.add("https://static.pexels.com/photos/185661/pexels-photo-185661.jpeg")
-        imageList.add("https://static.pexels.com/photos/185662/pexels-photo-185662.jpeg")
-        imageList.add("https://static.pexels.com/photos/185699/pexels-photo-185699.jpeg")
-        imageList.add("https://static.pexels.com/photos/185706/pexels-photo-185706.jpeg")
-        imageList.add("https://static.pexels.com/photos/185931/pexels-photo-185931.jpeg")
-        imageList.add("https://static.pexels.com/photos/640382/pexels-photo-640382.jpeg")
-        imageList.add("https://static.pexels.com/photos/640781/pexels-photo-640781.jpeg")
-        imageList.add("https://static.pexels.com/photos/640783/pexels-photo-640783.jpeg")
+    fun loadPictures() {
+        pictureRepository.getAllPictures()
+                .subscribe({
+                    pictures?.value = it
+                }, {
+                    Log.e("sync", it.toString())
+                })
     }
 }
