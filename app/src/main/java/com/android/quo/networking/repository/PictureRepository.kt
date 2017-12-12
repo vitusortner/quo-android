@@ -40,6 +40,7 @@ class PictureRepository(
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getAllPictures()
 
                 override fun sync(data: List<ServerPicture>) {
+                    // TODO delete function getAllPictures after testing
                     syncService.savePictures(data, "5a2a87c6ba3a14853a8f2ca6")
                 }
             }
