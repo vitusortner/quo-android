@@ -55,14 +55,6 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
 
-        // set status bar color
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
-        }
-
         /**
          * handle Facebook result
          */
@@ -289,5 +281,22 @@ class LoginActivity : AppCompatActivity() {
 
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.cancel), { _, _ -> })
         dialog.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
     }
 }
