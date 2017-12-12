@@ -20,6 +20,9 @@ interface PlaceDao {
     @Query("SELECT * FROM place WHERE id = :id")
     fun getPlaceById(id: String): Flowable<Place>
 
+    @Query("SELECT * FROM place WHERE qr_code_id = :qrCodeId")
+    fun getPlaceByQrCodeId(qrCodeId: String): Flowable<Place>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPlaces(places: List<Place>)
 

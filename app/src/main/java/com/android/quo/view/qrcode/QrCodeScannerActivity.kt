@@ -3,6 +3,8 @@ package com.android.quo.view.qrcode
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -19,19 +21,21 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
+import com.android.quo.QuoApplication
 import com.android.quo.R
-import com.android.quo.db.entity.Address
-import com.android.quo.db.entity.Place
 import com.android.quo.model.QrCodeScannerDialog
 import com.android.quo.networking.ApiService
+import com.android.quo.networking.SyncService
+import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.view.main.MainActivity
+import com.android.quo.viewmodel.QrCodeScannerViewModel
+import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.Result
 import com.google.zxing.common.HybridBinarizer
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.cancelButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashTextView
@@ -50,10 +54,21 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private lateinit var scannerView: ZXingScannerView
 
+    private val database = QuoApplication.database
+    private val apiService = ApiService.instance
+    private val placeDao = database.placeDao()
+    private val syncService = SyncService(database)
+    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+
+    private lateinit var viewModel: QrCodeScannerViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_qr_code_scanner)
+
+        viewModel = ViewModelProviders
+                .of(this, QrCodeScannerViewModelFactory(placeRepository))
+                .get(QrCodeScannerViewModel::class.java)
 
         requestPermissions(arrayOf(
                 Manifest.permission.CAMERA,
@@ -127,47 +142,20 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
     }
 
     /**
-     * Opens place fragment, if supplied URI string start with "quo://", else opens dialog
+     * Opens place fragment, if supplied URI string starts with "quo://", else opens dialog
      */
     private fun handleQrCode(uriString: String) {
         when {
             uriString.startsWith("quo://") -> {
                 val qrCodeId = uriString.split("/").last()
 
-                // fetch place from qr code id, open place view
-                ApiService.instance.getPlace(qrCodeId)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ place ->
-                            Log.i("api", "$place")
-
-                            val place = Place(
-                                    id = place.id ?: "",
-                                    // TODO properly set isHost
-                                    isHost = false,
-                                    title = place.title,
-                                    startDate = place.startDate,
-                                    endDate = place.endDate,
-                                    latitude = place.latitude,
-                                    longitude = place.longitude,
-                                    address = place.address?.let { address ->
-                                        Address(
-                                                street = address.street,
-                                                city = address.city,
-                                                zipCode = address.zipCode)
-                                    },
-                                    isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
-                                    hasToValidateGps = place.settings?.hasToValidateGps,
-                                    titlePicture = place.titlePicture ?: "",
-                                    qrCodeId = place.qrCodeId ?: ""
-                            )
-
-
-                            val intent = Intent(this, MainActivity::class.java)
-                            intent.putExtra("place", place)
-                            startActivity(intent)
-                        }, {
-                            Log.e("api", "$it")
-                        })
+                viewModel.getPlace(qrCodeId).observe(this, Observer {
+                    it?.let {
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("place", it)
+                        startActivity(intent)
+                    }
+                })
             }
             uriString.startsWith("http") -> {
                 val dialog = QrCodeScannerDialog(

@@ -27,7 +27,7 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
                 .subscribe({
                     pictures?.value = it
                 }, {
-                    Log.e("sync", it.toString())
+                    Log.e("sync", "$it")
                 })
     }
 
