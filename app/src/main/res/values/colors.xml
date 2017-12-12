@@ -8,6 +8,7 @@
     <color name="colorAlert">#B92D00</color>
     <color name="colorSecondary">#8c000000</color>
     <color name="colorCardViewTitleBackground">#8cC1C1C1</color>
+    <color name="colorSysBarCreatePlace">#00796B</color>
 
     <!-- COLOR FOR TEXT -->
     <color name="colorTextWhite">#FFFFFF</color>

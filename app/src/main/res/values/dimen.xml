@@ -38,6 +38,7 @@
     <dimen name="home_cardview_padding_top">2dp</dimen>
     <dimen name="home_cardview_padding_end">8dp</dimen>
     <dimen name="home_cardview_padding_start">8dp</dimen>
+    <dimen name="home_cardview_cardCornerRadius">2dp</dimen>
 
     <!-- Login Page -->
     <dimen name="login_logo_image_view_margin_top">80dp</dimen>

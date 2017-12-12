@@ -39,7 +39,8 @@
                 android:paddingBottom="@dimen/home_cardview_padding_bottom"
                 android:paddingTop="@dimen/home_cardview_padding_top"
                 android:paddingEnd="@dimen/home_cardview_padding_end"
-                android:paddingStart="@dimen/home_cardview_padding_start" />
+                android:paddingStart="@dimen/home_cardview_padding_start"
+                android:lineSpacingExtra="6dp"/>
 
             <TextView
                 android:id="@+id/placePreviewDescriptionTextView"
