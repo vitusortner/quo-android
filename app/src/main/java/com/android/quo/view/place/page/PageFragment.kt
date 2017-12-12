@@ -55,20 +55,23 @@ class PageFragment : Fragment() {
     }
 
     private fun observeComponents() {
-        // TODO show components of place
-        viewModel.getComponents().observe(this, Observer {
-            it?.let {
-                recyclerView.adapter = PageAdapter(it)
-                recyclerView.layoutManager = LinearLayoutManager(this.context)
-            }
-        })
+        placeId?.let { placeId ->
+            viewModel.getComponents(placeId).observe(this, Observer { components ->
+                components?.let { components ->
+                    recyclerView.adapter = PageAdapter(components)
+                    recyclerView.layoutManager = LinearLayoutManager(this.context)
+                }
+            })
+        }
     }
 
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.updateComponents()
-            swipeRefreshLayout.isRefreshing = false
+            placeId?.let {
+                viewModel.updateComponents(it)
+                swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 }

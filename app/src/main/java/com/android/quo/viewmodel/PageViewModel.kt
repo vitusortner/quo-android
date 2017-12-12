@@ -14,17 +14,16 @@ class PageViewModel(private val componentRepository: ComponentRepository) : View
 
     private var components: MutableLiveData<List<Component>>? = null
 
-    fun getComponents(): LiveData<List<Component>> {
+    fun getComponents(placeId: String): LiveData<List<Component>> {
         if (components == null) {
             components = MutableLiveData()
-            loadComponents()
+            loadComponents(placeId)
         }
         return components as MutableLiveData<List<Component>>
     }
 
-    private fun loadComponents() {
-        // TODO real place id
-        componentRepository.getComponents("5a2a87c6ba3a14853a8f2ca6")
+    private fun loadComponents(placeId: String) {
+        componentRepository.getComponents(placeId)
                 .distinctUntilChanged()
                 .subscribe({
                     Log.i("page", "$it")
@@ -34,7 +33,7 @@ class PageViewModel(private val componentRepository: ComponentRepository) : View
                 })
     }
 
-    fun updateComponents() {
-        loadComponents()
+    fun updateComponents(placeId: String) {
+        loadComponents(placeId)
     }
 }

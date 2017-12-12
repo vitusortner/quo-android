@@ -34,6 +34,7 @@ class InfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupToolbar()
 
+        // TODO else show placeholder
         val imageUrl = place?.titlePicture ?: ""
 
         Glide.with(this.context)

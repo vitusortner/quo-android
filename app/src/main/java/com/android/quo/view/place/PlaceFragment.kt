@@ -62,6 +62,7 @@ class PlaceFragment : Fragment() {
         toolbar.inflateMenu(R.menu.place_menu)
         toolbar.title = place?.title ?: ""
 
+        // TODO else show placeholder
         val imageUrl = place?.titlePicture ?: ""
 
         Glide.with(this.context)

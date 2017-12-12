@@ -14,16 +14,16 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
 
     private var pictures: MutableLiveData<List<Picture>>? = null
 
-    fun getPictures(): LiveData<List<Picture>> {
+    fun getPictures(placeId: String): LiveData<List<Picture>> {
         if (pictures == null) {
             pictures = MutableLiveData()
-            loadPictures()
+            loadPictures(placeId)
         }
         return pictures as MutableLiveData<List<Picture>>
     }
 
-    private fun loadPictures() {
-        pictureRepository.getAllPictures()
+    private fun loadPictures(placeId: String) {
+        pictureRepository.getPictures(placeId)
                 .distinctUntilChanged()
                 .subscribe({
                     Log.i("gallery", "$it")
@@ -33,7 +33,7 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
                 })
     }
 
-    fun updatePictures() {
-        loadPictures()
+    fun updatePictures(placeId: String) {
+        loadPictures(placeId)
     }
 }
