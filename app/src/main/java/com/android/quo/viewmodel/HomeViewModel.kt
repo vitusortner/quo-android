@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Place
-import com.android.quo.networking.PlaceRepository
+import com.android.quo.networking.repository.PlaceRepository
 
 /**
  * Created by vitusortner on 06.12.17.

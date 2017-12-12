@@ -2,7 +2,7 @@ package com.android.quo.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.android.quo.networking.PlaceRepository
+import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.viewmodel.HomeViewModel
 
 
