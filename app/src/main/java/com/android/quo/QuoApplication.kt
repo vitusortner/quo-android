@@ -3,6 +3,7 @@ package com.android.quo
 import android.app.Application
 import android.arch.persistence.room.Room
 import com.android.quo.db.AppDatabase
+import com.facebook.stetho.Stetho
 
 /**
  * Created by FlorianSchlueter on 20.11.2017.
@@ -17,5 +18,7 @@ class QuoApplication : Application() {
         super.onCreate()
 
         database = Room.databaseBuilder(this, AppDatabase::class.java, "qouDB").build()
+
+        Stetho.initializeWithDefaults(this)
     }
 }
