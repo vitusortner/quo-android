@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class ServerPicture(
         @SerializedName("_id")
-        var id: String,
+        var id: String? = null,
 
         @SerializedName("owner")
         var ownerId: String,

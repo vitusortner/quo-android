@@ -88,7 +88,7 @@ class SyncService(private val database: AppDatabase) {
         if (data.isNotEmpty()) {
             val pictures = data.map { picture ->
                 Picture(
-                        id = picture.id,
+                        id = picture.id ?: "",
                         ownerId = picture.ownerId,
                         placeId = picture.placeId,
                         src = picture.src,

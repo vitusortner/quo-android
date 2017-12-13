@@ -32,7 +32,8 @@ class QrCodeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        qrCodeImageView.setImageBitmap(generateQrCode("http://www.google.de"))
+//        qrCodeImageView.setImageBitmap(generateQrCode("http://www.google.de"))
+        qrCodeImageView.setImageBitmap(CreatePlace.qrCode)
     }
 
     private fun setupToolbar() {
@@ -50,7 +51,7 @@ class QrCodeFragment : Fragment() {
         compositDisposable.add(
                 RxToolbar.itemClicks(toolbar)
                         .subscribe {
-                           //TODO open info box
+                            //TODO open info box
                         }
         )
     }

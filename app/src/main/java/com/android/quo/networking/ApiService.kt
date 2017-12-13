@@ -54,6 +54,9 @@ interface ApiService {
     @GET("places/{id}")
     fun getPlace(@Path("id") qrCodeId: String): Single<List<ServerPlace>>
 
+    @PUT("places/{id}")
+    fun putPlace(@Path("id") id: String, @Body place: ServerPlace): Single<ServerPlace>
+
     @GET("users/{id}/visitedplaces")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
@@ -80,7 +83,7 @@ interface ApiService {
 
     companion object {
 
-       // private const val BASE_URL = "http://10.0.2.2:3000/"
+        // private const val BASE_URL = "http://10.0.2.2:3000/"
         private const val BASE_URL = "http://ec2-52-57-50-127.eu-central-1.compute.amazonaws.com:3000"
 
         private val okClient: OkHttpClient

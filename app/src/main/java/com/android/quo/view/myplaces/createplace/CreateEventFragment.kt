@@ -9,6 +9,7 @@ import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
@@ -34,6 +35,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
+import com.android.quo.model.EventDates
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -73,9 +75,13 @@ class CreateEventFragment : Fragment(), LocationListener {
     private lateinit var currentEditText: EditText
     private val dateFormat = "E, MMM dd yyyy"
     private val timeFormat = "h:mm a"
+    private val timestampDateFormat = "yyyy-MM-dd"
+    private val timestampTimeFormat = "HH:mm:ss"
     private var compositeDisposable = CompositeDisposable()
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private var foundLocation = false
+    private var startDate = EventDates("0000-00-00", "00:00:00")
+    private var endDate = EventDates("0000-00-00", "00:00:00")
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -102,7 +108,7 @@ class CreateEventFragment : Fragment(), LocationListener {
         /**
          * focusChanges on EventName Edit Text
          */
-        compositeDisposable.add(RxView.focusChanges(eventNameEditText)
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(eventNameEditText)
                 .subscribe {
                     /**
                      * Save into DB-Object
@@ -213,7 +219,10 @@ class CreateEventFragment : Fragment(), LocationListener {
 
         compositeDisposable.add(RxView.focusChanges(locationEditText)
                 .subscribe {
-                   // getLocationFromAddress(locationEditText.text.toString())
+                    if (locationEditText.text.toString() != "") {
+                        getLocationFromAddress(locationEditText.text.toString())
+                    }
+
                 })
 
         /**
@@ -360,7 +369,8 @@ class CreateEventFragment : Fragment(), LocationListener {
                     val selectedImageUri = data?.data
                     val path = selectedImageUri?.let { getPath(it) }
                     val bitmap = BitmapFactory.decodeFile(path)
-                    headerImageView.setImageBitmap(bitmap)
+                    val bitmapDrawable = BitmapDrawable(resources, bitmap)
+                    headerImageView.background = bitmapDrawable
                     bottomSheetDialog.hide()
                     CreatePlace.place.titlePicture = path
 
@@ -437,14 +447,19 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     private fun updateCalendarLabel(isStartDate: Boolean) {
         val sdf = SimpleDateFormat(dateFormat, Locale.US)
-        val date = sdf.format(calendar.time)
+
+        val timestampFormat = SimpleDateFormat(timestampDateFormat, Locale.US)
+        val timestamp = timestampFormat.format(calendar.time)
         /**
          * Save into DB-Object
          */
         if (isStartDate) {
-            CreatePlace.place.startDate = date
+            startDate.date = timestamp
+            CreatePlace.place.startDate = Timestamp.valueOf(startDate.date + " " + startDate.time).time.toString()
         } else {
-            CreatePlace.place.endDate = date
+            endDate.date = timestamp
+            CreatePlace.place.endDate = Timestamp.valueOf(endDate.date + " " + endDate.time).time.toString()
+
         }
         currentEditText.setText(sdf.format(calendar.time))
 
@@ -468,15 +483,19 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     private fun updateTimeLabel(isStartDate: Boolean) {
         val sdf = SimpleDateFormat(timeFormat, Locale.US)
-        val time = sdf.format(calendar.time)
+
+        val timestampFormat = SimpleDateFormat(timestampTimeFormat, Locale.US)
+        val timestamp = timestampFormat.format(calendar.time)
         // TODO change start and endDate to time?!
         /**
          * Save into DB-Object
          */
         if (isStartDate) {
-            CreatePlace.place.startDate = time
+            startDate.time = timestamp
+            CreatePlace.place.startDate = Timestamp.valueOf(startDate.date + " " + startDate.time).time.toString()
         } else {
-            CreatePlace.place.endDate = time
+            endDate.time = timestamp
+            CreatePlace.place.endDate = Timestamp.valueOf(endDate.date + " " + endDate.time).time.toString()
 
         }
         currentEditText.setText(sdf.format(calendar.time))
