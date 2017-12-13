@@ -58,4 +58,6 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$architecture_components_version"
     implementation "android.arch.persistence.room:rxjava2:$architecture_components_version"
     androidTestImplementation "android.arch.core:core-testing:$architecture_components_version"
+
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 }
