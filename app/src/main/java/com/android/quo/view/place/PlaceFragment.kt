@@ -83,25 +83,25 @@ class PlaceFragment : Fragment() {
         this.context?.let {
             // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
             // set tab layout colors denpendent on how far scrolled
-            var scrollRange = -1
-
-            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                // set shadow
-                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
-
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset <= 150) {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
-                            resources.getColor(R.color.colorTextBlack))
-                } else {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
-                            resources.getColor(R.color.colorTextWhite))
-                }
-            }
+//            var scrollRange = -1
+//
+//            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+//                 set shadow
+//                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
+//
+//                if (scrollRange == -1) {
+//                    scrollRange = appBarLayout.totalScrollRange
+//                }
+//                if (scrollRange + verticalOffset <= 150) {
+//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
+//                            resources.getColor(R.color.colorTextBlack))
+//                } else {
+//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
+//                            resources.getColor(R.color.colorTextWhite))
+//                }
+//            }
         }
     }
 

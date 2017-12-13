@@ -25,6 +25,7 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
     private fun loadPictures() {
         pictureRepository.getAllPictures()
                 .subscribe({
+                    Log.i("sync", "$it")
                     pictures?.value = it
                 }, {
                     Log.e("sync", it.toString())
