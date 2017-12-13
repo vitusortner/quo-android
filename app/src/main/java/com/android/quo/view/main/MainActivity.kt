@@ -10,8 +10,10 @@ import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
+import com.android.quo.db.entity.Place
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.myplaces.MyPlacesFragment
+import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
@@ -31,6 +33,27 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
+        }
+    }
+
+    /**
+     * get place object from intent and hand it over to the place fragment
+     * start place fragment
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        if (intent.getParcelableExtra<Place>("place") !== null) {
+            val place = intent.getParcelableExtra<Place>("place")
+            val bundle = Bundle()
+            bundle.putParcelable("place", place)
+            val fragment = PlaceFragment()
+            fragment.arguments = bundle
+
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.content, fragment)
+                    .addToBackStack(null)
+                    .commit()
         }
     }
 

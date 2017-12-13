@@ -6,33 +6,46 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Picture
 import com.android.quo.networking.repository.PictureRepository
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by vitusortner on 09.12.17.
  */
 class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewModel() {
 
+    private val compositDisposabel = CompositeDisposable()
+
     private var pictures: MutableLiveData<List<Picture>>? = null
 
-    fun getPictures(): LiveData<List<Picture>> {
+    fun getPictures(placeId: String): LiveData<List<Picture>> {
         if (pictures == null) {
             pictures = MutableLiveData()
-            loadPictures()
+            loadPictures(placeId)
         }
         return pictures as MutableLiveData<List<Picture>>
     }
 
-    private fun loadPictures() {
-        pictureRepository.getAllPictures()
-                .subscribe({
-                    Log.i("sync", "$it")
-                    pictures?.value = it
-                }, {
-                    Log.e("sync", it.toString())
-                })
+    private fun loadPictures(placeId: String) {
+        compositDisposabel.add(
+                pictureRepository.getPictures(placeId)
+                        .distinctUntilChanged()
+                        .subscribe({
+                            if (it.isNotEmpty()) {
+                                pictures?.value = it
+                            }
+                        }, {
+                            Log.e("sync", "$it")
+                        })
+        )
     }
 
-    fun updatePictures() {
-        loadPictures()
+    fun updatePictures(placeId: String) {
+        loadPictures(placeId)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        compositDisposabel.dispose()
     }
 }
