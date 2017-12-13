@@ -30,20 +30,4 @@ class PictureRepository(
             }
         }, BackpressureStrategy.BUFFER)
     }
-
-    fun getAllPictures(): Flowable<List<Picture>> {
-        return Flowable.create({ emitter ->
-            object : Repository<List<Picture>, List<ServerPicture>>(emitter) {
-
-                override fun getRemote(): Single<List<ServerPicture>> = apiService.getAllPictures()
-
-                override fun getLocal(): Flowable<List<Picture>> = pictureDao.getAllPictures()
-
-                override fun sync(data: List<ServerPicture>) {
-                    // TODO delete function getAllPictures after testing
-                    syncService.savePictures(data, "5a2a87c6ba3a14853a8f2ca6")
-                }
-            }
-        }, BackpressureStrategy.BUFFER)
-    }
 }

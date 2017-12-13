@@ -26,10 +26,10 @@ class SyncService(private val database: AppDatabase) {
     }
 
     fun savePlace(data: ServerPlace) {
-        // TODO isHost
+        // TODO set isHost correctly
         val place = mapToPlace(data, false)
         database.placeDao().deletePlace(place)
-        // TODO insert to correct place
+        // TODO insert to correct place https://app.clickup.com/751518/751948/t/w5h2
         database.placeDao().insertPlace(place)
 
         Log.i("sync", "place sync success! $place")

@@ -1,5 +1,6 @@
 package com.android.quo.view.place.info
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -34,7 +35,7 @@ class InfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupToolbar()
 
-        // TODO else show placeholder
+        // TODO else show placeholder https://app.clickup.com/751518/751948/t/w5hm
         val imageUrl = place?.titlePicture ?: ""
 
         Glide.with(this.context)

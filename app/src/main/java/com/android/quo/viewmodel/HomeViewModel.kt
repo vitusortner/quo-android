@@ -27,6 +27,7 @@ class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() 
 
     fun loadPlaces() {
         compositDisposabel.add(
+                // TODO use getVisitedPlaces with user ID when implemented https://app.clickup.com/751518/751948/t/w5hu
                 placeRepository.getAllPlaces()
                         .distinctUntilChanged()
                         .subscribe({
