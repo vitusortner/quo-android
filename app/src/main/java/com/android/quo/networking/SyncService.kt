@@ -29,6 +29,7 @@ class SyncService(private val database: AppDatabase) {
         // TODO isHost
         val place = mapToPlace(data, false)
         database.placeDao().deletePlace(place)
+        // TODO insert to correct place
         database.placeDao().insertPlace(place)
 
         Log.i("sync", "place sync success! $place")
@@ -41,7 +42,7 @@ class SyncService(private val database: AppDatabase) {
             }
             // delete places before inserting updated places
             database.placeDao().deletePlaces(isHost)
-            database.placeDao().insertAllPlaces(places.reversed())
+            database.placeDao().insertAllPlaces(places)
 
             Log.i("sync", "place sync success! $places")
         } else {
@@ -56,7 +57,7 @@ class SyncService(private val database: AppDatabase) {
             }
             // delete components of place before inserting updated comonents
             database.componentDao().deleteComponentsOfPlace(placeId)
-            database.componentDao().insertAllComponents(components.sortedBy { it.position })
+            database.componentDao().insertAllComponents(components)
 
             Log.i("sync", "component sync success! $components")
         } else {
@@ -71,7 +72,7 @@ class SyncService(private val database: AppDatabase) {
             }
             // delete pictures of given place before inserting updated pictures
             database.pictureDao().deletePicturesOfPlace(placeId)
-            database.pictureDao().insertAllPictures(pictures.reversed())
+            database.pictureDao().insertAllPictures(pictures)
 
             Log.i("sync", "picture sync success! $pictures")
         } else {

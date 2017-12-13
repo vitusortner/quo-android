@@ -31,7 +31,7 @@ class PageViewModel(private val componentRepository: ComponentRepository) : View
                         .distinctUntilChanged()
                         .subscribe({
                             if (it.isNotEmpty()) {
-                                components?.value = it
+                                components?.value = it.sortedBy { it.position }
                             }
                         }, {
                             Log.e("sync", it.toString())
