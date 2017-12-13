@@ -145,6 +145,8 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
      * Opens place fragment, if supplied URI string starts with "quo://", else opens dialog
      */
     private fun handleQrCode(uriString: String) {
+        Log.i("debug", "URL String: $uriString")
+
         when {
             uriString.startsWith("quo://") -> {
                 val qrCodeId = uriString.split("/").last()

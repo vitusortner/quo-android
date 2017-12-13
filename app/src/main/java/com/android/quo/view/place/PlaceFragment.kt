@@ -37,7 +37,6 @@ class PlaceFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         place = arguments?.getParcelable("place")
-        Log.i("place fragment", "$place")
 
         return inflater.inflate(R.layout.fragment_place, container, false)
     }

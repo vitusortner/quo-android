@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,6 @@ class GalleryFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         placeId = arguments?.getString("placeId")
-        Log.i("place id", placeId ?: "")
 
         return inflater.inflate(R.layout.fragment_place_gallery, container, false)
     }
@@ -50,6 +48,11 @@ class GalleryFragment : Fragment() {
                 .of(this, GalleryViewModelFactory(pictureRepository))
                 .get(GalleryViewModel::class.java)
 
+        observerPictures()
+        setupSwipeRefresh()
+    }
+
+    private fun observerPictures() {
         activity?.let { activity ->
             placeId?.let { placeId ->
                 viewModel.getPictures(placeId).observe(this, Observer {
@@ -60,8 +63,6 @@ class GalleryFragment : Fragment() {
                 })
             }
         }
-
-        setupSwipeRefresh()
     }
 
     private fun setupSwipeRefresh() {

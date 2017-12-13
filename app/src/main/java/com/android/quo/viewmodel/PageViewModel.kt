@@ -6,11 +6,14 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Component
 import com.android.quo.networking.repository.ComponentRepository
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by vitusortner on 19.11.17.
  */
 class PageViewModel(private val componentRepository: ComponentRepository) : ViewModel() {
+
+    private val compositDisposabel = CompositeDisposable()
 
     private var components: MutableLiveData<List<Component>>? = null
 
@@ -23,17 +26,26 @@ class PageViewModel(private val componentRepository: ComponentRepository) : View
     }
 
     private fun loadComponents(placeId: String) {
-        componentRepository.getComponents(placeId)
-                .distinctUntilChanged()
-                .subscribe({
-                    Log.i("page", "$it")
-                    components?.value = it
-                }, {
-                    Log.e("sync", it.toString())
-                })
+        compositDisposabel.add(
+                componentRepository.getComponents(placeId)
+                        .distinctUntilChanged()
+                        .subscribe({
+                            if (it.isNotEmpty()) {
+                                components?.value = it
+                            }
+                        }, {
+                            Log.e("sync", it.toString())
+                        })
+        )
     }
 
     fun updateComponents(placeId: String) {
         loadComponents(placeId)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        compositDisposabel.dispose()
     }
 }
