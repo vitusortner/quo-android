@@ -3,6 +3,7 @@ package com.android.quo.view.place
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewCompat
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,9 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_place.appBarLayout
 import kotlinx.android.synthetic.main.fragment_place.imageView
-import kotlinx.android.synthetic.main.fragment_place.placeViewPager
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
+import kotlinx.android.synthetic.main.fragment_place.viewPager
 
 
 /**
@@ -41,13 +42,11 @@ class PlaceFragment : Fragment() {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
 
+        tabLayout.setupWithViewPager(viewPager)
+
         setupToolbar()
 
-        this.context?.let {
-            placeViewPager.adapter = PlacePagerAdapter(childFragmentManager, it)
-        }
-
-        tabLayout.setupWithViewPager(placeViewPager)
+        setupViewPager()
     }
 
     private fun setupToolbar() {
@@ -103,6 +102,36 @@ class PlaceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setupViewPager() {
+        // TODO find proper implementation
+        this.context?.let {
+            viewPager.adapter = PlacePagerAdapter(childFragmentManager, it)
+        }
+
+//        viewPager.currentItem = 0
+//
+//        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+//
+//            override fun onPageScrollStateChanged(state: Int) {
+//            }
+//
+//            override fun onPageScrolled(
+//                    position: Int,
+//                    positionOffset: Float,
+//                    positionOffsetPixels: Int
+//            ) {
+//            }
+//
+//            override fun onPageSelected(position: Int) {
+//                if (position == 0) {
+//                    floatingActionButton.hide()
+//                } else {
+//                    floatingActionButton.show()
+//                }
+//            }
+//        })
     }
 
     override fun onDestroy() {
