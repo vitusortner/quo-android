@@ -6,6 +6,7 @@ buildscript {
     ext.architecture_components_version = '1.0.0'
     ext.retrofit_version = '2.3.0'
     ext.rxbinding_version = '2.0.0'
+    ext.leakcanary_version = '1.5.4'
 
     repositories {
         google()
