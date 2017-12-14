@@ -96,6 +96,7 @@
     <dimen name="place_gallery_thumbnail_margin">4dp</dimen>
     <dimen name="place_gallery_image_margin_top">24dp</dimen>
     <dimen name="place_image_pager_margin">10dp</dimen>
+    <dimen name="place_page_image_height">200dp</dimen>
 
     <!-- Place Info -->
     <dimen name="info_cardview_padding_top">12dp</dimen>
