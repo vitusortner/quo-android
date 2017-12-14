@@ -46,7 +46,7 @@ class PlacePreviewAdapter(
                     .subscribe {
                         fragmentManager
                                 .beginTransaction()
-                                .replace(R.id.content, PlaceFragment())
+                                .add(R.id.content, PlaceFragment())
                                 .addToBackStack(null)
                                 .commit()
                     }
