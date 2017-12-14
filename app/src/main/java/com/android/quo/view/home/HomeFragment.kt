@@ -48,14 +48,14 @@ class HomeFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this, HomeViewModelFactory(placeRepository)).get(HomeViewModel::class.java)
 
-        observePlacePreviewList()
+        observePlaces()
         setupSwipeRefresh()
     }
 
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlacePreviewList() {
+    private fun observePlaces() {
         viewModel.getPlaces().observe(this, Observer {
             it?.let { list ->
                 activity?.let { activity ->

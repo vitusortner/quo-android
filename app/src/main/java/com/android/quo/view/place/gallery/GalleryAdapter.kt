@@ -22,10 +22,7 @@ class GalleryAdapter(private val activity: Activity, private val list: List<Pict
 
     override fun getItemCount() = list.size
 
-    override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-    ): PlaceGalleryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceGalleryViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.gallery_image_thumbnail, parent, false)
         return PlaceGalleryViewHolder(itemView)

@@ -1,15 +1,19 @@
 package com.android.quo.db.entity
 
+import android.annotation.SuppressLint
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import java.util.*
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by FlorianSchlueter on 17.11.2017.
  */
 
+@SuppressLint("ParcelCreator")
+@Parcelize
 @Entity(tableName = "place")
 data class Place(
         @PrimaryKey
@@ -46,4 +50,4 @@ data class Place(
 
         @ColumnInfo(name = "qr_code_id")
         var qrCodeId: String = ""
-)
+) : Parcelable

@@ -4,6 +4,7 @@ package com.android.quo.view.myplaces.createplace
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,13 +38,16 @@ class CreatePlaceFragment : Fragment() {
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
 
-        /**
-         * change status bar color
-         */
-        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
-
+        setupStatusBar()
         setupToolbar()
+    }
 
+    /**
+     * change status bar and status bar text color
+     */
+    private fun setupStatusBar() {
+        activity?.window?.decorView?.systemUiVisibility = 0
+        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
     }
 
     private fun setupToolbar() {
@@ -79,6 +83,16 @@ class CreatePlaceFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
+        activity?.window?.let { window ->
+            this.context?.let { context ->
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorStatusBarSdkPre23)
+                }
+            }
+        }
         activity?.window?.statusBarColor = resources.getColor(R.color.colorPrimaryDark)
     }
 
