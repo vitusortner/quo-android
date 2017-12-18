@@ -33,11 +33,15 @@ class GalleryFragment : Fragment() {
 
     private lateinit var viewModel: GalleryViewModel
 
+    private var placeId: String? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
+        placeId = arguments?.getString("placeId")
+
         return inflater.inflate(R.layout.fragment_place_gallery, container, false)
     }
 
@@ -46,13 +50,20 @@ class GalleryFragment : Fragment() {
                 .of(this, GalleryViewModelFactory(pictureRepository))
                 .get(GalleryViewModel::class.java)
 
+        observerPictures()
+        setupSwipeRefresh()
+    }
+
+    private fun observerPictures() {
         activity?.let { activity ->
-            viewModel.getPictures().observe(this, Observer {
-                it?.let {
-                    recyclerView.adapter = GalleryAdapter(activity, it)
-                    recyclerView.layoutManager = GridLayoutManager(this.context, 3)
-                }
-            })
+            placeId?.let { placeId ->
+                viewModel.getPictures(placeId).observe(this, Observer {
+                    it?.let {
+                        recyclerView.adapter = GalleryAdapter(activity, it)
+                        recyclerView.layoutManager = GridLayoutManager(this.context, 3)
+                    }
+                })
+            }
         }
 
         setupSwipeRefresh()
@@ -73,7 +84,9 @@ class GalleryFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.updatePictures()
+            placeId?.let {
+                viewModel.updatePictures(it)
+            }
             swipeRefreshLayout.isRefreshing = false
         }
     }

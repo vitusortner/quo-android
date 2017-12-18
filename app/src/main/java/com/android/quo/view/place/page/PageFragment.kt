@@ -31,11 +31,15 @@ class PageFragment : Fragment() {
 
     private lateinit var viewModel: PageViewModel
 
+    private var placeId: String? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
+        placeId = arguments?.getString("placeId")
+
         return inflater.inflate(R.layout.fragment_place_page, container, false)
     }
 
@@ -49,19 +53,23 @@ class PageFragment : Fragment() {
     }
 
     private fun observeComponents() {
-        viewModel.getComponents().observe(this, Observer {
-            it?.let {
-                recyclerView.adapter = PageAdapter(it)
-                recyclerView.layoutManager = LinearLayoutManager(this.context)
-            }
-        })
+        placeId?.let { placeId ->
+            viewModel.getComponents(placeId).observe(this, Observer { components ->
+                components?.let { components ->
+                    recyclerView.adapter = PageAdapter(components)
+                    recyclerView.layoutManager = LinearLayoutManager(this.context)
+                }
+            })
+        }
     }
 
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.updateComponents()
-            swipeRefreshLayout.isRefreshing = false
+            placeId?.let {
+                viewModel.updateComponents(it)
+                swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 }

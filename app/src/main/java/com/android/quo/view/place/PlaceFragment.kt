@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.db.entity.Place
 import com.android.quo.extensions.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.bumptech.glide.Glide
@@ -26,6 +28,8 @@ import kotlinx.android.synthetic.main.fragment_place.viewPager
  */
 class PlaceFragment : Fragment() {
 
+    private var place: Place? = null
+
     private val compositDisposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -33,6 +37,8 @@ class PlaceFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
+        place = arguments?.getParcelable("place")
+
         return inflater.inflate(R.layout.fragment_place, container, false)
     }
 
@@ -52,14 +58,13 @@ class PlaceFragment : Fragment() {
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
         toolbar.inflateMenu(R.menu.place_menu)
+        toolbar.title = place?.title ?: ""
 
-        // TODO add real title
-        toolbar.title = "Lorem ipsum"
+        // TODO else show placeholder https://app.clickup.com/751518/751948/t/w5hm
+        val imageUrl = place?.titlePicture ?: ""
 
-        // TODO add real image
-        // viewModel.headerImageUrl
         Glide.with(this.context)
-                .load("https://static.pexels.com/photos/196643/pexels-photo-196643.jpeg")
+                .load(imageUrl)
                 .into(imageView)
 
         compositDisposable.add(
@@ -72,8 +77,13 @@ class PlaceFragment : Fragment() {
         compositDisposable.add(
                 RxToolbar.itemClicks(toolbar)
                         .subscribe {
+                            val bundle = Bundle()
+                            bundle.putParcelable("place", place)
+                            val fragment = InfoFragment()
+                            fragment.arguments = bundle
+
                             fragmentManager?.beginTransaction()
-                                    ?.replace(R.id.content, InfoFragment())
+                                    ?.replace(R.id.content, fragment)
                                     ?.addToBackStack(null)
                                     ?.commit()
                         }
