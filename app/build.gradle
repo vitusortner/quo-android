@@ -46,15 +46,15 @@ dependencies {
     implementation "com.android.support:design:$support_library_version"
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation "com.android.support:customtabs:$support_library_version"
-    implementation 'com.github.bumptech.glide:glide:4.3.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.0'
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
     implementation 'com.facebook.android:facebook-login:4.28.0'
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
     implementation 'com.alexvasilkov:gesture-views:2.3.2'
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version"
-    compile 'com.facebook.android:facebook-login:4.28.0'
+    implementation 'com.facebook.android:facebook-login:4.28.0'
 
-    compile "android.arch.persistence.room:runtime:$architecture_components_version"
+    implementation "android.arch.persistence.room:runtime:$architecture_components_version"
     kapt "android.arch.persistence.room:compiler:$architecture_components_version"
     implementation "android.arch.persistence.room:rxjava2:$architecture_components_version"
     androidTestImplementation "android.arch.core:core-testing:$architecture_components_version"
