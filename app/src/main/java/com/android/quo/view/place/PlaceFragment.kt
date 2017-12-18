@@ -3,8 +3,6 @@ package com.android.quo.view.place
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewCompat
-import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,11 +113,13 @@ class PlaceFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        // TODO find proper implementation
-        this.context?.let {
-            viewPager.adapter = PlacePagerAdapter(childFragmentManager, it)
+        this.context?.let { context ->
+            place?.id?.let { placeId ->
+                viewPager.adapter = PlacePagerAdapter(childFragmentManager, context, placeId)
+            }
         }
 
+        // TODO find proper implementation
 //        viewPager.currentItem = 0
 //
 //        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
