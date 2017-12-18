@@ -1,5 +1,6 @@
 package com.android.quo.view
 
+import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -44,9 +45,14 @@ class PlacePreviewAdapter(
         fun bindItem(list: List<Place>, position: Int) {
             RxView.clicks(pagePreviewCardView)
                     .subscribe {
+                        val bundle = Bundle()
+                        bundle.putParcelable("place", list[position])
+                        val fragment = PlaceFragment()
+                        fragment.arguments = bundle
+
                         fragmentManager
                                 .beginTransaction()
-                                .add(R.id.content, PlaceFragment())
+                                .add(R.id.content, fragment)
                                 .addToBackStack(null)
                                 .commit()
                     }
