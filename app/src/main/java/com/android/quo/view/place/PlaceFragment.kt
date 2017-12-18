@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.fragment_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import kotlinx.android.synthetic.main.fragment_place.viewPager
 
-
 /**
  * Created by vitusortner on 12.11.17.
  */
