@@ -25,6 +25,15 @@ androidExtensions {
     experimental true
 }
 
+ext {
+    support_library_version = '27.0.2'
+    architecture_components_version = '1.0.0'
+    retrofit_version = '2.3.0'
+    rxbinding_version = '2.0.0'
+    glide_version = '4.4.0'
+    leakcanary_version = '1.5.4'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$support_library_version"
@@ -53,14 +62,12 @@ dependencies {
     implementation 'com.alexvasilkov:gesture-views:2.3.2'
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version"
     implementation 'com.facebook.android:facebook-login:4.28.0'
-
     implementation "android.arch.persistence.room:runtime:$architecture_components_version"
     kapt "android.arch.persistence.room:compiler:$architecture_components_version"
     implementation "android.arch.persistence.room:rxjava2:$architecture_components_version"
     androidTestImplementation "android.arch.core:core-testing:$architecture_components_version"
 
     implementation 'com.facebook.stetho:stetho:1.5.0'
-
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 }
