@@ -30,6 +30,7 @@ class CreatePlaceViewModel : ViewModel() {
                 .subscribe({
                     Log.e("post place", "$it")
                     val response = it as ServerPlace
+//                    uploadQrCode(response)
                     uploadImage(response)
 
 
@@ -135,5 +136,37 @@ class CreatePlaceViewModel : ViewModel() {
             }
         }
     }
+
+//    private fun uploadQrCode(response: ServerPlace) {
+//        val path = Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES).absolutePath + "quo-" + response.qrCodeId
+//        val fileOutputStream = FileOutputStream(path)
+//        CreatePlace.qrCode.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+//        fileOutputStream.close()
+//
+//        val uri = Uri.parse(path)
+//        val file = File(uri.path)
+//
+//        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+//        val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
+//
+//        // sync title picture to server and add the response answer to the created place
+//        apiService.uploadPicture(imageFileBody)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe({
+//                    Log.e("upload picture", "$it")
+//                    response.qrCodeId = it.key
+//
+//                    apiService.putPlace(response.id ?: "", response)
+//                            .subscribeOn(Schedulers.io())
+//                            .subscribe({
+//                                Log.e("put place", "$it")
+//                            }, {
+//                                Log.e("put place", "$it")
+//                            })
+//                }, {
+//                    Log.e("upload picture", "$it")
+//                })
+//    }
 }
 

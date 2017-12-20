@@ -200,10 +200,6 @@ class CreatePageFragment : Fragment() {
         return result as String
     }
 
-    private fun handleResultFromPhoneGallery(data: Intent?) {
-
-    }
-
     private fun compressImage(file: File): File {
         return Compressor(this.context)
                 .setMaxWidth(640)
@@ -211,7 +207,7 @@ class CreatePageFragment : Fragment() {
                 .setQuality(75)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).absolutePath)
+                        Environment.DIRECTORY_PICTURES).absolutePath + "/Quo")
                 .compressToFile(file)
     }
 

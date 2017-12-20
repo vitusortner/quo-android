@@ -403,7 +403,6 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     private fun openPhoneCamera() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
         this.activity?.startActivityForResult(cameraIntent, RESULT_CAMERA)
     }
 
@@ -423,7 +422,6 @@ class CreateEventFragment : Fragment(), LocationListener {
                     val image = data?.extras?.get("data") as Bitmap
                     headerImageView.setImageBitmap(image)
                     CreatePlace.place.titlePicture = data?.extras?.get("data") as String
-
                 }
             }
         } catch (e: Exception) {
@@ -500,10 +498,10 @@ class CreateEventFragment : Fragment(), LocationListener {
          */
         if (isStartDate) {
             startDate.date = timestamp
-            CreatePlace.place.startDate = Timestamp.valueOf(startDate.date + " " + startDate.time).time.toString()
+            CreatePlace.place.startDate = Timestamp.valueOf("${startDate.date} ${startDate.time}").time.toString()
         } else {
             endDate.date = timestamp
-            CreatePlace.place.endDate = Timestamp.valueOf(endDate.date + " " + endDate.time).time.toString()
+            CreatePlace.place.endDate = Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
 
         }
         currentEditText.setText(sdf.format(calendar.time))
@@ -536,10 +534,10 @@ class CreateEventFragment : Fragment(), LocationListener {
          */
         if (isStartDate) {
             startDate.time = timestamp
-            CreatePlace.place.startDate = Timestamp.valueOf(startDate.date + " " + startDate.time).time.toString()
+            CreatePlace.place.startDate = Timestamp.valueOf("${startDate.date} ${startDate.time}").time.toString()
         } else {
             endDate.time = timestamp
-            CreatePlace.place.endDate = Timestamp.valueOf(endDate.date + " " + endDate.time).time.toString()
+            CreatePlace.place.endDate = Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
 
         }
         currentEditText.setText(sdf.format(calendar.time))
@@ -565,7 +563,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .setQuality(75)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).absolutePath)
+                        Environment.DIRECTORY_PICTURES).absolutePath + "/Quo")
                 .compressToFile(file)
     }
 

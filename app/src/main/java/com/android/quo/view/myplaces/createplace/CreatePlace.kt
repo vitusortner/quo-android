@@ -22,8 +22,6 @@ object CreatePlace {
         val emptyComponents = ArrayList<ServerComponent>()
         place = ServerPlace(null, "", "", "", "", "",
                 -1.0, -1.0, serverAddress, serverSettings, "1", "", emptyComponents)
-
-
     }
 
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Environment
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_place.toolbar
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.sql.Timestamp
+import id.zelory.compressor.Compressor
 
 
 /**
