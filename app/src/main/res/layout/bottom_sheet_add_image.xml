@@ -4,53 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/place_bottom_sheet_padding"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="33dp"
-        android:text="Add Photo"
-        android:textSize="14sp" />
+        android:layout_marginBottom="@dimen/place_bottom_sheet_title_margin_bottom"
+        android:text="@string/place_bottom_sheet_add_photo"
+        android:textSize="@dimen/place_bottom_sheet_title_text_size" />
 
     <LinearLayout
+        android:id="@+id/cameraButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="@dimen/place_bottom_sheet_camera_margin_bottom"
+        android:layout_marginStart="@dimen/place_bottom_sheet_icon_margin_start"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:paddingEnd="34dp"
+            android:paddingEnd="@dimen/place_bottom_sheet_icon_padding_end"
             android:src="@drawable/ic_camera_black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Camera"
-            android:textSize="16sp" />
+            android:text="@string/place_bottom_sheet_camera"
+            android:textSize="@dimen/place_bottom_sheet_item_text_size" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/galleryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="3dp"
+        android:layout_marginBottom="@dimen/place_bottom_sheet_gallery_margin_bottom"
+        android:layout_marginStart="@dimen/place_bottom_sheet_icon_margin_start"
         android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingEnd="34dp"
+            android:paddingEnd="@dimen/place_bottom_sheet_icon_padding_end"
             android:src="@drawable/ic_gallery_black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Photos"
-            android:textSize="16sp" />
+            android:text="@string/place_bottom_sheet_photos"
+            android:textSize="@dimen/place_bottom_sheet_item_text_size" />
     </LinearLayout>
 </LinearLayout>

@@ -98,6 +98,16 @@
     <dimen name="place_image_pager_margin">10dp</dimen>
     <dimen name="place_page_image_height">200dp</dimen>
 
+    <!-- PLACE BOTTOM SHEET -->
+    <dimen name="place_bottom_sheet_title_margin_bottom">33dp</dimen>
+    <dimen name="place_bottom_sheet_title_text_size">14sp</dimen>
+    <dimen name="place_bottom_sheet_camera_margin_bottom">29dp</dimen>
+    <dimen name="place_bottom_sheet_icon_padding_end">34dp</dimen>
+    <dimen name="place_bottom_sheet_gallery_margin_bottom">20dp</dimen>
+    <dimen name="place_bottom_sheet_icon_margin_start">3dp</dimen>
+    <dimen name="place_bottom_sheet_item_text_size">16sp</dimen>
+    <dimen name="place_bottom_sheet_padding">16dp</dimen>
+
     <!-- Place Info -->
     <dimen name="info_cardview_padding_top">12dp</dimen>
     <dimen name="info_cardview_padding_start">24dp</dimen>

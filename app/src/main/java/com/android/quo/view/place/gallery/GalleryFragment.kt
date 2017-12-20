@@ -16,7 +16,6 @@ import com.android.quo.networking.SyncService
 import com.android.quo.networking.repository.PictureRepository
 import com.android.quo.viewmodel.GalleryViewModel
 import com.android.quo.viewmodel.factory.GalleryViewModelFactory
-import kotlinx.android.synthetic.main.fragment_place_gallery.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
 import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
 
@@ -67,18 +66,6 @@ class GalleryFragment : Fragment() {
         }
 
         setupSwipeRefresh()
-
-        floatingActionButton.setOnClickListener {
-            context?.let { context ->
-                val bottomSheetDialog = BottomSheetDialog(context)
-                val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
-                layout?.let {
-                    bottomSheetDialog.setContentView(it)
-                    bottomSheetDialog.show()
-                }
-            }
-
-        }
     }
 
     private fun setupSwipeRefresh() {

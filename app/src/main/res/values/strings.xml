@@ -80,4 +80,9 @@
     <string name="camera">Camera</string>
     <string name="photo">Photo</string>
     <string name="select_picture">Select Picture</string>
+
+    <!-- PLACE GALLERY -->
+    <string name="place_bottom_sheet_add_photo">Add Photo</string>
+    <string name="place_bottom_sheet_camera">Camera</string>
+    <string name="place_bottom_sheet_photos">Photos</string>
 </resources>
