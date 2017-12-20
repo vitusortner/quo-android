@@ -26,20 +26,23 @@ private enum class ViewType(val value: Int) {
 
 class InfoAdapter(private val place: Place) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> DESCRIPTION.value
-            1 -> ADDRESS.value
-            2 -> TIME.value
-            else -> 0
-        }
-    }
-
     override fun getItemCount(): Int {
         return when {
             place.address == null && place.endDate == null -> 1
             place.address == null || place.endDate == null -> 2
             else -> 3
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (position) {
+            0 -> DESCRIPTION.value
+        // If there is a second item in recyclerview, decide, if it is TIME or ADDRESS
+        // In case it's TIME, the recyclerview only contains two items, so position 2 will
+        // never get called
+            1 -> if (place.address == null) return TIME.value else ADDRESS.value
+            2 -> TIME.value
+            else -> 0
         }
     }
 
