@@ -59,4 +59,6 @@ dependencies {
     implementation "android.arch.persistence.room:rxjava2:$architecture_components_version"
     androidTestImplementation "android.arch.core:core-testing:$architecture_components_version"
     compile 'commons-codec:commons-codec:1.11'
+    compile 'id.zelory:compressor:2.1.0'
+
 }

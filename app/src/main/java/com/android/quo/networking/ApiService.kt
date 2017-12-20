@@ -9,8 +9,10 @@ import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
+import com.android.quo.networking.model.UploadImage
 import io.reactivex.Single
 import okhttp3.Headers
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -18,9 +20,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
+
 
 /**
  * Created by vitusortner on 29.10.17.
@@ -63,8 +68,8 @@ interface ApiService {
     @GET("users/{id}/myplaces")
     fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
-    @POST("pictures")
-    fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>
+    @POST("/places/{id}/pictures")
+    fun addPicture(@Path("id") id: String, @Body picture: ServerPicture): Single<ServerPicture>
 
     @GET("pictures")
     fun getAllPictures(): Single<List<ServerPicture>>
@@ -72,8 +77,12 @@ interface ApiService {
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
-    @POST("components")
-    fun addComponent(@Body data: ServerComponent): Single<ServerComponent>
+    @Multipart
+    @POST("upload")
+    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<UploadImage>
+
+    @POST("places/{id}/components")
+    fun addComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>
 
     @GET("places/{id}/components")
     fun getComponents()

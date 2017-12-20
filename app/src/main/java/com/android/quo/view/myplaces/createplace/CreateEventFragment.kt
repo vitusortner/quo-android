@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -18,6 +19,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
@@ -38,6 +40,7 @@ import com.android.quo.R
 import com.android.quo.model.EventDates
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
+import id.zelory.compressor.Compressor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
@@ -55,6 +58,7 @@ import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.cameraLayout
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.defaultImageListView
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.photosLayout
+import java.io.File
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,7 +71,9 @@ import kotlin.collections.ArrayList
 
 class CreateEventFragment : Fragment(), LocationListener {
 
-    private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
+    private val PERMISSION_REQUEST_GPS = 101
+    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
+    private val PERMISSION_REQUEST_CAMERA = 103
     private val DRAWABLE_RIGHT = 2
     private val RESULT_GALLERY = 0
     private var RESULT_CAMERA = 1
@@ -91,17 +97,9 @@ class CreateEventFragment : Fragment(), LocationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        requestPermissions(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION),
-                ASK_MULTIPLE_PERMISSION_REQUEST_CODE
-        )
         calendar = Calendar.getInstance()
-
         setDefaultValuesOnStart()
         setupRxBindingViews()
-
     }
 
     private fun setupRxBindingViews() {
@@ -190,10 +188,19 @@ class CreateEventFragment : Fragment(), LocationListener {
                             bottomSheetDialog.show()
 
                             compositeDisposable.add(RxView.clicks(it.photosLayout)
-                                    .subscribe { openPhoneGallery() })
+                                    .subscribe {
+                                        requestPermissions(arrayOf(
+                                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                                                PERMISSION_REQUEST_EXTERNAL_STORAGE)
+                                    })
 
                             compositeDisposable.add(RxView.clicks(it.cameraLayout)
-                                    .subscribe { openPhoneCamera() })
+                                    .subscribe {
+                                        requestPermissions(arrayOf(
+                                                Manifest.permission.CAMERA),
+                                                PERMISSION_REQUEST_CAMERA)
+                                    })
                         }
 
                     }
@@ -206,11 +213,11 @@ class CreateEventFragment : Fragment(), LocationListener {
         compositeDisposable.add(RxView.touches(locationEditText, { motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (motionEvent.rawX >= (locationEditText.right - locationEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-//                  //TODO get gps location and convert in address
-                    locationProgressBar.visibility = VISIBLE
-                    locationEditText.clearFocus()
-                    foundLocation = false
-                    getLocation()
+                    requestPermissions(arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION),
+                            PERMISSION_REQUEST_GPS
+                    )
                 }
             }
             false
@@ -244,6 +251,44 @@ class CreateEventFragment : Fragment(), LocationListener {
                 })
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_GPS -> {
+                this.context?.let {
+                    val resultFineLocation = ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
+                    val resultCoarseLocation = ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    if (resultFineLocation == PackageManager.PERMISSION_GRANTED && resultCoarseLocation == PackageManager.PERMISSION_GRANTED) {
+                        locationProgressBar.visibility = VISIBLE
+                        locationEditText.clearFocus()
+                        foundLocation = false
+                        getLocation()
+                    }
+                }
+            }
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                this.context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        openPhoneGallery()
+                    }
+                }
+            }
+            PERMISSION_REQUEST_CAMERA -> {
+                this.context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA)
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        openPhoneCamera()
+                    }
+                }
+            }
+            else -> {
+
+            }
+        }
+    }
+
+
     override fun onResume() {
         super.onResume()
 
@@ -252,9 +297,9 @@ class CreateEventFragment : Fragment(), LocationListener {
                 headerImageView.background = getDefaultImageList()[titlePicture.toInt() - 1]
             } else if (titlePicture.isNotEmpty()) {
                 val uri = Uri.parse(titlePicture)
-                val path = getPath(uri)
-                val bitmap = BitmapFactory.decodeFile(path)
-                headerImageView.setImageBitmap(bitmap)
+                val bitmap = BitmapFactory.decodeFile(uri.path)
+                val bitmapDrawable = BitmapDrawable(resources, bitmap)
+                headerImageView.background = bitmapDrawable
             }
         }
     }
@@ -367,12 +412,12 @@ class CreateEventFragment : Fragment(), LocationListener {
             if (resultCode != Activity.RESULT_CANCELED) {
                 if (requestCode == RESULT_GALLERY) {
                     val selectedImageUri = data?.data
-                    val path = selectedImageUri?.let { getPath(it) }
-                    val bitmap = BitmapFactory.decodeFile(path)
+                    val compressedImage = compressImage(File(selectedImageUri?.let { getPath(it) }))
+                    val bitmap = BitmapFactory.decodeFile(compressedImage.absolutePath)
                     val bitmapDrawable = BitmapDrawable(resources, bitmap)
                     headerImageView.background = bitmapDrawable
-                    bottomSheetDialog.hide()
-                    CreatePlace.place.titlePicture = path
+                    CreatePlace.place.titlePicture = compressedImage.absolutePath
+                    bottomSheetDialog.dismiss()
 
                 } else if (resultCode == RESULT_CAMERA) {
                     val image = data?.extras?.get("data") as Bitmap
@@ -486,7 +531,6 @@ class CreateEventFragment : Fragment(), LocationListener {
 
         val timestampFormat = SimpleDateFormat(timestampTimeFormat, Locale.US)
         val timestamp = timestampFormat.format(calendar.time)
-        // TODO change start and endDate to time?!
         /**
          * Save into DB-Object
          */
@@ -512,6 +556,17 @@ class CreateEventFragment : Fragment(), LocationListener {
             }
 
         }
+    }
+
+    private fun compressImage(file: File): File {
+        return Compressor(this.context)
+                .setMaxWidth(640)
+                .setMaxHeight(480)
+                .setQuality(75)
+                .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES).absolutePath)
+                .compressToFile(file)
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}

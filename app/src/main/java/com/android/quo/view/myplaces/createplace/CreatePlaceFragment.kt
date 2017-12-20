@@ -37,6 +37,7 @@ class CreatePlaceFragment : Fragment() {
     lateinit var place: ServerPlace
     private lateinit var viewModel: CreatePlaceViewModel
 
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -135,4 +136,5 @@ class CreatePlaceFragment : Fragment() {
             CreatePlace.place.qrCodeId = qrCodeId
         }
     }
+
 }

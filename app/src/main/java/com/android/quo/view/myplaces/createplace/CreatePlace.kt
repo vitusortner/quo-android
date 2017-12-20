@@ -19,8 +19,9 @@ object CreatePlace {
         val serverAddress = ServerAddress("", "", -1)
         val serverSettings = ServerSettings(false, false)
 
+        val emptyComponents = ArrayList<ServerComponent>()
         place = ServerPlace(null, "", "", "", "", "",
-                -1.0, -1.0, serverAddress, serverSettings, "1", "", components)
+                -1.0, -1.0, serverAddress, serverSettings, "1", "", emptyComponents)
 
 
     }
