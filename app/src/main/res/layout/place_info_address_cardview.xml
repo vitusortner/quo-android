@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cardView"
+    android:id="@+id/addressCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/cardview_margin_bottom"
@@ -17,7 +17,7 @@
         android:paddingTop="@dimen/info_cardview_padding_top">
 
         <TextView
-            android:id="@+id/titleTextView"
+            android:text="Address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/info_cardview_title_margin_bottom"
@@ -25,10 +25,18 @@
             android:textSize="@dimen/title_textsize" />
 
         <TextView
-            android:id="@+id/contentTextView"
+            android:id="@+id/addressNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/content_line_spacing_extra"
+            android:textSize="@dimen/content_textsize" />
+
+        <TextView
+            android:id="@+id/addressTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="@dimen/content_line_spacing_extra"
             android:textSize="@dimen/content_textsize" />
     </LinearLayout>
+
 </android.support.v7.widget.CardView>

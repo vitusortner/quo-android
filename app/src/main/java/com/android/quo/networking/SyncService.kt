@@ -90,6 +90,7 @@ class SyncService(private val database: AppDatabase) {
         return Place(
                 id = serverPlace.id ?: "",
                 isHost = isHost,
+                description = serverPlace.description ?: "",
                 title = serverPlace.title,
                 startDate = serverPlace.startDate,
                 endDate = serverPlace.endDate,
