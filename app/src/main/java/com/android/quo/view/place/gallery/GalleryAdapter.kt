@@ -39,7 +39,7 @@ class GalleryAdapter(private val activity: Activity, private val list: List<Pict
         RxView.clicks(holder.imageView)
                 .subscribe {
                     val intent = Intent(activity, ImagePagerActivity::class.java)
-                    intent.putExtra("list", ArrayList(list))
+                    intent.putParcelableArrayListExtra("list", ArrayList(list))
                     intent.putExtra("position", position)
                     holder.containerView.context.startActivity(intent)
                 }
