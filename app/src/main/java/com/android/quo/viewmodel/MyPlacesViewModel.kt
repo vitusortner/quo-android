@@ -9,9 +9,9 @@ import com.android.quo.networking.repository.PlaceRepository
 import io.reactivex.disposables.CompositeDisposable
 
 /**
- * Created by vitusortner on 06.12.17.
+ * Created by vitusortner on 21.12.17.
  */
-class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
+class MyPlacesViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
 
     private val compositDisposabel = CompositeDisposable()
 
@@ -28,12 +28,12 @@ class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() 
     fun loadPlaces() {
         compositDisposabel.add(
                 // TODO use correct user id
-                placeRepository.getVisitedPlaces("5a3835952abb591b0b1fd69b")
+                placeRepository.getMyPlaces("5a3835952abb591b0b1fd69b")
                         .distinctUntilChanged()
                         .subscribe({
                             if (it.isNotEmpty()) {
                                 // TODO put places in correct order
-                                places?.value = it.sortedBy { it.lastScanned }
+                                places?.value = it.sortedBy { it.timestamp }
                             }
                         }, {
                             Log.e("sync", "$it")

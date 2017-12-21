@@ -5,6 +5,7 @@ import com.android.quo.db.entity.Place
 import com.android.quo.networking.ApiService
 import com.android.quo.networking.SyncService
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.model.ServerPlaceResponse
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -18,28 +19,15 @@ class PlaceRepository(
         private val syncService: SyncService
 ) {
 
-    fun getAllPlaces(): Flowable<List<Place>> {
-        return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
-
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getAllPlaces()
-
-                override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
-
-                override fun sync(data: List<ServerPlace>) = syncService.saveVisitedPlaces(data)
-            }
-        }, BackpressureStrategy.BUFFER)
-    }
-
     fun getMyPlaces(userId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+            object : Repository<List<Place>, List<ServerPlaceResponse>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getMyPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlaceResponse>> = apiService.getMyPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
-                override fun sync(data: List<ServerPlace>) {
+                override fun sync(data: List<ServerPlaceResponse>) {
                     syncService.saveMyPlaces(data)
                 }
             }
@@ -48,13 +36,13 @@ class PlaceRepository(
 
     fun getVisitedPlaces(userId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+            object : Repository<List<Place>, List<ServerPlaceResponse>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getVisitedPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlaceResponse>> = apiService.getVisitedPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
-                override fun sync(data: List<ServerPlace>) {
+                override fun sync(data: List<ServerPlaceResponse>) {
                     syncService.saveVisitedPlaces(data)
                 }
             }

@@ -10,19 +10,21 @@ import com.android.quo.db.entity.User
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerUser
+import java.util.*
 
 /**
  * Created by vitusortner on 30.11.17.
  */
 class SyncService(private val database: AppDatabase) {
 
-    fun saveMyPlaces(data: List<ServerPlace>) {
-        savePlaces(data, true)
+    fun saveMyPlaces(data: List<ServerPlaceResponse>) {
+        savePlaceResponses(data, true)
     }
 
-    fun saveVisitedPlaces(data: List<ServerPlace>) {
-        savePlaces(data, false)
+    fun saveVisitedPlaces(data: List<ServerPlaceResponse>) {
+        savePlaceResponses(data, false)
     }
 
     fun savePlace(data: ServerPlace) {
@@ -35,10 +37,25 @@ class SyncService(private val database: AppDatabase) {
         Log.i("sync", "place sync success! $place")
     }
 
-    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
+//    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
+//        if (data.isNotEmpty()) {
+//            val places = data.map { serverPlace ->
+//                mapToPlace(serverPlace, isHost)
+//            }
+//            // delete places before inserting updated places
+//            database.placeDao().deletePlaces(isHost)
+//            database.placeDao().insertAllPlaces(places)
+//
+//            Log.i("sync", "place sync success! $places")
+//        } else {
+//            Log.i("sync", "no places to sync!")
+//        }
+//    }
+
+    private fun savePlaceResponses(data: List<ServerPlaceResponse>, isHost: Boolean) {
         if (data.isNotEmpty()) {
-            val places = data.map { serverPlace ->
-                mapToPlace(serverPlace, isHost)
+            val places = data.map { serverPlaceResponse ->
+                mapToPlace(serverPlaceResponse, isHost)
             }
             // delete places before inserting updated places
             database.placeDao().deletePlaces(isHost)
@@ -86,6 +103,33 @@ class SyncService(private val database: AppDatabase) {
         database.userDao().insertUser(user)
     }
 
+    private fun mapToPlace(serverPlaceResponse: ServerPlaceResponse, isHost: Boolean): Place {
+        val serverPlace = serverPlaceResponse.place
+
+        return Place(
+                id = serverPlace.id ?: "",
+                isHost = isHost,
+                title = serverPlace.title,
+                startDate = serverPlace.startDate,
+                endDate = serverPlace.endDate,
+                latitude = serverPlace.latitude,
+                longitude = serverPlace.longitude,
+                address = serverPlace.address?.let { address ->
+                    Address(
+                            street = address.street,
+                            city = address.city,
+                            zipCode = address.zipCode)
+                },
+                isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
+                hasToValidateGps = serverPlace.settings?.hasToValidateGps,
+                titlePicture = serverPlace.titlePicture ?: "",
+                qrCodeId = serverPlace.qrCodeId ?: "",
+                timestamp = serverPlace.timestamp,
+                lastScanned = serverPlaceResponse.timestamp
+        )
+    }
+
+    // TODO make this nices
     private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean): Place {
         return Place(
                 id = serverPlace.id ?: "",
@@ -104,7 +148,10 @@ class SyncService(private val database: AppDatabase) {
                 isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
                 hasToValidateGps = serverPlace.settings?.hasToValidateGps,
                 titlePicture = serverPlace.titlePicture ?: "",
-                qrCodeId = serverPlace.qrCodeId ?: ""
+                qrCodeId = serverPlace.qrCodeId ?: "",
+                timestamp = serverPlace.timestamp,
+                // TODO check data string - format
+                lastScanned = Date().toString()
         )
     }
 

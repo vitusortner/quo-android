@@ -7,6 +7,7 @@ import com.android.quo.networking.model.ServerPasswordChange
 import com.android.quo.networking.model.ServerPasswordReset
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
 import io.reactivex.Single
@@ -55,10 +56,10 @@ interface ApiService {
     fun getPlace(@Path("id") qrCodeId: String): Single<ServerPlace>
 
     @GET("users/{id}/visited_places")
-    fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+    fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
 
     @GET("users/{id}/hosted_places")
-    fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+    fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
 
     @POST("pictures")
     fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>

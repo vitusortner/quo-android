@@ -39,5 +39,7 @@ data class ServerPlace(
 
         val components: List<String>? = null,
 
-        val pictues: List<String>? = null
+        val pictues: List<String>? = null,
+
+        val timestamp: String
 )
