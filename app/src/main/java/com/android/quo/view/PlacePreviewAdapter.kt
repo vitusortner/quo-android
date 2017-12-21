@@ -52,7 +52,7 @@ class PlacePreviewAdapter(
 
                         fragmentManager
                                 .beginTransaction()
-                                .replace(R.id.content, fragment)
+                                .add(R.id.content, fragment)
                                 .addToBackStack(null)
                                 .commit()
                     }
