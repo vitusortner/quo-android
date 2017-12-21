@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.android.quo.R
+import com.android.quo.db.entity.Picture
 import com.android.quo.extensions.toPx
 import kotlinx.android.synthetic.main.activity_gallery_image_pager.viewPager
 
@@ -19,17 +20,17 @@ class ImagePagerActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_image_pager)
 
-        val list = intent.getStringArrayListExtra("list")
+        val list = intent.getParcelableArrayListExtra<Picture>("list")
         val position = intent.getIntExtra("position", 0)
 
         viewPager.pageMargin = resources.getDimension(R.dimen.place_image_pager_margin).toPx(this)
-        viewPager.adapter = GalleryDetailSlidePagerAdapter(supportFragmentManager, list)
+        viewPager.adapter = ImagePagerAdapter(supportFragmentManager, list)
         viewPager.currentItem = position
     }
 
-    class GalleryDetailSlidePagerAdapter(
+    class ImagePagerAdapter(
             fragmentManager: FragmentManager,
-            private val list: List<String>
+            private val list: List<Picture>
     ) : FragmentStatePagerAdapter(fragmentManager) {
 
         /**
@@ -39,7 +40,7 @@ class ImagePagerActivity : FragmentActivity() {
             val fragment = ImageFragment()
             // append url to fragment
             val bundle = Bundle()
-            bundle.putString("url", list[position])
+            bundle.putString("url", list[position].src)
             fragment.arguments = bundle
 
             return fragment

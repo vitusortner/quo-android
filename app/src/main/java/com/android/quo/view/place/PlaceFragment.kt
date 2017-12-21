@@ -196,7 +196,7 @@ class PlaceFragment : Fragment() {
                             fragment.arguments = bundle
 
                             fragmentManager?.beginTransaction()
-                                    ?.replace(R.id.content, fragment)
+                                    ?.add(R.id.content, fragment)
                                     ?.addToBackStack(null)
                                     ?.commit()
                         }
