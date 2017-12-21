@@ -87,7 +87,6 @@ class PlaceFragment : Fragment() {
                         val bottomSheetDialog = BottomSheetDialog(context)
                         val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
                         layout?.let {
-                            // setup buttons
                             setupBottomSheetButtons(it)
 
                             bottomSheetDialog.setContentView(it)
@@ -117,13 +116,13 @@ class PlaceFragment : Fragment() {
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        this.activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
+        activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
     private fun openCamera() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-        this.activity?.startActivityForResult(cameraIntent, RESULT_CAMERA)
+        activity?.startActivityForResult(cameraIntent, RESULT_CAMERA)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -137,8 +136,7 @@ class PlaceFragment : Fragment() {
                     }
 
                     // TODO upload image
-//                    bottomSheetDialog.hide()
-
+                    // bottomSheetDialog.hide()
                 } else if (resultCode == RESULT_CAMERA) {
                     val image = data?.extras?.get("data") as Bitmap
 
