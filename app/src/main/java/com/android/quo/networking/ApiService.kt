@@ -49,9 +49,6 @@ interface ApiService {
     @POST("places")
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
-    @GET("places")
-    fun getAllPlaces(): Single<List<ServerPlace>>
-
     @GET("places/qrcode/{id}")
     fun getPlace(@Path("id") qrCodeId: String): Single<ServerPlace>
 
@@ -63,9 +60,6 @@ interface ApiService {
 
     @POST("pictures")
     fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>
-
-    @GET("pictures")
-    fun getAllPictures(): Single<List<ServerPicture>>
 
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>

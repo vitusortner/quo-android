@@ -3,7 +3,6 @@ package com.android.quo.db.entity
 import android.annotation.SuppressLint
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -14,15 +13,10 @@ import kotlinx.android.parcel.Parcelize
 
 @SuppressLint("ParcelCreator")
 @Parcelize
-@Entity(tableName = "picture",
-        foreignKeys = arrayOf(
-                ForeignKey(
-                        entity = Place::class,
-                        parentColumns = arrayOf("id"),
-                        childColumns = arrayOf("place_id"),
-                        onDelete = ForeignKey.CASCADE)
-        )
-)
+// TODO disabled cascade delete otherwise cache doesn't work properly
+// When getching places from API, we delete all places and insert them again, which leads
+// to deletion of pictures (cascade delete)
+@Entity(tableName = "picture")
 data class Picture(
         @PrimaryKey
         var id: String = "",

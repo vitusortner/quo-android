@@ -1,4 +1,4 @@
-package com.android.quo.extensions
+package com.android.quo.extension
 
 import android.content.Context
 import android.util.DisplayMetrics
