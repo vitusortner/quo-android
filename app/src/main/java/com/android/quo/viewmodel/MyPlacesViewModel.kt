@@ -28,7 +28,7 @@ class MyPlacesViewModel(private val placeRepository: PlaceRepository) : ViewMode
     fun loadPlaces() {
         compositDisposabel.add(
                 // TODO use correct user id
-                placeRepository.getMyPlaces("5a3835952abb591b0b1fd69b")
+                placeRepository.getHostedPlaces("5a3835952abb591b0b1fd69b")
                         .distinctUntilChanged()
                         .subscribe({
                             if (it.isNotEmpty()) {

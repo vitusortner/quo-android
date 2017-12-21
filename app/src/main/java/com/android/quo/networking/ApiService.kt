@@ -59,7 +59,7 @@ interface ApiService {
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
 
     @GET("users/{id}/hosted_places")
-    fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+    fun getHostedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
     @POST("pictures")
     fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>

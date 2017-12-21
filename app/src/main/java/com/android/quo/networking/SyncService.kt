@@ -18,7 +18,7 @@ import com.android.quo.networking.model.ServerUser
  */
 class SyncService(private val database: AppDatabase) {
 
-    fun saveMyPlaces(data: List<ServerPlace>) {
+    fun saveHostedPlaces(data: List<ServerPlace>) {
         savePlaces(data, true)
     }
 

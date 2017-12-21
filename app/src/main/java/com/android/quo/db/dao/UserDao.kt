@@ -14,6 +14,7 @@ import io.reactivex.Flowable
 
 @Dao
 interface UserDao {
+
     @Query("SELECT * FROM user")
     fun getUser(): Flowable<User>
 

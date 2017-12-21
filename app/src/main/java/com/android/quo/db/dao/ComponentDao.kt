@@ -14,6 +14,7 @@ import io.reactivex.Flowable
 
 @Dao
 interface ComponentDao {
+
     @Query("SELECT * FROM component WHERE place_id = :placeId")
     fun getComponents(placeId: String): Flowable<List<Component>>
 
