@@ -2,7 +2,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBackgroundWhite">
 
     <!-- TODO proper scrolling behavior -->
     <android.support.design.widget.AppBarLayout
@@ -27,8 +28,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:elevation="@dimen/info_toolbar_elevation"
                 android:background="@color/colorInfoToolbar"
+                android:elevation="@dimen/info_toolbar_elevation"
                 android:theme="@style/PlaceToolbarStyle"
                 app:layout_collapseMode="pin" />
         </android.support.design.widget.CollapsingToolbarLayout>

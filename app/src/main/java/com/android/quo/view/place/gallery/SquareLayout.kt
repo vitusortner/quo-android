@@ -1,4 +1,4 @@
-package com.android.quo.helper
+package com.android.quo.view.place.gallery
 
 import android.content.Context
 import android.util.AttributeSet
