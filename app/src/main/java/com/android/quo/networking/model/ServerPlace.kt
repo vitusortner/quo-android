@@ -15,10 +15,10 @@ data class ServerPlace(
 
         val description: String? = null,
 
-        @SerializedName("start_date")
+        @SerializedName("start")
         val startDate: String,
 
-        @SerializedName("end_date")
+        @SerializedName("end")
         val endDate: String? = null,
 
         @SerializedName("lat")

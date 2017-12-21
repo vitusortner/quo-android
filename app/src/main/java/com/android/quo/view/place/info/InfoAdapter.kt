@@ -1,5 +1,6 @@
 package com.android.quo.view.place.info
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -70,22 +71,18 @@ class InfoAdapter(private val place: Place) : RecyclerView.Adapter<RecyclerView.
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         when (holder) {
             is DescriptionViewHolder -> holder.contentTextView.text = place.description
             is AddressViewHolder -> {
-                // TODO place name in address class
-                holder.addressNameTextView.text = "TODO Place name"
-                holder.addressTextView.text = getAddress()
+                place.address?.let {
+                    holder.addressNameTextView.text = it.name
+                    holder.addressTextView.text = "${it.street}, ${it.zipCode} ${it.city}"
+                }
             }
             is TimeViewHolder -> holder.dateTextView.text = place.endDate
         }
-    }
-
-    private fun getAddress(): String {
-        place.address?.let {
-            return "${it.street}, ${it.zipCode} ${it.city}"
-        } ?: return ""
     }
 
     class DescriptionViewHolder(override val containerView: View) :
