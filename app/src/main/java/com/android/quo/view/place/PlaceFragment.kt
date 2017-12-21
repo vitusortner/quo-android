@@ -69,6 +69,10 @@ class PlaceFragment : Fragment() {
 
         setupViewPager()
 
+        setupFab()
+    }
+
+    private fun setupFab() {
         floatingActionButton.hide()
 
         compositDisposable.add(RxView.clicks(floatingActionButton)
@@ -83,7 +87,6 @@ class PlaceFragment : Fragment() {
                         val bottomSheetDialog = BottomSheetDialog(context)
                         val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
                         layout?.let {
-
                             // setup buttons
                             setupBottomSheetButtons(it)
 
@@ -129,43 +132,37 @@ class PlaceFragment : Fragment() {
                 if (requestCode == RESULT_GALLERY) {
                     val selectedImageUri = data?.data
                     val path = selectedImageUri?.let { getPath(it) }
-                    val bitmap = BitmapFactory.decodeFile(path)
+                    path?.let {
+                        val bitmap = BitmapFactory.decodeFile(it)
+                    }
 
-                    // TODO
+                    // TODO upload image
 //                    bottomSheetDialog.hide()
 
                 } else if (resultCode == RESULT_CAMERA) {
                     val image = data?.extras?.get("data") as Bitmap
 
-                    // TODO
-//                    headerImageView.setImageBitmap(image)
+                    // TODO upload image
                 }
             }
         } catch (e: Exception) {
-            Log.e("Error", e.message.toString())
+            Log.e("Error", e.message)
         }
     }
 
-    private fun getPath(uri: Uri): String {
+    private fun getPath(uri: Uri): String? {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = this.context?.let { context ->
-            context.contentResolver?.query(uri, mediaStoreData,
-                    null, null, null)
-        }
+        val cursor = context?.contentResolver?.query(uri, mediaStoreData, null, null, null)
 
         cursor?.let { cursor ->
             if (cursor.moveToFirst()) {
                 val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
                 result = cursor.getString(columnIndex)
-                cursor.close()
             }
         }
-
-        if (result == null) {
-            result = getString(R.string.not_found)
-        }
-        return result as String
+        cursor?.close()
+        return result
     }
 
     private fun setupToolbar() {
