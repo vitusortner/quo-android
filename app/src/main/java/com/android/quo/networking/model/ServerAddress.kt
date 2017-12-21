@@ -11,5 +11,7 @@ data class ServerAddress(
         val city: String,
 
         @SerializedName("zip_code")
-        val zipCode: Int
+        val zipCode: Int,
+
+        val name: String
 )
