@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Place
+import com.android.quo.extensions.toDate
 import com.android.quo.networking.repository.PlaceRepository
 import io.reactivex.disposables.CompositeDisposable
 
@@ -32,8 +33,7 @@ class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() 
                         .distinctUntilChanged()
                         .subscribe({
                             if (it.isNotEmpty()) {
-                                // TODO put places in correct order
-                                places?.value = it.sortedBy { it.lastScanned }
+                                places?.value = it.sortedByDescending { it.lastScanned }
                             }
                         }, {
                             Log.e("sync", "$it")

@@ -1,20 +1,40 @@
 package com.android.quo.view.myplaces
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.quo.QuoApplication
 import com.android.quo.R
+import com.android.quo.networking.ApiService
+import com.android.quo.networking.SyncService
+import com.android.quo.networking.repository.PlaceRepository
+import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.myplaces.createplace.CreatePlaceFragment
+import com.android.quo.viewmodel.HomeViewModel
+import com.android.quo.viewmodel.MyPlacesViewModel
+import com.android.quo.viewmodel.factory.MyPlacesViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
+import kotlinx.android.synthetic.main.fragment_my_places.recyclerView
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
 
 /**
  * Created by vitusortner on 05.11.17.
  */
 class MyPlacesFragment : Fragment() {
+
+    private val database = QuoApplication.database
+    private val placeDao = database.placeDao()
+    private val apiService = ApiService.instance
+    private val syncService = SyncService(database)
+    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+
+    private lateinit var viewModel: MyPlacesViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -28,7 +48,9 @@ class MyPlacesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = View.VISIBLE
 
-        observePlacePreviewList()
+        viewModel = ViewModelProviders.of(this, MyPlacesViewModelFactory(placeRepository)).get(MyPlacesViewModel::class.java)
+
+        observePlaces()
         setupSwipeRefresh()
         setupFloatingActionButton()
     }
@@ -36,17 +58,15 @@ class MyPlacesFragment : Fragment() {
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlacePreviewList() {
-        // TODO
-//        placePreviewListViewModel.getPlacePreviewList(MY_PLACES).observe(this, Observer { list ->
-//            list?.let {
-//                activity?.let { activity ->
-//                    placePreviewRecyclerView.adapter =
-//                            PlacePreviewAdapter(list, activity.supportFragmentManager)
-//                    placePreviewRecyclerView.layoutManager = LinearLayoutManager(this.context)
-//                }
-//            }
-//        })
+    private fun observePlaces() {
+        viewModel.getPlaces().observe(this, Observer {
+            it?.let { list ->
+                activity?.let { activity ->
+                    recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
+                    recyclerView.layoutManager = LinearLayoutManager(context)
+                }
+            }
+        })
     }
 
     /**
@@ -55,8 +75,7 @@ class MyPlacesFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            // TODO
-//            placePreviewListViewModel.updatePlacePreviewList(MY_PLACES)
+            viewModel.loadPlaces()
             swipeRefreshLayout.isRefreshing = false
         }
     }

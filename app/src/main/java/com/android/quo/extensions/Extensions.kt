@@ -16,8 +16,8 @@ fun Float.toPx(context: Context): Int {
 
 fun String?.toDate(): Date? {
     this?.let {
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        // 2017-12-18T21:40:03.451Z
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         return simpleDateFormat.parse(it)
     } ?: run {
         return null

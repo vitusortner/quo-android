@@ -32,8 +32,7 @@ class MyPlacesViewModel(private val placeRepository: PlaceRepository) : ViewMode
                         .distinctUntilChanged()
                         .subscribe({
                             if (it.isNotEmpty()) {
-                                // TODO put places in correct order
-                                places?.value = it.sortedBy { it.timestamp }
+                                places?.value = it.sortedByDescending { it.timestamp }
                             }
                         }, {
                             Log.e("sync", "$it")

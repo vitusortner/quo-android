@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
             it?.let { list ->
                 activity?.let { activity ->
                     recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
-                    recyclerView.layoutManager = LinearLayoutManager(this.context)
+                    recyclerView.layoutManager = LinearLayoutManager(context)
                 }
             }
         })

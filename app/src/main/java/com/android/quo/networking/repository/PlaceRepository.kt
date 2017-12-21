@@ -21,13 +21,13 @@ class PlaceRepository(
 
     fun getMyPlaces(userId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlaceResponse>>(emitter) {
+            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlaceResponse>> = apiService.getMyPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlace>> = apiService.getMyPlaces(userId)
 
-                override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
+                override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(true)
 
-                override fun sync(data: List<ServerPlaceResponse>) {
+                override fun sync(data: List<ServerPlace>) {
                     syncService.saveMyPlaces(data)
                 }
             }
@@ -40,7 +40,7 @@ class PlaceRepository(
 
                 override fun getRemote(): Single<List<ServerPlaceResponse>> = apiService.getVisitedPlaces(userId)
 
-                override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
+                override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(false)
 
                 override fun sync(data: List<ServerPlaceResponse>) {
                     syncService.saveVisitedPlaces(data)

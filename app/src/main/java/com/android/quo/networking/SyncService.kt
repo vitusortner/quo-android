@@ -12,15 +12,14 @@ import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerUser
-import java.util.*
 
 /**
  * Created by vitusortner on 30.11.17.
  */
 class SyncService(private val database: AppDatabase) {
 
-    fun saveMyPlaces(data: List<ServerPlaceResponse>) {
-        savePlaceResponses(data, true)
+    fun saveMyPlaces(data: List<ServerPlace>) {
+        savePlaces(data, true)
     }
 
     fun saveVisitedPlaces(data: List<ServerPlaceResponse>) {
@@ -37,20 +36,20 @@ class SyncService(private val database: AppDatabase) {
         Log.i("sync", "place sync success! $place")
     }
 
-//    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
-//        if (data.isNotEmpty()) {
-//            val places = data.map { serverPlace ->
-//                mapToPlace(serverPlace, isHost)
-//            }
-//            // delete places before inserting updated places
-//            database.placeDao().deletePlaces(isHost)
-//            database.placeDao().insertAllPlaces(places)
-//
-//            Log.i("sync", "place sync success! $places")
-//        } else {
-//            Log.i("sync", "no places to sync!")
-//        }
-//    }
+    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
+        if (data.isNotEmpty()) {
+            val places = data.map { serverPlace ->
+                mapToPlace(serverPlace, isHost)
+            }
+            // delete places before inserting updated places
+            database.placeDao().deletePlaces(isHost)
+            database.placeDao().insertAllPlaces(places)
+
+            Log.i("sync", "place sync success! $places")
+        } else {
+            Log.i("sync", "no places to sync!")
+        }
+    }
 
     private fun savePlaceResponses(data: List<ServerPlaceResponse>, isHost: Boolean) {
         if (data.isNotEmpty()) {
@@ -129,7 +128,7 @@ class SyncService(private val database: AppDatabase) {
         )
     }
 
-    // TODO make this nices
+    // TODO make this nicer
     private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean): Place {
         return Place(
                 id = serverPlace.id ?: "",
@@ -151,7 +150,7 @@ class SyncService(private val database: AppDatabase) {
                 qrCodeId = serverPlace.qrCodeId ?: "",
                 timestamp = serverPlace.timestamp,
                 // TODO check data string - format
-                lastScanned = Date().toString()
+                lastScanned = ""
         )
     }
 
