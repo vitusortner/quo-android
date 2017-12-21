@@ -30,6 +30,7 @@ class MyPlacesFragment : Fragment() {
 
     private val database = QuoApplication.database
     private val placeDao = database.placeDao()
+    private val userDao = database.userDao()
     private val apiService = ApiService.instance
     private val syncService = SyncService(database)
     private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
@@ -48,7 +49,9 @@ class MyPlacesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = View.VISIBLE
 
-        viewModel = ViewModelProviders.of(this, MyPlacesViewModelFactory(placeRepository)).get(MyPlacesViewModel::class.java)
+        viewModel = ViewModelProviders
+                .of(this, MyPlacesViewModelFactory(placeRepository, userDao))
+                .get(MyPlacesViewModel::class.java)
 
         observePlaces()
         setupSwipeRefresh()

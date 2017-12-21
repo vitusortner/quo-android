@@ -28,6 +28,7 @@ class HomeFragment : Fragment() {
 
     private val database = QuoApplication.database
     private val placeDao = database.placeDao()
+    private val userDao = database.userDao()
     private val apiService = ApiService.instance
     private val syncService = SyncService(database)
     private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
@@ -46,7 +47,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = VISIBLE
 
-        viewModel = ViewModelProviders.of(this, HomeViewModelFactory(placeRepository)).get(HomeViewModel::class.java)
+        viewModel = ViewModelProviders
+                .of(this, HomeViewModelFactory(placeRepository, userDao))
+                .get(HomeViewModel::class.java)
 
         observePlaces()
         setupSwipeRefresh()

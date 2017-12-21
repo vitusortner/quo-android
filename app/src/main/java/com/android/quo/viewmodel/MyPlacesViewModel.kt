@@ -4,14 +4,19 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
+import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.Place
 import com.android.quo.networking.repository.PlaceRepository
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by vitusortner on 21.12.17.
  */
-class MyPlacesViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
+class MyPlacesViewModel(
+        private val placeRepository: PlaceRepository,
+        private val userDao: UserDao
+) : ViewModel() {
 
     private val compositDisposabel = CompositeDisposable()
 
@@ -26,17 +31,19 @@ class MyPlacesViewModel(private val placeRepository: PlaceRepository) : ViewMode
     }
 
     fun loadPlaces() {
-        compositDisposabel.add(
-                // TODO use correct user id
-                placeRepository.getHostedPlaces("5a3835952abb591b0b1fd69b")
-                        .distinctUntilChanged()
-                        .subscribe({
-                            if (it.isNotEmpty()) {
-                                places?.value = it.sortedByDescending { it.timestamp }
-                            }
-                        }, {
-                            Log.e("sync", "$it")
-                        })
+        compositDisposabel.add(userDao.getUser()
+                .observeOn(Schedulers.io())
+                .subscribe {
+                    placeRepository.getHostedPlaces(it.id)
+                            .distinctUntilChanged()
+                            .subscribe({
+                                if (it.isNotEmpty()) {
+                                    places?.value = it.sortedByDescending { it.timestamp }
+                                }
+                            }, {
+                                Log.e("sync", "$it")
+                            })
+                }
         )
     }
 
