@@ -1,5 +1,6 @@
 package com.android.quo.networking
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.android.quo.db.AppDatabase
 import com.android.quo.db.entity.Address
@@ -12,6 +13,8 @@ import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerUser
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by vitusortner on 30.11.17.
@@ -26,11 +29,15 @@ class SyncService(private val database: AppDatabase) {
         savePlaceResponses(data, false)
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun savePlace(data: ServerPlace) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val date = dateFormat.format(Date())
+
         // TODO set isHost correctly
-        val place = mapToPlace(data, false)
+        val place = mapToPlace(data, false, date)
         database.placeDao().deletePlace(place)
-        // TODO insert to correct place https://app.clickup.com/751518/751948/t/w5h2
         database.placeDao().insertPlace(place)
 
         Log.i("sync", "place sync success! $place")
@@ -103,33 +110,10 @@ class SyncService(private val database: AppDatabase) {
     }
 
     private fun mapToPlace(serverPlaceResponse: ServerPlaceResponse, isHost: Boolean): Place {
-        val serverPlace = serverPlaceResponse.place
-
-        return Place(
-                id = serverPlace.id ?: "",
-                isHost = isHost,
-                title = serverPlace.title,
-                startDate = serverPlace.startDate,
-                endDate = serverPlace.endDate,
-                latitude = serverPlace.latitude,
-                longitude = serverPlace.longitude,
-                address = serverPlace.address?.let { address ->
-                    Address(
-                            street = address.street,
-                            city = address.city,
-                            zipCode = address.zipCode)
-                },
-                isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
-                hasToValidateGps = serverPlace.settings?.hasToValidateGps,
-                titlePicture = serverPlace.titlePicture ?: "",
-                qrCodeId = serverPlace.qrCodeId ?: "",
-                timestamp = serverPlace.timestamp,
-                lastScanned = serverPlaceResponse.timestamp
-        )
+        return mapToPlace(serverPlaceResponse.place, isHost, serverPlaceResponse.timestamp)
     }
 
-    // TODO make this nicer
-    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean): Place {
+    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
         return Place(
                 id = serverPlace.id ?: "",
                 isHost = isHost,
@@ -149,8 +133,7 @@ class SyncService(private val database: AppDatabase) {
                 titlePicture = serverPlace.titlePicture ?: "",
                 qrCodeId = serverPlace.qrCodeId ?: "",
                 timestamp = serverPlace.timestamp,
-                // TODO check data string - format
-                lastScanned = ""
+                lastScanned = date
         )
     }
 

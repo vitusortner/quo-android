@@ -4,9 +4,9 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
-import com.android.quo.QuoApplication
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.Place
+import com.android.quo.extension.toDate
 import com.android.quo.networking.repository.PlaceRepository
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -39,7 +39,7 @@ class HomeViewModel(
                             .distinctUntilChanged()
                             .subscribe({
                                 if (it.isNotEmpty()) {
-                                    places?.value = it.sortedByDescending { it.lastScanned }
+                                    places?.value = it.sortedByDescending { it.lastScanned.toDate() }
                                 }
                             }, {
                                 Log.e("sync", "$it")

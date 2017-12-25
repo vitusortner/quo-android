@@ -49,11 +49,11 @@ class PlaceRepository(
         }, BackpressureStrategy.BUFFER)
     }
 
-    fun getPlace(qrCodeId: String): Flowable<Place> {
+    fun getPlace(qrCodeId: String, userId: String): Flowable<Place> {
         return Flowable.create({ emitter ->
             object : Repository<Place, ServerPlace>(emitter) {
 
-                override fun getRemote(): Single<ServerPlace> = apiService.getPlace(qrCodeId)
+                override fun getRemote(): Single<ServerPlace> = apiService.getPlace(qrCodeId, userId)
 
                 override fun getLocal(): Flowable<Place> = placeDao.getPlaceByQrCodeId(qrCodeId)
 

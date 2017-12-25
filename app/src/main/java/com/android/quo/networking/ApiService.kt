@@ -49,8 +49,8 @@ interface ApiService {
     @POST("places")
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
-    @GET("places/qrcode/{id}")
-    fun getPlace(@Path("id") qrCodeId: String): Single<ServerPlace>
+    @GET("places/qrcode/{qr_code_id}/{user_id}")
+    fun getPlace(@Path("qr_code_id") qrCodeId: String, @Path("user_id") userId: String): Single<ServerPlace>
 
     @GET("users/{id}/visited_places")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
