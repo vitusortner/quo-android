@@ -23,7 +23,7 @@ import android.util.Log
 import android.view.WindowManager
 import com.android.quo.QuoApplication
 import com.android.quo.R
-import com.android.quo.model.QrCodeScannerDialog
+import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.networking.ApiService
 import com.android.quo.networking.SyncService
 import com.android.quo.networking.repository.PlaceRepository
