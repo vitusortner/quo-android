@@ -31,7 +31,7 @@ data class ServerPlace(
 
         var settings: ServerSettings? = null,
 
-        @SerializedName("title_picture_key")
+        @SerializedName("title_picture")
         var titlePicture: String? = null,
 
         @SerializedName("qr_code_id")

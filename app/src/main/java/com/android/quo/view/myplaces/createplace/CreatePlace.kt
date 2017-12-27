@@ -21,7 +21,7 @@ object CreatePlace {
 
         val emptyComponents = listOf<String>()
         place = ServerPlace(null, "", "", "", "", "",
-                -1.0, -1.0, serverAddress, serverSettings, "1", "")
+                -1.0, -1.0, null, null, "1", "", null, null )
     }
 
 
