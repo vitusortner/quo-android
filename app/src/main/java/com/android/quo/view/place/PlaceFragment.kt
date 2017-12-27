@@ -2,16 +2,19 @@ package com.android.quo.view.place
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import kotlinx.android.synthetic.main.fragment_place.appBarLayout
 import kotlinx.android.synthetic.main.fragment_place.imageView
 import kotlinx.android.synthetic.main.fragment_place.placeViewPager
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
@@ -91,23 +94,23 @@ class PlaceFragment : Fragment() {
             // set tab layout colors denpendent on how far scrolled
             var scrollRange = -1
 
-//            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-//                // set shadow
-//                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
-//
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.totalScrollRange
-//                }
-//                if (scrollRange + verticalOffset <= 150) {
-//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
-//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
-//                            resources.getColor(R.color.colorTextBlack))
-//                } else {
-//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
-//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
-//                            resources.getColor(R.color.colorTextWhite))
-//                }
-//            }
+            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+                // set shadow
+                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
+
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.totalScrollRange
+                }
+                if (scrollRange + verticalOffset <= 150) {
+                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
+                            resources.getColor(R.color.colorTextBlack))
+                } else {
+                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
+                            resources.getColor(R.color.colorTextWhite))
+                }
+            }
         }
     }
 

@@ -22,11 +22,15 @@ import java.util.*
 class SyncService(private val database: AppDatabase) {
 
     fun saveHostedPlaces(data: List<ServerPlace>) {
-        savePlaces(data, true)
+        savePlaces(data, true) {
+            mapToPlace(it, true)
+        }
     }
 
     fun saveVisitedPlaces(data: List<ServerPlaceResponse>) {
-        savePlaceResponses(data, false)
+        savePlaces(data, false) {
+            mapToPlace(it.place, false, it.timestamp)
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -43,26 +47,9 @@ class SyncService(private val database: AppDatabase) {
         Log.i("sync", "place sync success! $place")
     }
 
-    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
+    private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapToPlace: (T) -> Place) {
         if (data.isNotEmpty()) {
-            val places = data.map { serverPlace ->
-                mapToPlace(serverPlace, isHost)
-            }
-            // delete places before inserting updated places
-            database.placeDao().deletePlaces(isHost)
-            database.placeDao().insertAllPlaces(places)
-
-            Log.i("sync", "place sync success! $places")
-        } else {
-            Log.i("sync", "no places to sync!")
-        }
-    }
-
-    private fun savePlaceResponses(data: List<ServerPlaceResponse>, isHost: Boolean) {
-        if (data.isNotEmpty()) {
-            val places = data.map { serverPlaceResponse ->
-                mapToPlace(serverPlaceResponse, isHost)
-            }
+            val places = data.map(mapToPlace)
             // delete places before inserting updated places
             database.placeDao().deletePlaces(isHost)
             database.placeDao().insertAllPlaces(places)
@@ -107,10 +94,6 @@ class SyncService(private val database: AppDatabase) {
         // TODO write token to key chain
         val user = User(data.id)
         database.userDao().insertUser(user)
-    }
-
-    private fun mapToPlace(serverPlaceResponse: ServerPlaceResponse, isHost: Boolean): Place {
-        return mapToPlace(serverPlaceResponse.place, isHost, serverPlaceResponse.timestamp)
     }
 
     private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
