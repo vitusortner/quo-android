@@ -1,6 +1,5 @@
 package com.android.quo.view.place.info
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -42,8 +41,10 @@ class InfoFragment : Fragment() {
                 .load(imageUrl)
                 .into(imageView)
 
-        recyclerView.adapter = InfoAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this.context)
+        place?.let {
+            recyclerView.adapter = InfoAdapter(it)
+            recyclerView.layoutManager = LinearLayoutManager(this.context)
+        }
     }
 
     private fun setupToolbar() {
