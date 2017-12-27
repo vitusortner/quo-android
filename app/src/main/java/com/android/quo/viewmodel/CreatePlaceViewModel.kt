@@ -25,7 +25,9 @@ class CreatePlaceViewModel : ViewModel() {
     // TODO change host id
     fun savePlace() {
         Log.e("save place", "*****")
-        CreatePlace.place.host = "5a43b5d16c0c42fd0576cb63"
+//        CreatePlace.place.host = "5a43b5d16c0c42fd0576cb63" //local
+        CreatePlace.place.host = "5a3a8b5f9bab1312640fd575" //aws
+
         apiService.addPlace(CreatePlace.place)
                 .subscribeOn(Schedulers.io())
                 .subscribe({

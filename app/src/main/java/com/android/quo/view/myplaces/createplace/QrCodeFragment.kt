@@ -1,7 +1,9 @@
 package com.android.quo.view.myplaces.createplace
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -11,8 +13,10 @@ import com.android.quo.R
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
+import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_place.toolbar
+import kotlinx.android.synthetic.main.fragment_qr_code_view.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_qr_code_view.qrCodeImageView
 
 
@@ -34,6 +38,17 @@ class QrCodeFragment : Fragment() {
         setupToolbar()
 //        qrCodeImageView.setImageBitmap(generateQrCode("http://www.google.de"))
         qrCodeImageView.setImageBitmap(CreatePlace.qrCode)
+
+        compositDisposable.add(
+                RxView.clicks(floatingActionButton)
+                        .subscribe {
+                            val sendIntent = Intent()
+                            sendIntent.action = Intent.ACTION_SEND
+                            sendIntent.type = "image/jpeg"
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, "uri")
+                            this.startActivity(sendIntent)
+                        })
+        floatingActionButton
     }
 
     private fun setupToolbar() {
