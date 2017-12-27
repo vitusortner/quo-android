@@ -17,7 +17,7 @@
         android:paddingTop="@dimen/info_cardview_padding_top">
 
         <TextView
-            android:text="Address"
+            android:text="@string/place_info_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/info_cardview_title_margin_bottom"

@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/info_cardview_title_margin_bottom"
-            android:text="Description"
+            android:text="@string/place_info_description"
             android:textColor="@color/colorTitle"
             android:textSize="@dimen/title_textsize" />
 
