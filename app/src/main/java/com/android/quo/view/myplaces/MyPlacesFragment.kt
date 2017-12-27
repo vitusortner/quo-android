@@ -15,7 +15,6 @@ import com.android.quo.networking.SyncService
 import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.myplaces.createplace.CreatePlaceFragment
-import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.MyPlacesViewModel
 import com.android.quo.viewmodel.factory.MyPlacesViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
@@ -78,7 +77,7 @@ class MyPlacesFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.loadPlaces()
+            viewModel.updatePlaces()
             swipeRefreshLayout.isRefreshing = false
         }
     }

@@ -26,12 +26,12 @@ class HomeViewModel(
     fun getPlaces(): LiveData<List<Place>> {
         if (places == null) {
             places = MutableLiveData()
-            loadPlaces()
+            updatePlaces()
         }
         return places as MutableLiveData<List<Place>>
     }
 
-    fun loadPlaces() {
+    fun updatePlaces() {
         compositDisposabel.add(userDao.getUser()
                 .observeOn(Schedulers.io())
                 .subscribe {

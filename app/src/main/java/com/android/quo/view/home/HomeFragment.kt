@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.loadPlaces()
+            viewModel.updatePlaces()
             swipeRefreshLayout.isRefreshing = false
         }
     }
