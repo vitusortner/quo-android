@@ -102,7 +102,7 @@
     <dimen name="info_cardview_padding_top">12dp</dimen>
     <dimen name="info_cardview_padding_start">24dp</dimen>
     <dimen name="info_cardview_padding_end">24dp</dimen>
-    <dimen name="info_cardview_padding_bottom">41dp</dimen>
+    <dimen name="info_cardview_padding_bottom">34dp</dimen>
     <dimen name="info_cardview_title_margin_bottom">10dp</dimen>
     <dimen name="info_collapsing_toolbar_height">238dp</dimen>
     <dimen name="info_toolbar_elevation">4dp</dimen>
