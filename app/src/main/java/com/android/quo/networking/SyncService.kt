@@ -100,6 +100,7 @@ class SyncService(private val database: AppDatabase) {
         return Place(
                 id = serverPlace.id ?: "",
                 isHost = isHost,
+                description = serverPlace.description ?: "",
                 title = serverPlace.title,
                 startDate = serverPlace.startDate,
                 endDate = serverPlace.endDate,
@@ -109,7 +110,8 @@ class SyncService(private val database: AppDatabase) {
                     Address(
                             street = address.street,
                             city = address.city,
-                            zipCode = address.zipCode)
+                            zipCode = address.zipCode,
+                            name = address.name)
                 },
                 isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
                 hasToValidateGps = serverPlace.settings?.hasToValidateGps,
