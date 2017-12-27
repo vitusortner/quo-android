@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- text sizes -->
+    <dimen name="text_size_cardview_preview">12sp</dimen>
+    <dimen name="text_size_content">14sp</dimen>
+    <dimen name="text_size_textfield">16sp</dimen>
+    <dimen name="text_size_actionbar_longTitle">18sp</dimen>
+    <dimen name="text_size_actionbar_title">20sp</dimen>
+    <dimen name="text_size_cardview_title">24sp</dimen>
+
+
     <!-- qr code scanner -->
     <dimen name="qr_code_scanner_gallery_button_height">64dp</dimen>
     <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
