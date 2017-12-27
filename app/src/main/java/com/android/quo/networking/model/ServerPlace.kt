@@ -31,11 +31,13 @@ data class ServerPlace(
 
         var settings: ServerSettings? = null,
 
-        @SerializedName("title_picture")
+        @SerializedName("title_picture_key")
         var titlePicture: String? = null,
 
         @SerializedName("qr_code_id")
         var qrCodeId: String? = null,
 
-        var components: ArrayList<ServerComponent>? = null
+        val components: List<String>? = null,
+
+        val pictures: List<String>? = null
 )

@@ -1,8 +1,9 @@
-package com.android.quo.networking
+package com.android.quo.networking.repository
 
-import android.util.Log
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place
+import com.android.quo.networking.ApiService
+import com.android.quo.networking.SyncService
 import com.android.quo.networking.model.ServerPlace
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -25,9 +26,7 @@ class PlaceRepository(
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
 
-                override fun sync(data: List<ServerPlace>) {
-                    syncService.saveVisitedPlaces(data)
-                }
+                override fun sync(data: List<ServerPlace>) = syncService.saveVisitedPlaces(data)
             }
         }, BackpressureStrategy.BUFFER)
     }
@@ -62,17 +61,15 @@ class PlaceRepository(
         }, BackpressureStrategy.BUFFER)
     }
 
-    fun getPlace(qrCodeId: String): Flowable<List<Place>> {
+    fun getPlace(qrCodeId: String): Flowable<Place> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+            object : Repository<Place, ServerPlace>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getPlace(qrCodeId)
+                override fun getRemote(): Single<ServerPlace> = apiService.getPlace(qrCodeId)
 
-                override fun getLocal(): Flowable<List<Place>> = placeDao.getAllPlaces()
+                override fun getLocal(): Flowable<Place> = placeDao.getPlaceByQrCodeId(qrCodeId)
 
-                override fun sync(data: List<ServerPlace>) {
-                    syncService.saveVisitedPlaces(data)
-                }
+                override fun sync(data: ServerPlace) = syncService.savePlace(data)
             }
         }, BackpressureStrategy.BUFFER)
     }

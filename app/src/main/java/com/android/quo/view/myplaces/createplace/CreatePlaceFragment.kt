@@ -6,8 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Environment
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.fragment_place.toolbar
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.sql.Timestamp
-import id.zelory.compressor.Compressor
 
 
 /**
@@ -56,18 +55,21 @@ class CreatePlaceFragment : Fragment() {
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
 
-        /**
-         * change status bar color
-         */
-        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
-
+        setupStatusBar()
         setupToolbar()
 
         generateQrCodeObservable()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
+    }
 
+    /**
+     * change status bar and status bar text color
+     */
+    private fun setupStatusBar() {
+        activity?.window?.decorView?.systemUiVisibility = 0
+        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
     }
 
     private fun setupToolbar() {
@@ -106,6 +108,16 @@ class CreatePlaceFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
+        activity?.window?.let { window ->
+            this.context?.let { context ->
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorStatusBarSdkPre23)
+                }
+            }
+        }
         activity?.window?.statusBarColor = resources.getColor(R.color.colorPrimaryDark)
     }
 

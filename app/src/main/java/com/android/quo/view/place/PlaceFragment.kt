@@ -1,28 +1,21 @@
 package com.android.quo.view.place
 
-import android.arch.lifecycle.ViewModelProviders
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.QuoApplication
 import com.android.quo.R
+import com.android.quo.db.entity.Place
 import com.android.quo.extensions.toPx
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.PictureRepository
-import com.android.quo.networking.SyncService
 import com.android.quo.view.place.info.InfoFragment
-import com.android.quo.viewmodel.PlaceViewModel
-import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_place.appBarLayout
-import kotlinx.android.synthetic.main.fragment_place.collapsingToolbarLayout
 import kotlinx.android.synthetic.main.fragment_place.imageView
 import kotlinx.android.synthetic.main.fragment_place.placeViewPager
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
@@ -34,6 +27,8 @@ import kotlinx.android.synthetic.main.fragment_place.toolbar
  */
 class PlaceFragment : Fragment() {
 
+    private var place: Place? = null
+
     private val compositDisposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -41,6 +36,8 @@ class PlaceFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
+        place = arguments?.getParcelable("place")
+
         return inflater.inflate(R.layout.fragment_place, container, false)
     }
 
@@ -50,16 +47,10 @@ class PlaceFragment : Fragment() {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
 
-        // TODO proper viewmodel handling
-//            viewModel?.getPlace.observe(it, Observer { place ->
-//                    place.title
-//                    place.headerImageUrl
-//            })
-
         setupToolbar()
 
-        this.context?.let {
-            placeViewPager.adapter = PlacePagerAdapter(childFragmentManager, it)
+        this.context?.let { context ->
+            placeViewPager.adapter = PlacePagerAdapter(childFragmentManager, context, place?.id)
         }
 
         tabLayout.setupWithViewPager(placeViewPager)
@@ -68,14 +59,13 @@ class PlaceFragment : Fragment() {
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
         toolbar.inflateMenu(R.menu.place_menu)
+        toolbar.title = place?.title ?: ""
 
-        // TODO add real title
-        toolbar.title = "Lorem ipsum"
+        // TODO else show placeholder https://app.clickup.com/751518/751948/t/w5hm
+        val imageUrl = place?.titlePicture ?: ""
 
-        // TODO add real image
-        // viewModel.headerImageUrl
         Glide.with(this.context)
-                .load("https://static.pexels.com/photos/196643/pexels-photo-196643.jpeg")
+                .load(imageUrl)
                 .into(imageView)
 
         compositDisposable.add(
@@ -88,8 +78,13 @@ class PlaceFragment : Fragment() {
         compositDisposable.add(
                 RxToolbar.itemClicks(toolbar)
                         .subscribe {
+                            val bundle = Bundle()
+                            bundle.putParcelable("place", place)
+                            val fragment = InfoFragment()
+                            fragment.arguments = bundle
+
                             fragmentManager?.beginTransaction()
-                                    ?.replace(R.id.content, InfoFragment())
+                                    ?.replace(R.id.content, fragment)
                                     ?.addToBackStack(null)
                                     ?.commit()
                         }

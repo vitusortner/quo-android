@@ -7,6 +7,7 @@ import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
 import com.android.quo.db.entity.User
+import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerUser
@@ -24,58 +25,59 @@ class SyncService(private val database: AppDatabase) {
         savePlaces(data, false)
     }
 
-    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
-        val places = data.map { place ->
-            Place(
-                    id = place.id ?: "",
-                    isHost = isHost,
-                    title = place.title,
-                    startDate = place.startDate,
-                    endDate = place.endDate,
-                    latitude = place.latitude,
-                    longitude = place.longitude,
-                    address = place.address?.let {
-                        Address(
-                                street = place.address.street,
-                                city = place.address.city,
-                                zipCode = place.address.zipCode)
-                    },
-                    isPhotoUploadAllowed = place.settings?.isPhotoUploadAllowed,
-                    hasToValidateGps = place.settings?.hasToValidateGps,
-                    titlePicture = place.titlePicture ?: "",
-                    qrCodeId = place.qrCodeId ?: ""
-            )
-        }
-        database.placeDao().deletePlaces(isHost)
-        database.placeDao().insertAllPlaces(places)
-        Log.i("sync", "place sync success!")
+    fun savePlace(data: ServerPlace) {
+        // TODO set isHost correctly
+        val place = mapToPlace(data, false)
+        database.placeDao().deletePlace(place)
+        // TODO insert to correct place https://app.clickup.com/751518/751948/t/w5h2
+        database.placeDao().insertPlace(place)
 
-        saveComponents(data)
+        Log.i("sync", "place sync success! $place")
     }
 
-    private fun saveComponents(data: List<ServerPlace>) {
-        val components = mutableListOf<Component>()
-        data.forEach { place ->
-            place.components?.let {
-                it.forEach {
-                    components.add(
-                            Component(
-                                    id = it.id ?: "",
-                                    picture = it.picture,
-                                    text = it.text,
-                                    placeId = place.id ?: "",
-                                    position = it.position ?: 0
-                            ))
-                }
+    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
+        if (data.isNotEmpty()) {
+            val places = data.map { serverPlace ->
+                mapToPlace(serverPlace, isHost)
             }
-            place.id?.let {
-                database.componentDao().deleteComponentsFromPlace(it)
-            }
+            // delete places before inserting updated places
+            database.placeDao().deletePlaces(isHost)
+            database.placeDao().insertAllPlaces(places)
+
+            Log.i("sync", "place sync success! $places")
+        } else {
+            Log.i("sync", "no places to sync!")
         }
-        if (components.isNotEmpty()) {
+    }
+
+    fun saveComponents(data: List<ServerComponent>, placeId: String) {
+        if (data.isNotEmpty()) {
+            val components = data.map { component ->
+                mapToComponent(component, placeId)
+            }
+            // delete components of place before inserting updated comonents
+            database.componentDao().deleteComponentsOfPlace(placeId)
             database.componentDao().insertAllComponents(components)
+
+            Log.i("sync", "component sync success! $components")
+        } else {
+            Log.i("sync", "no components to sync!")
         }
-        Log.i("sync", "component sync success!")
+    }
+
+    fun savePictures(data: List<ServerPicture>, placeId: String) {
+        if (data.isNotEmpty()) {
+            val pictures = data.map { serverPicture ->
+                mapToPicture(serverPicture)
+            }
+            // delete pictures of given place before inserting updated pictures
+            database.pictureDao().deletePicturesOfPlace(placeId)
+            database.pictureDao().insertAllPictures(pictures)
+
+            Log.i("sync", "picture sync success! $pictures")
+        } else {
+            Log.i("sync", "no pictures to sync!")
+        }
     }
 
     fun saveUser(data: ServerUser) {
@@ -101,5 +103,47 @@ class SyncService(private val database: AppDatabase) {
             database.pictureDao().insertAllPictures(pictures)
         }
         Log.i("sync", "picture sync success!")
+    }
+
+    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean): Place {
+        return Place(
+                id = serverPlace.id ?: "",
+                isHost = isHost,
+                title = serverPlace.title,
+                startDate = serverPlace.startDate,
+                endDate = serverPlace.endDate,
+                latitude = serverPlace.latitude,
+                longitude = serverPlace.longitude,
+                address = serverPlace.address?.let { address ->
+                    Address(
+                            street = address.street,
+                            city = address.city,
+                            zipCode = address.zipCode)
+                },
+                isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
+                hasToValidateGps = serverPlace.settings?.hasToValidateGps,
+                titlePicture = serverPlace.titlePicture ?: "",
+                qrCodeId = serverPlace.qrCodeId ?: ""
+        )
+    }
+
+    private fun mapToComponent(serverComponent: ServerComponent, placeId: String): Component {
+        return Component(
+                id = serverComponent.id ?: "",
+                picture = serverComponent.picture,
+                text = serverComponent.text,
+                placeId = placeId
+        )
+    }
+
+    private fun mapToPicture(serverPicture: ServerPicture): Picture {
+        return Picture(
+                id = serverPicture.id ?: "",
+                ownerId = serverPicture.ownerId,
+                placeId = serverPicture.placeId,
+                src = serverPicture.src,
+                isVisible = serverPicture.isVisible,
+                timestamp = serverPicture.timestamp
+        )
     }
 }

@@ -19,17 +19,30 @@
     <dimen name="cardview_margin_start">8dp</dimen>
     <dimen name="cardview_margin_end">8dp</dimen>
 
+    <!-- action bar -->
+
     <dimen name="title_textsize">20sp</dimen>
     <dimen name="content_textsize">14sp</dimen>
     <!-- line height gets defined by adding line spacing extra to text size -->
     <dimen name="content_line_spacing_extra">6dp</dimen>
 
+    <!-- home -->
+
     <dimen name="home_cardview_image_height">150dp</dimen>
-    <dimen name="home_cardview_textview_padding">5dp</dimen>
+    <dimen name="home_cardview_textview_padding_bottom">5dp</dimen>
+    <dimen name="home_cardview_textview_padding_top">7dp</dimen>
+    <dimen name="home_cardview_textview_padding_end">13dp</dimen>
+    <dimen name="home_cardview_textview_padding_start">9dp</dimen>
     <dimen name="home_cardview_margin">8dp</dimen>
-    <dimen name="home_cardview_title_textsize">20sp</dimen>
+    <dimen name="home_cardview_title_textsize">24sp</dimen>
     <dimen name="home_cardview_description_textsize">14sp</dimen>
     <dimen name="home_recyclerview_padding_top">8dp</dimen>
+    <dimen name="home_cardview_corner_radius">2dp</dimen>
+    <dimen name="home_cardview_padding_bottom">4dp</dimen>
+    <dimen name="home_cardview_padding_top">2dp</dimen>
+    <dimen name="home_cardview_padding_end">8dp</dimen>
+    <dimen name="home_cardview_padding_start">8dp</dimen>
+    <dimen name="home_cardview_cardCornerRadius">2dp</dimen>
 
     <!-- Login Page -->
     <dimen name="login_logo_image_view_margin_top">80dp</dimen>
@@ -83,6 +96,7 @@
     <dimen name="place_gallery_thumbnail_margin">4dp</dimen>
     <dimen name="place_gallery_image_margin_top">24dp</dimen>
     <dimen name="place_image_pager_margin">10dp</dimen>
+    <dimen name="place_page_image_height">200dp</dimen>
 
     <!-- Place Info -->
     <dimen name="info_cardview_padding_top">12dp</dimen>

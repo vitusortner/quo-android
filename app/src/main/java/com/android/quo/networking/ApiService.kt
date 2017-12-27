@@ -26,7 +26,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
-
 /**
  * Created by vitusortner on 29.10.17.
  */
@@ -56,20 +55,24 @@ interface ApiService {
     @GET("places")
     fun getAllPlaces(): Single<List<ServerPlace>>
 
-    @GET("places/{id}")
-    fun getPlace(@Path("id") qrCodeId: String): Single<List<ServerPlace>>
+    @GET("places/qrcode/{id}")
+    fun getPlace(@Path("id") qrCodeId: String): Single<ServerPlace>
 
     @PUT("places/{id}")
     fun putPlace(@Path("id") id: String, @Body place: ServerPlace): Single<ServerPlace>
 
-    @GET("users/{id}/visitedplaces")
+    @GET("users/{id}/visited_places")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
-    @GET("users/{id}/myplaces")
+    @GET("users/{id}/hosted_places")
     fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
     @POST("/places/{id}/pictures")
     fun addPicture(@Path("id") id: String, @Body picture: ServerPicture): Single<ServerPicture>
+
+    @Multipart
+    @POST("upload")
+    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<UploadImage>
 
     @GET("pictures")
     fun getAllPictures(): Single<List<ServerPicture>>
@@ -77,23 +80,18 @@ interface ApiService {
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
-    @Multipart
-    @POST("upload")
-    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<UploadImage>
-
     @POST("places/{id}/components")
     fun addComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>
 
     @GET("places/{id}/components")
-    fun getComponents()
+    fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>
 
     @PUT("components/{id}")
     fun updateComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>
 
     companion object {
 
-        // private const val BASE_URL = "http://10.0.2.2:3000/"
-        private const val BASE_URL = "http://ec2-52-57-50-127.eu-central-1.compute.amazonaws.com:3000"
+        private const val BASE_URL = "http://10.0.2.2:3000/"
 
         private val okClient: OkHttpClient
             get() {

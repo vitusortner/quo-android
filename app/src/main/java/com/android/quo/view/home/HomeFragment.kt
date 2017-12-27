@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
-import com.android.quo.networking.PlaceRepository
+import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.networking.SyncService
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.HomeViewModel
@@ -48,14 +48,14 @@ class HomeFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this, HomeViewModelFactory(placeRepository)).get(HomeViewModel::class.java)
 
-        observePlacePreviewList()
+        observePlaces()
         setupSwipeRefresh()
     }
 
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlacePreviewList() {
+    private fun observePlaces() {
         viewModel.getPlaces().observe(this, Observer {
             it?.let { list ->
                 activity?.let { activity ->
