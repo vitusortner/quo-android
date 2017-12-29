@@ -57,6 +57,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
     private val database = QuoApplication.database
     private val apiService = ApiService.instance
     private val placeDao = database.placeDao()
+    private val userDao = database.userDao()
     private val syncService = SyncService(database)
     private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
 
@@ -67,7 +68,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         setContentView(R.layout.activity_qr_code_scanner)
 
         viewModel = ViewModelProviders
-                .of(this, QrCodeScannerViewModelFactory(placeRepository))
+                .of(this, QrCodeScannerViewModelFactory(placeRepository, userDao))
                 .get(QrCodeScannerViewModel::class.java)
 
         requestPermissions(arrayOf(

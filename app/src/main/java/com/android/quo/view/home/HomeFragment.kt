@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
-import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.networking.SyncService
+import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.factory.HomeViewModelFactory
@@ -28,6 +28,7 @@ class HomeFragment : Fragment() {
 
     private val database = QuoApplication.database
     private val placeDao = database.placeDao()
+    private val userDao = database.userDao()
     private val apiService = ApiService.instance
     private val syncService = SyncService(database)
     private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
@@ -46,7 +47,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = VISIBLE
 
-        viewModel = ViewModelProviders.of(this, HomeViewModelFactory(placeRepository)).get(HomeViewModel::class.java)
+        viewModel = ViewModelProviders
+                .of(this, HomeViewModelFactory(placeRepository, userDao))
+                .get(HomeViewModel::class.java)
 
         observePlaces()
         setupSwipeRefresh()
@@ -60,7 +63,7 @@ class HomeFragment : Fragment() {
             it?.let { list ->
                 activity?.let { activity ->
                     recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
-                    recyclerView.layoutManager = LinearLayoutManager(this.context)
+                    recyclerView.layoutManager = LinearLayoutManager(context)
                 }
             }
         })
@@ -72,7 +75,7 @@ class HomeFragment : Fragment() {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.loadPlaces()
+            viewModel.updatePlaces()
             swipeRefreshLayout.isRefreshing = false
         }
     }
