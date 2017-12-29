@@ -7,6 +7,7 @@ import com.android.quo.networking.model.ServerPasswordChange
 import com.android.quo.networking.model.ServerPasswordReset
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
 import io.reactivex.Single
@@ -48,23 +49,17 @@ interface ApiService {
     @POST("places")
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
-    @GET("places")
-    fun getAllPlaces(): Single<List<ServerPlace>>
-
-    @GET("places/qrcode/{id}")
-    fun getPlace(@Path("id") qrCodeId: String): Single<ServerPlace>
+    @GET("places/qrcode/{qr_code_id}/{user_id}")
+    fun getPlace(@Path("qr_code_id") qrCodeId: String, @Path("user_id") userId: String): Single<ServerPlace>
 
     @GET("users/{id}/visited_places")
-    fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+    fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
 
     @GET("users/{id}/hosted_places")
-    fun getMyPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
+    fun getHostedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
     @POST("pictures")
     fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>
-
-    @GET("pictures")
-    fun getAllPictures(): Single<List<ServerPicture>>
 
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
