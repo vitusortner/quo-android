@@ -1,8 +1,20 @@
 package com.android.quo.view.place
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
+import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +24,27 @@ import com.android.quo.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
+import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.cameraButton
+import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.galleryButton
 import kotlinx.android.synthetic.main.fragment_place.appBarLayout
+import kotlinx.android.synthetic.main.fragment_place.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_place.imageView
-import kotlinx.android.synthetic.main.fragment_place.placeViewPager
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
-
+import kotlinx.android.synthetic.main.fragment_place.viewPager
 
 /**
  * Created by vitusortner on 12.11.17.
  */
 class PlaceFragment : Fragment() {
+
+    private val RESULT_GALLERY = 201
+    private val RESULT_CAMERA = 202
+    private val PERMISSION_REQUEST_CAMERA = 101
+    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
 
     private var place: Place? = null
 
@@ -46,13 +66,134 @@ class PlaceFragment : Fragment() {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
 
+        tabLayout.setupWithViewPager(viewPager)
+
         setupToolbar()
 
-        this.context?.let { context ->
-            placeViewPager.adapter = PlacePagerAdapter(childFragmentManager, context, place?.id)
-        }
+        setupViewPager()
 
-        tabLayout.setupWithViewPager(placeViewPager)
+        setupFab()
+    }
+
+    private fun setupFab() {
+        floatingActionButton.hide()
+
+        compositDisposable.add(RxView.clicks(floatingActionButton)
+                .subscribe {
+                    openBottomSheet()
+                }
+        )
+    }
+
+    private fun openBottomSheet() {
+        context?.let { context ->
+            val bottomSheetDialog = BottomSheetDialog(context)
+            val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
+            layout?.let {
+                setupBottomSheetButtons(it)
+
+                bottomSheetDialog.setContentView(it)
+                bottomSheetDialog.show()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PERMISSION_REQUEST_CAMERA -> {
+                context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA)
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        openCamera()
+                    }
+                }
+            }
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        openGallery()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupBottomSheetButtons(layout: View) {
+        compositDisposable.add(RxView.clicks(layout.cameraButton)
+                .subscribe {
+                    requestPermissions(arrayOf(
+                            Manifest.permission.CAMERA),
+                            PERMISSION_REQUEST_CAMERA
+                    )
+                }
+        )
+
+        compositDisposable.add(RxView.clicks(layout.galleryButton)
+                .subscribe {
+                    requestPermissions(arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                            PERMISSION_REQUEST_EXTERNAL_STORAGE
+                    )
+                }
+        )
+    }
+
+    private fun openGallery() {
+        val galleryIntent = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+        activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
+    }
+
+    private fun openCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        activity?.startActivityForResult(cameraIntent, RESULT_CAMERA)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        try {
+            if (resultCode != Activity.RESULT_CANCELED) {
+                if (requestCode == RESULT_GALLERY) {
+                    val selectedImageUri = data?.data
+                    val path = selectedImageUri?.let { getPath(it) }
+                    path?.let {
+                        val bitmap = BitmapFactory.decodeFile(it)
+                    }
+
+                    // TODO upload image
+                    // bottomSheetDialog.hide()
+                } else if (resultCode == RESULT_CAMERA) {
+                    val image = data?.extras?.get("data") as Bitmap
+
+                    // TODO upload image
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Error", e.message)
+        }
+    }
+
+    private fun getPath(uri: Uri): String? {
+        var result: String? = null
+        val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = context?.contentResolver?.query(uri, mediaStoreData, null, null, null)
+
+        cursor?.let { cursor ->
+            if (cursor.moveToFirst()) {
+                val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
+                result = cursor.getString(columnIndex)
+            }
+        }
+        cursor?.close()
+        return result
     }
 
     private fun setupToolbar() {
@@ -112,6 +253,35 @@ class PlaceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setupViewPager() {
+        this.context?.let { context ->
+            place?.id?.let { placeId ->
+                viewPager.adapter = PlacePagerAdapter(childFragmentManager, context, placeId)
+            }
+        }
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                if (position == 0) {
+                    floatingActionButton.hide()
+                } else {
+                    floatingActionButton.show()
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
