@@ -49,5 +49,10 @@ data class Place(
         var titlePicture: String = "",
 
         @ColumnInfo(name = "qr_code_id")
-        var qrCodeId: String = ""
+        var qrCodeId: String = "",
+
+        var timestamp: String = "",
+
+        @ColumnInfo(name = "last_scanned")
+        var lastScanned: String = ""
 ) : Parcelable

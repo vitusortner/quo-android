@@ -12,9 +12,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 /**
- * Created by vitusortner on 06.12.17.
+ * Created by vitusortner on 21.12.17.
  */
-class HomeViewModel(
+class MyPlacesViewModel(
         private val placeRepository: PlaceRepository,
         private val userDao: UserDao
 ) : ViewModel() {
@@ -35,11 +35,11 @@ class HomeViewModel(
         compositDisposabel.add(userDao.getUser()
                 .observeOn(Schedulers.io())
                 .subscribe {
-                    placeRepository.getVisitedPlaces(it.id)
+                    placeRepository.getHostedPlaces(it.id)
                             .distinctUntilChanged()
                             .subscribe({
                                 if (it.isNotEmpty()) {
-                                    places?.value = it.sortedByDescending { it.lastScanned.toDate() }
+                                    places?.value = it.sortedByDescending { it.timestamp.toDate() }
                                 }
                             }, {
                                 Log.e("sync", "$it")

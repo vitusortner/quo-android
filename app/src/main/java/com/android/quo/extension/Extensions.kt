@@ -1,5 +1,6 @@
-package com.android.quo.extensions
+package com.android.quo.extension
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.DisplayMetrics
 import java.text.SimpleDateFormat
@@ -14,10 +15,10 @@ fun Float.toPx(context: Context): Int {
     return this.toInt() * context.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT
 }
 
+@SuppressLint("SimpleDateFormat")
 fun String?.toDate(): Date? {
     this?.let {
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         return simpleDateFormat.parse(it)
     } ?: run {
         return null

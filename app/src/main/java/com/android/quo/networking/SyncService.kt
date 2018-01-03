@@ -1,5 +1,6 @@
 package com.android.quo.networking
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.android.quo.db.AppDatabase
 import com.android.quo.db.entity.Address
@@ -10,36 +11,45 @@ import com.android.quo.db.entity.User
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerUser
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by vitusortner on 30.11.17.
  */
 class SyncService(private val database: AppDatabase) {
 
-    fun saveMyPlaces(data: List<ServerPlace>) {
-        savePlaces(data, true)
+    fun saveHostedPlaces(data: List<ServerPlace>) {
+        savePlaces(data, true) {
+            mapToPlace(it, true)
+        }
     }
 
-    fun saveVisitedPlaces(data: List<ServerPlace>) {
-        savePlaces(data, false)
+    fun saveVisitedPlaces(data: List<ServerPlaceResponse>) {
+        savePlaces(data, false) {
+            mapToPlace(it.place, false, it.timestamp)
+        }
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun savePlace(data: ServerPlace) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val date = dateFormat.format(Date())
+
         // TODO set isHost correctly
-        val place = mapToPlace(data, false)
+        val place = mapToPlace(data, false, date)
         database.placeDao().deletePlace(place)
-        // TODO insert to correct place https://app.clickup.com/751518/751948/t/w5h2
         database.placeDao().insertPlace(place)
 
         Log.i("sync", "place sync success! $place")
     }
 
-    private fun savePlaces(data: List<ServerPlace>, isHost: Boolean) {
+    private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapToPlace: (T) -> Place) {
         if (data.isNotEmpty()) {
-            val places = data.map { serverPlace ->
-                mapToPlace(serverPlace, isHost)
-            }
+            val places = data.map(mapToPlace)
             // delete places before inserting updated places
             database.placeDao().deletePlaces(isHost)
             database.placeDao().insertAllPlaces(places)
@@ -105,10 +115,12 @@ class SyncService(private val database: AppDatabase) {
         Log.i("sync", "picture sync success!")
     }
 
-    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean): Place {
+
+    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
         return Place(
                 id = serverPlace.id ?: "",
                 isHost = isHost,
+                description = serverPlace.description ?: "",
                 title = serverPlace.title,
                 startDate = serverPlace.startDate,
                 endDate = serverPlace.endDate,
@@ -118,12 +130,15 @@ class SyncService(private val database: AppDatabase) {
                     Address(
                             street = address.street,
                             city = address.city,
-                            zipCode = address.zipCode)
+                            zipCode = address.zipCode,
+                            name = address.name)
                 },
                 isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
                 hasToValidateGps = serverPlace.settings?.hasToValidateGps,
                 titlePicture = serverPlace.titlePicture ?: "",
-                qrCodeId = serverPlace.qrCodeId ?: ""
+                qrCodeId = serverPlace.qrCodeId ?: "",
+                timestamp = serverPlace.timestamp,
+                lastScanned = date
         )
     }
 

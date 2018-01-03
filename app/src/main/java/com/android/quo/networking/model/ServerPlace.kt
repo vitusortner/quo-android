@@ -15,10 +15,10 @@ data class ServerPlace(
 
         var description: String? = null,
 
-        @SerializedName("start_date")
+        @SerializedName("start")
         var startDate: String,
 
-        @SerializedName("end_date")
+        @SerializedName("end")
         var endDate: String? = null,
 
         @SerializedName("lat")
@@ -42,5 +42,8 @@ data class ServerPlace(
 
         val components: List<String>? = null,
 
-        val pictures: List<String>? = null
+        val pictures: List<String>? = null,
+
+        val timestamp: String
+
 )

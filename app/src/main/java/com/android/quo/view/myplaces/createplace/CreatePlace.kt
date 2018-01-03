@@ -11,7 +11,7 @@ import com.android.quo.networking.model.ServerPlace
 
 object CreatePlace {
     var place: ServerPlace = ServerPlace(null, "", "", "", "", "",
-            -1.0, -1.0, null, null, "1", "", null, null)
+            -1.0, -1.0, null, null, "1", "", null, null, null, "")
     val components = ArrayList<ServerComponent>()
 
     lateinit var qrCodeImage: Bitmap

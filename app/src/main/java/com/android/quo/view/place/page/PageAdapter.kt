@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Component
-import com.android.quo.view.place.page.PageAdapter.ViewType.PICTURE
-import com.android.quo.view.place.page.PageAdapter.ViewType.TEXT
+import com.android.quo.view.place.page.ViewType.PICTURE
+import com.android.quo.view.place.page.ViewType.TEXT
 import com.bumptech.glide.Glide
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.component_image.imageView
@@ -16,12 +16,12 @@ import kotlinx.android.synthetic.main.component_text.textView
 /**
  * Created by vitusortner on 11.12.17.
  */
-class PageAdapter(private val list: List<Component>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+private enum class ViewType(val value: Int) {
+    PICTURE(1),
+    TEXT(2)
+}
 
-    enum class ViewType(val value: Int) {
-        PICTURE(1),
-        TEXT(2)
-    }
+class PageAdapter(private val list: List<Component>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         return when {

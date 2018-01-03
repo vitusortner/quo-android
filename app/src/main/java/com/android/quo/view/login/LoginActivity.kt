@@ -10,8 +10,10 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
+import com.android.quo.db.entity.User
 import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.facebook.CallbackManager
@@ -21,8 +23,10 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
 import kotlinx.android.synthetic.main.activity_login.emailEditText
 import kotlinx.android.synthetic.main.activity_login.emailWrapper
@@ -54,6 +58,13 @@ class LoginActivity : AppCompatActivity() {
 
         callbackManager = CallbackManager.Factory.create()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
+
+        // TODO remove after testing
+        Flowable.just(1)
+                .observeOn(Schedulers.io())
+                .subscribe {
+                    QuoApplication.database.userDao().insertUser(User("5a2aac590b0132796939a3f6"))
+                }
 
         /**
          * handle Facebook result

@@ -14,6 +14,7 @@ import io.reactivex.Flowable
 
 @Dao
 interface PictureDao {
+
     @Query("SELECT * FROM picture WHERE place_id = :placeId")
     fun getPictures(placeId: String): Flowable<List<Picture>>
 
