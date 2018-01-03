@@ -3,6 +3,7 @@ package com.android.quo.view.place
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
@@ -39,9 +41,10 @@ import kotlinx.android.synthetic.main.fragment_place.viewPager
  */
 class PlaceFragment : Fragment() {
 
-    private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
-    private val RESULT_GALLERY = 99
-    private val RESULT_CAMERA = 101
+    private val RESULT_GALLERY = 201
+    private val RESULT_CAMERA = 202
+    private val PERMISSION_REQUEST_CAMERA = 101
+    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
 
     private var place: Place? = null
 
@@ -77,36 +80,66 @@ class PlaceFragment : Fragment() {
 
         compositDisposable.add(RxView.clicks(floatingActionButton)
                 .subscribe {
-                    requestPermissions(arrayOf(
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE),
-                            ASK_MULTIPLE_PERMISSION_REQUEST_CODE
-                    )
-
-                    context?.let { context ->
-                        val bottomSheetDialog = BottomSheetDialog(context)
-                        val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
-                        layout?.let {
-                            setupBottomSheetButtons(it)
-
-                            bottomSheetDialog.setContentView(it)
-                            bottomSheetDialog.show()
-                        }
-                    }
+                    openBottomSheet()
                 }
         )
+    }
+
+    private fun openBottomSheet() {
+        context?.let { context ->
+            val bottomSheetDialog = BottomSheetDialog(context)
+            val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
+            layout?.let {
+                setupBottomSheetButtons(it)
+
+                bottomSheetDialog.setContentView(it)
+                bottomSheetDialog.show()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PERMISSION_REQUEST_CAMERA -> {
+                context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA)
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        openCamera()
+                    }
+                }
+            }
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        openGallery()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupBottomSheetButtons(layout: View) {
         compositDisposable.add(RxView.clicks(layout.cameraButton)
                 .subscribe {
-                    openCamera()
+                    requestPermissions(arrayOf(
+                            Manifest.permission.CAMERA),
+                            PERMISSION_REQUEST_CAMERA
+                    )
                 }
         )
 
         compositDisposable.add(RxView.clicks(layout.galleryButton)
                 .subscribe {
-                    openGallery()
+                    requestPermissions(arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                            PERMISSION_REQUEST_EXTERNAL_STORAGE
+                    )
                 }
         )
     }
