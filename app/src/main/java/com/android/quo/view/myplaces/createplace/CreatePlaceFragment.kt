@@ -133,7 +133,10 @@ class CreatePlaceFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        //set place to default
+        CreatePlace.place = ServerPlace(null, "", "", "", "", "",
+                -1.0, -1.0, null, null, "quo_default_1.png",
+                "", null, null, null, "")
         compositDisposable.dispose()
     }
 
