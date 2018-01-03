@@ -10,12 +10,15 @@ import com.android.quo.networking.model.ServerPlace
  */
 
 object CreatePlace {
-    var place: ServerPlace = ServerPlace(null, "", "", "", "", "",
-            -1.0, -1.0, null, null, "1", "", null, null, null, "")
+    lateinit var place: ServerPlace
     val components = ArrayList<ServerComponent>()
-
     lateinit var qrCodeImage: Bitmap
     var list: ArrayList<Drawable>? = null
 
+    init {
+        place =  ServerPlace(null, "", "", "", "", "",
+                -1.0, -1.0, null, null, "quo_default_1.png",
+                "", null, null, null, "")
 
+    }
 }

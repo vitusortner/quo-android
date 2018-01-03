@@ -293,8 +293,13 @@ class CreateEventFragment : Fragment(), LocationListener {
         super.onResume()
 
         CreatePlace.place.titlePicture?.let { titlePicture ->
-            if (titlePicture.length == 1) {
-                headerImageView.background = getDefaultImageList()[titlePicture.toInt() - 1]
+            if (titlePicture.startsWith("quo_default_")) {
+                //split string because we need the index of the default image to display it at the beginning
+                // or after changing default image
+                var splitString = titlePicture.split("quo_default_")
+                splitString = splitString[1].split(".")
+
+                headerImageView.background = getDefaultImageList()[splitString[0].toInt() - 1]
             } else if (titlePicture.isNotEmpty()) {
                 val uri = Uri.parse(titlePicture)
                 val bitmap = BitmapFactory.decodeFile(uri.path)

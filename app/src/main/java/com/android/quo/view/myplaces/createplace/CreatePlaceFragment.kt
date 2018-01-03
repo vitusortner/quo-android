@@ -6,10 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Environment
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,9 +26,6 @@ import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.sql.Timestamp
 
 
@@ -164,23 +159,5 @@ class CreatePlaceFragment : Fragment() {
             CreatePlace.place.qrCodeId = qrCodeId
             CreatePlace.qrCodeImage = imageBitmap
         }
-    }
-
-    private fun saveQrCode(bitmap: Bitmap): String {
-        Log.e("save qr code", "*******")
-
-
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
-
-        val file = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo/" + place.qrCodeId + ".jpg")
-        file.createNewFile()
-        val fo = FileOutputStream(file)
-        fo.write(bytes.toByteArray())
-        fo.close()
-
-        Log.e("save qr code", file.path)
-        return file.path
     }
 }

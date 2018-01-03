@@ -72,7 +72,14 @@ class CreatePlaceViewModel : ViewModel() {
                             Log.e("upload picture", "$it")
                             response.titlePicture = it.path
 
-                            putPlace(response)
+                            apiService.putPlace(response.id ?: "", response)
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe({
+                                        Log.e("put place", "$it")
+                                        uploadComponents(it)
+                                    }, {
+                                        Log.e("put place", "$it")
+                                    })
 
                         }, {
                             Log.e("upload picture", "$it")
@@ -85,7 +92,14 @@ class CreatePlaceViewModel : ViewModel() {
                         .subscribe({
                             Log.e("get default picture", "$it")
                             response.titlePicture = it.path
-                            putPlace(response)
+                            apiService.putPlace(response.id ?: "", response)
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe({
+                                        Log.e("put place", "$it")
+                                        uploadComponents(it)
+                                    }, {
+                                        Log.e("put place", "$it")
+                                    })
 
                         }, {
                             Log.e("get default picture", "$it")
@@ -94,19 +108,10 @@ class CreatePlaceViewModel : ViewModel() {
         }
     }
 
-    private fun putPlace(response: ServerPlace) {
-        apiService.putPlace(response.id ?: "", response)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    Log.e("put place", "$it")
-                    uploadComponents(it)
-                }, {
-                    Log.e("put place", "$it")
-                })
-    }
 
     private fun uploadComponents(response: ServerPlace) {
         // sync all images from components and add the response to the right component
+        Log.e("list of components", CreatePlace.components.size.toString())
         for (c in CreatePlace.components) {
             if (c.picture != null) {
                 val uri = Uri.parse(c.picture)
@@ -118,7 +123,7 @@ class CreatePlaceViewModel : ViewModel() {
                 apiService.uploadPicture(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.e("upload picture", "$it")
+                            Log.e("upload picture com", "$it")
 
                             val picture = ServerPicture(null, response.host,
                                     response.id ?: "", it.path,
@@ -128,7 +133,7 @@ class CreatePlaceViewModel : ViewModel() {
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
                                         Log.e("add picture", "$it")
-                                        c.picture = it.id
+                                        c.picture = it.src
 
                                         //post component to server
                                         apiService.addComponent(it.placeId, c)
@@ -142,7 +147,7 @@ class CreatePlaceViewModel : ViewModel() {
                                         Log.e("add picture", "$it")
                                     })
                         }, {
-                            Log.e("upload picture", "$it")
+                            Log.e("upload picture com", "$it")
                         })
             } else if (c.text != null) {
                 //post component with text to server
@@ -170,7 +175,13 @@ class CreatePlaceViewModel : ViewModel() {
                 .subscribe({
                     Log.e("upload qr code", "$it")
                     response.qrCode = it.path
-                    putPlace(response)
+                    apiService.putPlace(response.id ?: "", response)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                Log.e("put place", "$it")
+                            }, {
+                                Log.e("put place", "$it")
+                            })
                 }, {
                     Log.e("upload qr code", "$it")
                 })
