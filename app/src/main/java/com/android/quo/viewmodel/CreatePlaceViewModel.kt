@@ -1,7 +1,9 @@
 package com.android.quo.viewmodel
 
 import android.arch.lifecycle.ViewModel
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import com.android.quo.networking.ApiService
 import com.android.quo.networking.model.ServerPicture
@@ -11,7 +13,9 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.sql.Timestamp
 
 
@@ -25,15 +29,15 @@ class CreatePlaceViewModel : ViewModel() {
     // TODO change host id
     fun savePlace() {
         Log.e("save place", "*****")
-//        CreatePlace.place.host = "5a43b5d16c0c42fd0576cb63" //local
-        CreatePlace.place.host = "5a3a8b5f9bab1312640fd575" //aws
+//        CreatePlace.place.host = "5a4788298608db84ae2d86a9" //local
+        CreatePlace.place.host = "5a2aac590b0132796939a3f6" //aws
 
         apiService.addPlace(CreatePlace.place)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.e("post place", "$it")
                     val response = it as ServerPlace
-//                    uploadQrCode(response)
+                    uploadQrCode(response)
                     uploadImage(response)
 
 
@@ -51,38 +55,53 @@ class CreatePlaceViewModel : ViewModel() {
 
         //check if title picture is from user or default image
         response.titlePicture?.let { titlePicture ->
-            if (titlePicture.length > 1) {
+            if (!titlePicture.startsWith("quo_default_")) {
                 title.src = titlePicture
 
+                val uri = Uri.parse(title.src)
+                val file = File(uri.path)
+
+
+                val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
+
+                // sync title picture to server and add the response answer to the created place
+                apiService.uploadPicture(imageFileBody)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            Log.e("upload picture", "$it")
+                            response.titlePicture = it.path
+
+                            putPlace(response)
+
+                        }, {
+                            Log.e("upload picture", "$it")
+                        })
+
             } else {
-                title.src = "android.resource://com.android.quo/default_event_image$titlePicture.png"
+                // get default picture from server and set it as title picture source
+                apiService.getDefaultPicture(titlePicture)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            Log.e("get default picture", "$it")
+                            response.titlePicture = it.path
+                            putPlace(response)
+
+                        }, {
+                            Log.e("get default picture", "$it")
+                        })
             }
         }
+    }
 
-        val uri = Uri.parse(title.src)
-        val file = File(uri.path)
-
-
-        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
-
-        // sync title picture to server and add the response answer to the created place
-        apiService.uploadPicture(imageFileBody)
+    private fun putPlace(response: ServerPlace) {
+        apiService.putPlace(response.id ?: "", response)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.e("upload picture", "$it")
-                    response.titlePicture = it.key
-
-                    apiService.putPlace(response.id ?: "", response)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                Log.e("put place", "$it")
-                                uploadComponents(it)
-                            }, {
-                                Log.e("put place", "$it")
-                            })
+                    Log.e("put place", "$it")
+                    uploadComponents(it)
                 }, {
-                    Log.e("upload picture", "$it")
+                    Log.e("put place", "$it")
                 })
     }
 
@@ -102,7 +121,7 @@ class CreatePlaceViewModel : ViewModel() {
                             Log.e("upload picture", "$it")
 
                             val picture = ServerPicture(null, response.host,
-                                    response.id ?: "", it.key,
+                                    response.id ?: "", it.path,
                                     true, System.currentTimeMillis().toString())
 
                             apiService.addPicture(response.id ?: "", picture)
@@ -116,7 +135,6 @@ class CreatePlaceViewModel : ViewModel() {
                                                 .subscribeOn(Schedulers.io())
                                                 .subscribe({
                                                     Log.e("post component", "$it")
-                                                    // set list of components to the created place
                                                 }, {
                                                     Log.e("post component", "$it")
                                                 })
@@ -132,7 +150,6 @@ class CreatePlaceViewModel : ViewModel() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.e("post component", "$it")
-                            // set list of components to the created place
                         }, {
                             Log.e("post component", "$it")
                         })
@@ -140,36 +157,41 @@ class CreatePlaceViewModel : ViewModel() {
         }
     }
 
-//    private fun uploadQrCode(response: ServerPlace) {
-//        val path = Environment.getExternalStoragePublicDirectory(
-//                Environment.DIRECTORY_PICTURES).absolutePath + "quo-" + response.qrCodeId
-//        val fileOutputStream = FileOutputStream(path)
-//        CreatePlace.qrCode.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-//        fileOutputStream.close()
-//
-//        val uri = Uri.parse(path)
-//        val file = File(uri.path)
-//
-//        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-//        val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
-//
-//        // sync title picture to server and add the response answer to the created place
-//        apiService.uploadPicture(imageFileBody)
-//                .subscribeOn(Schedulers.io())
-//                .subscribe({
-//                    Log.e("upload picture", "$it")
-//                    response.qrCodeId = it.key
-//
-//                    apiService.putPlace(response.id ?: "", response)
-//                            .subscribeOn(Schedulers.io())
-//                            .subscribe({
-//                                Log.e("put place", "$it")
-//                            }, {
-//                                Log.e("put place", "$it")
-//                            })
-//                }, {
-//                    Log.e("upload picture", "$it")
-//                })
-//    }
+    private fun uploadQrCode(response: ServerPlace) {
+        val uri = Uri.parse(saveQrCode(CreatePlace.qrCodeImage, response.qrCodeId))
+        val file = File(uri.path)
+
+        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
+
+        // sync title picture to server and add the response answer to the created place
+        apiService.uploadPicture(imageFileBody)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    Log.e("upload qr code", "$it")
+                    response.qrCode = it.path
+                    putPlace(response)
+                }, {
+                    Log.e("upload qr code", "$it")
+                })
+    }
+
+    private fun saveQrCode(bitmap: Bitmap, qrCodeId: String?): String {
+        Log.e("save qr code", "*******")
+
+
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
+
+        val file = File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo/$qrCodeId.jpg")
+        file.createNewFile()
+        val fo = FileOutputStream(file)
+        fo.write(bytes.toByteArray())
+        fo.close()
+
+        Log.e("save qr code", file.path)
+        return file.path
+    }
 }
 

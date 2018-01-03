@@ -322,6 +322,7 @@ class CreateEventFragment : Fragment(), LocationListener {
             ContextCompat.getDrawable(context, R.drawable.default_event_image8)?.let { list.add(it) }
             ContextCompat.getDrawable(context, R.drawable.default_event_image9)?.let { list.add(it) }
         }
+        CreatePlace.list = list
         return list
     }
 

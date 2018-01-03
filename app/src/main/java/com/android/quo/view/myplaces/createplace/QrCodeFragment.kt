@@ -3,7 +3,6 @@ package com.android.quo.view.myplaces.createplace
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -36,8 +35,7 @@ class QrCodeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-//        qrCodeImageView.setImageBitmap(generateQrCode("http://www.google.de"))
-        qrCodeImageView.setImageBitmap(CreatePlace.qrCode)
+        qrCodeImageView.setImageBitmap(CreatePlace.qrCodeImage)
 
         compositDisposable.add(
                 RxView.clicks(floatingActionButton)

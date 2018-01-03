@@ -39,7 +39,7 @@ class EventDefaultImagesAdapter(private val list: List<Drawable>, private val he
         fun bindItem(list: List<Drawable>, position: Int) {
             RxView.clicks(defaultImageView)
                     .subscribe {
-                        CreatePlace.place.titlePicture = (adapterPosition + 1).toString()
+                        CreatePlace.place.titlePicture = "quo_default_${adapterPosition + 1}.png"
                         headerImageView.background = list[adapterPosition]
                     }
             defaultImageView.background = list[position]
