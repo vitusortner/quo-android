@@ -10,10 +10,8 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.db.entity.User
 import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.facebook.CallbackManager
@@ -23,10 +21,8 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
-import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
 import kotlinx.android.synthetic.main.activity_login.emailEditText
 import kotlinx.android.synthetic.main.activity_login.emailWrapper
@@ -58,13 +54,6 @@ class LoginActivity : AppCompatActivity() {
 
         callbackManager = CallbackManager.Factory.create()
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel().javaClass)
-
-        // TODO remove after testing
-        Flowable.just(1)
-                .observeOn(Schedulers.io())
-                .subscribe {
-                    QuoApplication.database.userDao().insertUser(User("5a3835952abb591b0b1fd69b"))
-                }
 
         /**
          * handle Facebook result
@@ -122,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
                 .subscribe())
 
         /**
-         * button click handler for signIn
+         * button click handler for signup
          */
         compositeDisposable.add(RxView.clicks(signUpButton)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -135,10 +124,15 @@ class LoginActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
-                        //TODO login user
-
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
+                        loginViewModel.login(
+                                emailEditText.text.toString(),
+                                passwordEditText.text.toString()
+                        ) {
+                            if (it) {
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                            }
+                        }
                     }
                 })
 
@@ -282,6 +276,15 @@ class LoginActivity : AppCompatActivity() {
                             dialog.dismiss()
                             //TODO add new account to db
                             //TODO Check if password and email have no errors
+                            loginViewModel.signup(
+                                    dialogView.emailSignUpEditText.text.toString(),
+                                    dialogView.passwordSignUpEditText.text.toString()
+                            ) {
+                                if (it) {
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
                         } else {
                             dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
                         }

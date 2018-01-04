@@ -2,6 +2,9 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.util.Patterns
+import com.android.quo.QuoApplication
+import com.android.quo.networking.ApiService
+import com.android.quo.networking.repository.AuthRepository
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
@@ -11,12 +14,9 @@ import io.reactivex.Single
  */
 class LoginViewModel : ViewModel() {
 
-    fun handleRegister(username: String, password: String): Boolean {
-        //TODO check if user already exist
-        //TODO register user
-        //TODO return true or false after registration
-        return true
-    }
+    private val userDao = QuoApplication.database.userDao()
+    private val apiService = ApiService.instance
+    private val authRepository = AuthRepository(apiService, userDao)
 
     fun sendEmailToUser(email: String): Boolean {
         //TODO check if email exist
@@ -65,6 +65,18 @@ class LoginViewModel : ViewModel() {
                 onError(it)
                 Observable.just("")
             }
+        }
+    }
+
+    fun login(email: String, password: String, callback: (Boolean) -> Unit) {
+        authRepository.login(email, password) {
+            callback(it)
+        }
+    }
+
+    fun signup(email: String, password: String, callback: (Boolean) -> Unit) {
+        authRepository.signup(email, password) {
+            callback(it)
         }
     }
 }
