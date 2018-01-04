@@ -1,9 +1,8 @@
-package com.android.quo.networking.repository
+package com.android.quo.networking
 
 import android.util.Log
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.User
-import com.android.quo.networking.ApiService
 import com.android.quo.networking.model.ServerLogin
 import com.android.quo.networking.model.ServerSignup
 import io.reactivex.schedulers.Schedulers
@@ -11,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by vitusortner on 03.01.18.
  */
-class AuthRepository(
+class AuthService(
         private val apiService: ApiService,
         private val userDao: UserDao
 ) {
@@ -26,7 +25,7 @@ class AuthRepository(
                     userDao.insertUser(User(it.user.id))
 
                     callback(true)
-                    // TODO write user to local DB and insert token to keystore
+                    // TODO insert token to keystore
                 }, {
                     Log.e("login", "Error while logging in: $it")
                     callback(false)
@@ -43,7 +42,7 @@ class AuthRepository(
                     userDao.insertUser(User(it.user.id))
 
                     callback(true)
-                    // TODO write user to local DB and insert token to keystore
+                    // TODO insert token to keystore
                 }, {
                     Log.e("signup", "Error while signing in: $it")
                     callback(false)
