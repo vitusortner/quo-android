@@ -58,7 +58,7 @@ class PlaceRepository(
 
                 override fun getLocal(): Flowable<Place> = placeDao.getPlaceByQrCodeId(qrCodeId)
 
-                override fun sync(data: ServerPlace) = syncService.savePlace(data)
+                override fun sync(data: ServerPlace) = syncService.savePlace(data, userId)
             }
         }, BackpressureStrategy.BUFFER)
     }

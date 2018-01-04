@@ -7,12 +7,10 @@ import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
-import com.android.quo.db.entity.User
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPlaceResponse
-import com.android.quo.networking.model.ServerUser
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,13 +32,12 @@ class SyncService(private val database: AppDatabase) {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun savePlace(data: ServerPlace) {
+    fun savePlace(data: ServerPlace, userId: String) {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         val date = dateFormat.format(Date())
 
-        // TODO set isHost correctly
-        val place = mapToPlace(data, false, date)
+        val place = mapToPlace(data, userId == data.host, date)
         database.placeDao().deletePlace(place)
         database.placeDao().insertPlace(place)
 
@@ -88,12 +85,6 @@ class SyncService(private val database: AppDatabase) {
         } else {
             Log.i("sync", "no pictures to sync!")
         }
-    }
-
-    fun saveUser(data: ServerUser) {
-        // TODO write token to key chain
-        val user = User(data.id)
-        database.userDao().insertUser(user)
     }
 
     private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
