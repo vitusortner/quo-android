@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
@@ -55,9 +54,9 @@ import kotlinx.android.synthetic.main.fragment_create_event.locationEditText
 import kotlinx.android.synthetic.main.fragment_create_event.locationProgressBar
 import kotlinx.android.synthetic.main.fragment_create_event.toDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
-import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.cameraLayout
-import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.defaultImageListView
-import kotlinx.android.synthetic.main.layout_bottom_sheet_select_foto.view.photosLayout
+import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.cameraLayout
+import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.defaultImageListView
+import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.photosLayout
 import java.io.File
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -178,7 +177,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .subscribe {
                     context?.let { context ->
                         bottomSheetDialog = BottomSheetDialog(context)
-                        val sheetView = activity?.let { it.layoutInflater.inflate(R.layout.layout_bottom_sheet_select_foto, null) }
+                        val sheetView = activity?.let { it.layoutInflater.inflate(R.layout.layout_bottom_sheet_select_picture, null) }
                         sheetView?.let {
                             it.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList(), headerImageView)
                             val linearLayoutManager = LinearLayoutManager(this.context)
