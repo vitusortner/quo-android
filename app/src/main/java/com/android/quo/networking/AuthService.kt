@@ -3,8 +3,10 @@ package com.android.quo.networking
 import android.util.Log
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.User
+import com.android.quo.general.Constants
 import com.android.quo.networking.model.ServerLogin
 import com.android.quo.networking.model.ServerSignup
+import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -12,7 +14,8 @@ import io.reactivex.schedulers.Schedulers
  */
 class AuthService(
         private val apiService: ApiService,
-        private val userDao: UserDao
+        private val userDao: UserDao,
+        private val preferenceStore: SecuredPreferenceStore
 ) {
 
     fun login(email: String, password: String, callback: (Boolean) -> Unit) {
@@ -25,8 +28,12 @@ class AuthService(
                     userDao.insertUser(User(it.user.id))
 
                     callback(true)
-                    // TODO insert token to keystore
+
+                    // Delete existing token and insert new token
+                    preferenceStore.edit().clear().commit()
+                    preferenceStore.edit().putString(Constants.TOKEN_KEY, it.token).apply()
                 }, {
+                    // TODO error handling
                     Log.e("login", "Error while logging in: $it")
                     callback(false)
                 })
@@ -42,8 +49,12 @@ class AuthService(
                     userDao.insertUser(User(it.user.id))
 
                     callback(true)
-                    // TODO insert token to keystore
+
+                    // Delete existing token and insert new token
+                    preferenceStore.edit().clear().commit()
+                    preferenceStore.edit().putString(Constants.TOKEN_KEY, it.token).apply()
                 }, {
+                    // TODO error handling
                     Log.e("signup", "Error while signing in: $it")
                     callback(false)
                 })

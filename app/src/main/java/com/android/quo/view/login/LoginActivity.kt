@@ -10,7 +10,7 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.android.quo.QuoApplication
+import com.android.quo.general.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
 import com.android.quo.networking.ApiService
@@ -25,6 +25,7 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
+import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
@@ -50,9 +51,11 @@ class LoginActivity : AppCompatActivity() {
 
     private val apiService = ApiService.instance
     private val userDao = QuoApplication.database.userDao()
-    private val authService = AuthService(apiService, userDao)
+    private val preferenceStore = SecuredPreferenceStore.getSharedInstance()
+    private val authService = AuthService(apiService, userDao, preferenceStore)
 
     private lateinit var viewModel: LoginViewModel
+
     private lateinit var callbackManager: CallbackManager
     private var compositeDisposable = CompositeDisposable()
 

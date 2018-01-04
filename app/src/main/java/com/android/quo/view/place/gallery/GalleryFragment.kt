@@ -8,7 +8,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.QuoApplication
+import com.android.quo.general.QuoApplication
 import com.android.quo.R
 import com.android.quo.networking.ApiService
 import com.android.quo.networking.SyncService

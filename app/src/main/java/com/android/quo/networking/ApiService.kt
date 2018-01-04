@@ -1,8 +1,8 @@
 package com.android.quo.networking
 
+import com.android.quo.general.Constants
 import com.android.quo.networking.ApiService.Companion.Endpoints.AUTH
 import com.android.quo.networking.ApiService.Companion.Endpoints.PLACES
-import com.android.quo.networking.ApiService.Companion.Endpoints.UPLOAD
 import com.android.quo.networking.ApiService.Companion.Endpoints.USERS
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerFacebookSignup
@@ -16,6 +16,7 @@ import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerSignupResponse
 import com.android.quo.networking.model.ServerUser
+import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.Single
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -82,6 +83,48 @@ interface ApiService {
 
     companion object {
 
+        //        private const val BASE_URL = "http://10.0.2.2:3000/"
+        private const val BASE_URL = "http://192.168.178.23:3000/"
+
+        private val okClient: OkHttpClient
+            get() {
+                val clientBuilder = OkHttpClient.Builder()
+
+                clientBuilder.addInterceptor { chain ->
+                    val original = chain.request()
+                    val requestBuilder = original.newBuilder().headers(headers(original.url()))
+                    val request = requestBuilder.build()
+                    chain.proceed(request)
+                }
+                return clientBuilder.build()
+            }
+
+        private fun headers(url: HttpUrl): Headers {
+            val headers = mutableMapOf("Accept" to "application/json")
+
+            if (Endpoints.needsBearerToken(url)) {
+                val preferenceStore = SecuredPreferenceStore.getSharedInstance()
+                val token = preferenceStore.getString(Constants.TOKEN_KEY, "")
+
+                headers.put("Authorization", "Bearer $token")
+            }
+            if (Endpoints.isMultipartRequest(url)) {
+                headers.put("Content-Type", "multipart/form-data")
+            } else {
+                headers.put("Content-Type", "application/json")
+            }
+            return Headers.of(headers)
+        }
+
+        private val retrofit: Retrofit = Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(BASE_URL)
+                .client(okClient)
+                .build()
+
+        val instance: ApiService = ApiService.retrofit.create(ApiService::class.java)
+
         object Endpoints {
 
             const val AUTH = "auth"
@@ -101,44 +144,5 @@ interface ApiService {
                 return path.split("/").first() == UPLOAD
             }
         }
-
-        private const val BASE_URL = "http://10.0.2.2:3000/"
-
-        private val okClient: OkHttpClient
-            get() {
-                val clientBuilder = OkHttpClient.Builder()
-
-                clientBuilder.addInterceptor { chain ->
-                    val original = chain.request()
-                    val requestBuilder = original.newBuilder().headers(headers(original.url()))
-                    val request = requestBuilder.build()
-                    chain.proceed(request)
-                }
-                return clientBuilder.build()
-            }
-
-        private fun headers(url: HttpUrl): Headers {
-            val headers = mutableMapOf("Accept" to "application/json")
-
-            if (Endpoints.needsBearerToken(url)) {
-                // TODO add token
-                headers.put("Authorization", "Bearer token")
-            }
-            if (Endpoints.isMultipartRequest(url)) {
-                headers.put("Content-Type", "multipart/form-data")
-            } else {
-                headers.put("Content-Type", "application/json")
-            }
-            return Headers.of(headers)
-        }
-
-        private val retrofit: Retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(BASE_URL)
-                .client(okClient)
-                .build()
-
-        val instance: ApiService = ApiService.retrofit.create(ApiService::class.java)
     }
 }

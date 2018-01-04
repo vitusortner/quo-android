@@ -21,7 +21,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
-import com.android.quo.QuoApplication
+import com.android.quo.general.QuoApplication
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.networking.ApiService
