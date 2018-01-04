@@ -24,14 +24,15 @@ class AuthService(
                 .subscribe({
                     Log.i("login", "Login successful: $it")
 
+                    // Delete existing user from local DB and insert new user
                     userDao.deleteAllUsers()
                     userDao.insertUser(User(it.user.id))
-
-                    callback(true)
 
                     // Delete existing token and insert new token
                     preferenceStore.edit().clear().commit()
                     preferenceStore.edit().putString(Constants.TOKEN_KEY, it.token).apply()
+
+                    callback(true)
                 }, {
                     // TODO error handling
                     Log.e("login", "Error while logging in: $it")
@@ -45,18 +46,27 @@ class AuthService(
                 .subscribe({
                     Log.i("signup", "Signup successful: $it")
 
+                    // Delete existing user from local DB and insert new user
                     userDao.deleteAllUsers()
                     userDao.insertUser(User(it.user.id))
-
-                    callback(true)
 
                     // Delete existing token and insert new token
                     preferenceStore.edit().clear().commit()
                     preferenceStore.edit().putString(Constants.TOKEN_KEY, it.token).apply()
+
+                    callback(true)
                 }, {
                     // TODO error handling
                     Log.e("signup", "Error while signing in: $it")
                     callback(false)
                 })
+    }
+
+    /**
+     * Removes user form local DB, removes token from shared preferences
+     */
+    fun logout() {
+        userDao.deleteAllUsers()
+        preferenceStore.edit().clear().commit()
     }
 }
