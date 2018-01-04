@@ -1,8 +1,10 @@
 package com.android.quo.view.myplaces.createplace
 
 
+import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -35,6 +37,7 @@ import java.sql.Timestamp
  */
 
 class CreatePlaceFragment : Fragment() {
+    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
     private val compositDisposable = CompositeDisposable()
     lateinit var place: ServerPlace
     private lateinit var viewModel: CreatePlaceViewModel
@@ -58,6 +61,11 @@ class CreatePlaceFragment : Fragment() {
 
         setupStatusBar()
         setupToolbar()
+
+        requestPermissions(arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_EXTERNAL_STORAGE)
 
         generateQrCodeObservable()
                 .subscribeOn(Schedulers.newThread())
@@ -106,6 +114,20 @@ class CreatePlaceFragment : Fragment() {
 
                         }
         )
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                this.context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    if (result == PackageManager.PERMISSION_DENIED) {
+                        fragmentManager?.popBackStack()
+                    }
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
