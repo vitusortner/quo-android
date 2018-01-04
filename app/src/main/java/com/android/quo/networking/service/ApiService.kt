@@ -58,7 +58,10 @@ interface ApiService {
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
     @GET("$PLACES/qrcode/{qr_code_id}/{user_id}")
-    fun getPlace(@Path("qr_code_id") qrCodeId: String, @Path("user_id") userId: String): Single<ServerPlace>
+    fun getPlace(
+            @Path("qr_code_id") qrCodeId: String,
+            @Path("user_id") userId: String
+    ): Single<ServerPlace>
 
     @GET("$USERS/{id}/visited_places")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
@@ -67,19 +70,28 @@ interface ApiService {
     fun getHostedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
     @POST("$PLACES/{id}/pictures")
-    fun addPicture(@Path("id") placeId: String, @Body picture: ServerPicture): Single<ServerPicture>
+    fun addPicture(
+            @Path("id") placeId: String,
+            @Body picture: ServerPicture
+    ): Single<ServerPicture>
 
     @GET("$PLACES/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
     @POST("$PLACES/{id}/components")
-    fun addComponent(@Path("id") placeId: String, @Body data: ServerComponent): Single<ServerComponent>
+    fun addComponent(
+            @Path("id") placeId: String,
+            @Body data: ServerComponent
+    ): Single<ServerComponent>
 
     @GET("$PLACES/{id}/components")
     fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>
 
     @PUT("components/{id}")
-    fun updateComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>
+    fun updateComponent(
+            @Path("id") componentId: String,
+            @Body data: ServerComponent
+    ): Single<ServerComponent>
 
     companion object {
 
