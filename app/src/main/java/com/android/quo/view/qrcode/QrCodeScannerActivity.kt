@@ -234,11 +234,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         }
         cursor.close()
 
-        if (result == null) {
-            // TODO string resource
-            result = "Not found"
-        }
-        return result
+        return result ?: resources.getString(R.string.qr_code_not_found)
     }
 
     private fun getBinaryBitmap(bitmap: Bitmap): BinaryBitmap {
