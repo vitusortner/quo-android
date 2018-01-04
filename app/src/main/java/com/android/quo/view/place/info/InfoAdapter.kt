@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.extension.toDate
 import com.android.quo.view.place.info.ViewType.ADDRESS
 import com.android.quo.view.place.info.ViewType.DESCRIPTION
 import com.android.quo.view.place.info.ViewType.TIME
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.place_info_address_cardview.addressNameTex
 import kotlinx.android.synthetic.main.place_info_address_cardview.addressTextView
 import kotlinx.android.synthetic.main.place_info_description_cardview.contentTextView
 import kotlinx.android.synthetic.main.place_info_time_cardview.dateTextView
+import java.text.SimpleDateFormat
 
 /**
  * Created by vitusortner on 22.11.17.
@@ -81,7 +83,16 @@ class InfoAdapter(private val place: Place) : RecyclerView.Adapter<RecyclerView.
                     holder.addressTextView.text = "${it.street}, ${it.zipCode} ${it.city}"
                 }
             }
-            is TimeViewHolder -> holder.dateTextView.text = place.endDate
+            is TimeViewHolder -> holder.dateTextView.text = formatDate(place.endDate)
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun formatDate(dateString: String?): String {
+        dateString.toDate()?.let {
+            return SimpleDateFormat("dd.MM.yyyy").format(it)
+        } ?: run {
+            return ""
         }
     }
 
