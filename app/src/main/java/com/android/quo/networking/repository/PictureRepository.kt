@@ -20,7 +20,7 @@ class PictureRepository(
 
     fun getPictures(placeId: String): Flowable<List<Picture>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Picture>, List<ServerPicture>>(emitter) {
+            object : NetworkBoundResource<List<Picture>, List<ServerPicture>>(emitter) {
 
                 override fun getRemote(): Single<List<ServerPicture>> = apiService.getPictures(placeId)
 

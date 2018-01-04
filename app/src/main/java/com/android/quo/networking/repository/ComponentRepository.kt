@@ -20,7 +20,7 @@ class ComponentRepository(
 
     fun getComponents(placeId: String): Flowable<List<Component>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Component>, List<ServerComponent>>(emitter) {
+            object : NetworkBoundResource<List<Component>, List<ServerComponent>>(emitter) {
 
                 override fun getRemote(): Single<List<ServerComponent>> = apiService.getComponents(placeId)
 

@@ -21,7 +21,7 @@ class PlaceRepository(
 
     fun getHostedPlaces(userId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlace>>(emitter) {
+            object : NetworkBoundResource<List<Place>, List<ServerPlace>>(emitter) {
 
                 override fun getRemote(): Single<List<ServerPlace>> = apiService.getHostedPlaces(userId)
 
@@ -36,7 +36,7 @@ class PlaceRepository(
 
     fun getVisitedPlaces(userId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
-            object : Repository<List<Place>, List<ServerPlaceResponse>>(emitter) {
+            object : NetworkBoundResource<List<Place>, List<ServerPlaceResponse>>(emitter) {
 
                 override fun getRemote(): Single<List<ServerPlaceResponse>> = apiService.getVisitedPlaces(userId)
 
@@ -51,7 +51,7 @@ class PlaceRepository(
 
     fun getPlace(qrCodeId: String, userId: String): Flowable<Place> {
         return Flowable.create({ emitter ->
-            object : Repository<Place, ServerPlace>(emitter) {
+            object : NetworkBoundResource<Place, ServerPlace>(emitter) {
 
                 override fun getRemote(): Single<ServerPlace> = apiService.getPlace(qrCodeId, userId)
 
