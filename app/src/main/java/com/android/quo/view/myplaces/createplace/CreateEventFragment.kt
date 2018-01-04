@@ -163,9 +163,12 @@ class CreateEventFragment : Fragment(), LocationListener {
                     if (expirationCheckBox.isChecked) {
                         toDateEditText.isEnabled = false
                         toTimeEditText.isEnabled = false
+                        CreatePlace.place.endDate = null
                     } else {
                         toDateEditText.isEnabled = true
                         toTimeEditText.isEnabled = true
+                        CreatePlace.place.endDate =
+                                Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
                     }
                 })
 
@@ -461,6 +464,12 @@ class CreateEventFragment : Fragment(), LocationListener {
         fromTimeEditText.hint = setCurrentTime()
         toTimeEditText.hint = setCurrentTime()
 
+        val timestampFormatTime = SimpleDateFormat(timestampTimeFormat, Locale.US)
+        startDate.time = timestampFormatTime.format(calendar.time)
+        endDate.time = timestampFormatTime.format(calendar.time)
+        val timestampFormatDate = SimpleDateFormat(timestampDateFormat, Locale.US)
+        startDate.date = timestampFormatDate.format(calendar.time)
+        endDate.date = timestampFormatDate.format(calendar.time)
     }
 
     private fun setCurrentDate(): String {
