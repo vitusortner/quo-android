@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.general.QuoApplication
 import com.android.quo.R
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.SyncService
+import com.android.quo.networking.service.ApiService
+import com.android.quo.networking.service.SyncService
 import com.android.quo.networking.repository.ComponentRepository
 import com.android.quo.viewmodel.PageViewModel
 import com.android.quo.viewmodel.factory.PageViewModelFactory

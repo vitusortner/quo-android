@@ -24,8 +24,8 @@ import android.view.WindowManager
 import com.android.quo.general.QuoApplication
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.SyncService
+import com.android.quo.networking.service.ApiService
+import com.android.quo.networking.service.SyncService
 import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel

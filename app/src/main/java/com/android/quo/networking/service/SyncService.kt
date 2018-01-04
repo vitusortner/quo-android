@@ -1,4 +1,4 @@
-package com.android.quo.networking
+package com.android.quo.networking.service
 
 import android.annotation.SuppressLint
 import android.util.Log

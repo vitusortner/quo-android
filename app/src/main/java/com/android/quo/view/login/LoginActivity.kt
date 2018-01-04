@@ -13,8 +13,8 @@ import android.view.View
 import com.android.quo.general.QuoApplication
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.AuthService
+import com.android.quo.networking.service.ApiService
+import com.android.quo.networking.service.AuthService
 import com.android.quo.view.main.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.android.quo.viewmodel.factory.LoginViewModelFactory
@@ -307,8 +307,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String) {
-        viewModel.login(email, password) {
-            if (it) {
+        viewModel.login(email, password) { successful ->
+            if (successful) {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             } else {
@@ -318,8 +318,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signup(email: String, password: String) {
-        viewModel.signup(email, password) {
-            if (it) {
+        viewModel.signup(email, password) { successful ->
+            if (successful) {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             } else {

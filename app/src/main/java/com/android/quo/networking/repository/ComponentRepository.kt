@@ -2,8 +2,9 @@ package com.android.quo.networking.repository
 
 import com.android.quo.db.dao.ComponentDao
 import com.android.quo.db.entity.Component
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.SyncService
+import com.android.quo.networking.service.ApiService
+import com.android.quo.networking.NetworkBoundResource
+import com.android.quo.networking.service.SyncService
 import com.android.quo.networking.model.ServerComponent
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable

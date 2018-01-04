@@ -2,7 +2,7 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.util.Patterns
-import com.android.quo.networking.AuthService
+import com.android.quo.networking.service.AuthService
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
@@ -63,14 +63,14 @@ class LoginViewModel(private val authService: AuthService) : ViewModel() {
     }
 
     fun login(email: String, password: String, callback: (Boolean) -> Unit) {
-        authService.login(email, password) {
-            callback(it)
+        authService.login(email, password) { successful ->
+            callback(successful)
         }
     }
 
     fun signup(email: String, password: String, callback: (Boolean) -> Unit) {
-        authService.signup(email, password) {
-            callback(it)
+        authService.signup(email, password) { successful ->
+            callback(successful)
         }
     }
 }

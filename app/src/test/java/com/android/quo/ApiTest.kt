@@ -1,6 +1,6 @@
 package com.android.quo
 
-import com.android.quo.networking.ApiService
+import com.android.quo.networking.service.ApiService
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerLogin
 import io.reactivex.schedulers.Schedulers

@@ -1,9 +1,9 @@
-package com.android.quo.networking
+package com.android.quo.networking.service
 
 import com.android.quo.general.Constants
-import com.android.quo.networking.ApiService.Companion.Endpoints.AUTH
-import com.android.quo.networking.ApiService.Companion.Endpoints.PLACES
-import com.android.quo.networking.ApiService.Companion.Endpoints.USERS
+import com.android.quo.networking.service.ApiService.Companion.Endpoints.AUTH
+import com.android.quo.networking.service.ApiService.Companion.Endpoints.PLACES
+import com.android.quo.networking.service.ApiService.Companion.Endpoints.USERS
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerFacebookSignup
 import com.android.quo.networking.model.ServerLogin
@@ -123,7 +123,7 @@ interface ApiService {
                 .client(okClient)
                 .build()
 
-        val instance: ApiService = ApiService.retrofit.create(ApiService::class.java)
+        val instance: ApiService = retrofit.create(ApiService::class.java)
 
         object Endpoints {
 
