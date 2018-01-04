@@ -1,86 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/createPageLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
 
-        <ScrollView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/generatedLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/home_cardview_margin"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/generatedLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/home_cardview_margin"
-                android:orientation="vertical">
+        </LinearLayout>
 
-            </LinearLayout>
+    </ScrollView>
 
-        </ScrollView>
+    <RelativeLayout
+        android:id="@+id/pagePreviewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/pagePreviewCardView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/home_cardview_margin">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tempLine1TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:hint="@string/page_temp_line1_text" />
-
-                <TextView
-                    android:id="@+id/tempLine2TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tempLine1TextView"
-                    android:layout_centerInParent="true"
-                    android:hint="@string/page_temp_line2_text" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+        <TextView
+            android:id="@+id/tempLine1TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/text_size_medium"
-            android:src="@drawable/ic_add" />
+            android:layout_centerInParent="true"
+            android:hint="@string/page_temp_line1_text" />
 
-        <ImageButton
-            android:id="@+id/roundGalleryButton"
-            android:layout_width="@dimen/round_button_small_size"
-            android:layout_height="@dimen/round_button_small_size"
-            android:layout_above="@id/floatingActionButton"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/create_page_margin"
-            android:background="@drawable/round_button"
-            android:elevation="@dimen/event_gallery_button_elevation"
-            android:padding="@dimen/event_gallery_button_padding"
-            android:src="@drawable/ic_camera"
-            android:visibility="gone" />
+        <TextView
+            android:id="@+id/tempLine2TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tempLine1TextView"
+            android:layout_centerInParent="true"
+            android:hint="@string/page_temp_line2_text" />
+    </RelativeLayout>
 
-        <ImageButton
-            android:id="@+id/roundEditButton"
-            android:layout_width="@dimen/round_button_small_size"
-            android:layout_height="@dimen/round_button_small_size"
-            android:layout_above="@id/roundGalleryButton"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/create_page_margin"
-            android:background="@drawable/round_button"
-            android:elevation="@dimen/event_gallery_button_elevation"
-            android:padding="@dimen/event_gallery_button_padding"
-            android:src="@drawable/ic_aa"
-            android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/create_page_margin"
+        android:layout_marginEnd="@dimen/create_page_margin_large"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/colorAccentDark" />
+
+    <ImageButton
+        android:id="@+id/roundGalleryButton"
+        android:layout_width="@dimen/round_button_small_size"
+        android:layout_height="@dimen/round_button_small_size"
+        android:layout_above="@id/floatingActionButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/create_page_margin_large"
+        android:layout_marginEnd="@dimen/create_page_margin_extra_large"
+        android:background="@drawable/round_button"
+        android:elevation="@dimen/event_gallery_button_elevation"
+        android:padding="@dimen/event_gallery_button_padding"
+        android:src="@drawable/ic_camera"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/roundEditButton"
+        android:layout_width="@dimen/round_button_small_size"
+        android:layout_height="@dimen/round_button_small_size"
+        android:layout_above="@id/roundGalleryButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/create_page_margin_small"
+        android:layout_marginEnd="@dimen/create_page_margin_extra_large"
+        android:background="@drawable/round_button"
+        android:elevation="@dimen/event_gallery_button_elevation"
+        android:padding="@dimen/event_gallery_button_padding"
+        android:src="@drawable/ic_aa"
+        android:visibility="gone" />
+
 </RelativeLayout>

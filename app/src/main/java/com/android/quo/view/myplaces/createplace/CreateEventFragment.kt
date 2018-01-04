@@ -299,12 +299,11 @@ class CreateEventFragment : Fragment(), LocationListener {
                 var splitString = titlePicture.split("quo_default_")
                 splitString = splitString[1].split(".")
 
-                headerImageView.background = getDefaultImageList()[splitString[0].toInt() - 1]
+                headerImageView.setImageDrawable(getDefaultImageList()[splitString[0].toInt() - 1])
             } else if (titlePicture.isNotEmpty()) {
                 val uri = Uri.parse(titlePicture)
                 val bitmap = BitmapFactory.decodeFile(uri.path)
-                val bitmapDrawable = BitmapDrawable(resources, bitmap)
-                headerImageView.background = bitmapDrawable
+                headerImageView.setImageBitmap(bitmap)
             }
         }
     }
@@ -419,8 +418,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                     val selectedImageUri = data?.data
                     val compressedImage = compressImage(File(selectedImageUri?.let { getPath(it) }))
                     val bitmap = BitmapFactory.decodeFile(compressedImage.absolutePath)
-                    val bitmapDrawable = BitmapDrawable(resources, bitmap)
-                    headerImageView.background = bitmapDrawable
+                    headerImageView.setImageBitmap(bitmap)
                     CreatePlace.place.titlePicture = compressedImage.absolutePath
                     bottomSheetDialog.dismiss()
 

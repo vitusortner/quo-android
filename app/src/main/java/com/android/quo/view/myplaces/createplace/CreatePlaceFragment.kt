@@ -70,7 +70,7 @@ class CreatePlaceFragment : Fragment() {
      */
     private fun setupStatusBar() {
         activity?.window?.decorView?.systemUiVisibility = 0
-        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
+        activity?.window?.statusBarColor = resources.getColor(R.color.colorSysBarCreatePlace)
     }
 
     private fun setupToolbar() {

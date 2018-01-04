@@ -35,9 +35,10 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.fragment_create_page.createPageLayout
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
-import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewCardView
+import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewLayout
 import kotlinx.android.synthetic.main.fragment_create_page.roundEditButton
 import kotlinx.android.synthetic.main.fragment_create_page.roundGalleryButton
 import kotlinx.android.synthetic.main.fragment_create_page.view.generatedLayout
@@ -61,6 +62,7 @@ class CreatePageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         compositeDisposable.add(RxView.clicks(floatingActionButton)
                 .subscribe {
                     roundEditButton.visibility = VISIBLE
@@ -69,7 +71,9 @@ class CreatePageFragment : Fragment() {
 
         compositeDisposable.add(RxView.clicks(roundEditButton)
                 .subscribe {
-                    pagePreviewCardView.visibility = GONE
+                    pagePreviewLayout.visibility = GONE
+                    roundEditButton.visibility = GONE
+                    roundGalleryButton.visibility = GONE
                     val editText = createEditText()
                     editText.setTag(id, view.generatedLayout.childCount)
                     view.generatedLayout.addView(createCardView(editText))
@@ -83,10 +87,10 @@ class CreatePageFragment : Fragment() {
                                             c.text = it.view().text.toString()
                                         }
                             })
-                    pagePreviewCardView.visibility = GONE
+                    pagePreviewLayout.visibility = GONE
                 })
 
-        compositeDisposable.add(RxView.clicks(pagePreviewCardView)
+        compositeDisposable.add(RxView.clicks(pagePreviewLayout)
                 .subscribe {
                     roundEditButton.visibility = GONE
                     roundGalleryButton.visibility = GONE
@@ -94,12 +98,16 @@ class CreatePageFragment : Fragment() {
 
         compositeDisposable.add(RxView.clicks(roundGalleryButton)
                 .subscribe {
+                    roundEditButton.visibility = GONE
+                    roundGalleryButton.visibility = GONE
                     requestPermissions(arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE),
                             PERMISSION_REQUEST_EXTERNAL_STORAGE
                     )
                 })
+
+
     }
 
     override fun onDestroy() {
@@ -168,7 +176,7 @@ class CreatePageFragment : Fragment() {
                     val compressedImage = compressImage(File(selectedImageUri?.let { getPath(it) }))
                     val bitmap = BitmapFactory.decodeFile(compressedImage.absolutePath)
                     val bitmapDrawable = BitmapDrawable(resources, bitmap)
-                    pagePreviewCardView.visibility = GONE
+                    pagePreviewLayout.visibility = GONE
                     generatedLayout.addView(createCardView(createImageView(bitmapDrawable)))
                     components.add(ServerComponent(null, compressedImage.absolutePath, null, generatedLayout.childCount - 1))
                 }
