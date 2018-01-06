@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/main_toolbar_elevation"
+        android:theme="@style/Base.ThemeOverlay.AppCompat.ActionBar"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/accountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Account"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/changePasswordTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Change Password"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/deleteAccountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Account"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/grayLineView"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/view_line_height"
+        android:layout_marginTop="@dimen/bottom_sheet_margin"
+        android:background="@color/colorTextGray" />
+
+    <RelativeLayout
+        android:id="@+id/photosLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <TextView
+            android:id="@+id/notificationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Notification"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/updateContentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/notificationTextView"
+            android:layout_marginBottom="20dp"
+            android:text="Update Content"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp" />
+
+        <Switch
+            android:id="@+id/updateContentSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/notificationTextView" />
+
+        <TextView
+            android:id="@+id/newPhotosTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/updateContentTextView"
+            android:layout_marginBottom="20dp"
+            android:text="New Photos"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp" />
+
+        <Switch
+            android:id="@+id/newPhotosSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/updateContentTextView" />
+
+        <TextView
+            android:id="@+id/placeNearbyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newPhotosTextView"
+            android:text="Place Nearby"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp" />
+
+        <Switch
+            android:id="@+id/placeNearbySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/newPhotosTextView" />
+    </RelativeLayout>
+
+</LinearLayout>

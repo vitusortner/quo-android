@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import com.android.quo.R
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import io.reactivex.disposables.CompositeDisposable

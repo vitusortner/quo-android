@@ -16,6 +16,7 @@ import com.android.quo.view.myplaces.MyPlacesFragment
 import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import kotlinx.android.synthetic.main.fragment_place.toolbar
 
 
 class MainActivity : AppCompatActivity() {

@@ -5,7 +5,11 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -15,11 +19,13 @@ import com.android.quo.networking.ApiService
 import com.android.quo.networking.SyncService
 import com.android.quo.networking.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
+import com.android.quo.view.settings.SettingsFragment
 import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.factory.HomeViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_home.toolbar
 
 /**
  * Created by Jung on 01.11.17.
@@ -40,7 +46,9 @@ class HomeFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,6 +61,78 @@ class HomeFragment : Fragment() {
 
         observePlaces()
         setupSwipeRefresh()
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        toolbar.inflateMenu(R.menu.home_menu)
+
+//        RxToolbar.itemClicks(toolbar)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe { Log.e("rxview menu", "************") }
+
+        toolbar.setOnMenuItemClickListener { item ->
+
+            when (item.title) {
+                "Settings" -> {
+                    fragmentManager?.beginTransaction()
+                            ?.replace(R.id.content, SettingsFragment())
+                            ?.commit()
+                }
+                "help" -> {
+                }
+                "info" -> {
+                }
+                "logout" -> {
+                }
+                else -> {
+                }
+
+            }
+
+            Log.e("menu", "************")
+
+            true
+        }
+
+//        RxToolbar.itemClicks(toolbar)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe { t ->
+//                    t.setOnMenuItemClickListener { menu -> }
+//                }
+
+
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        Log.e("test", "######")
+        inflater?.inflate(R.menu.home_menu, toolbar.menu)
+        super.onCreateOptionsMenu(toolbar.menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        Log.e("test", "******")
+        item?.let { item ->
+            when (item.title) {
+                "Settings" -> {
+                    childFragmentManager.beginTransaction()
+                            .replace(R.id.content, SettingsFragment())
+                            .commit()
+                }
+                "help" -> {
+                }
+                "info" -> {
+                }
+                "logout" -> {
+                }
+                else -> {
+                }
+
+            }
+        }
+        return true
+
     }
 
     /**

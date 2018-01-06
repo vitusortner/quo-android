@@ -91,4 +91,7 @@
     <string name="place_bottom_sheet_add_photo">Add Photo</string>
     <string name="place_bottom_sheet_camera">Camera</string>
     <string name="place_bottom_sheet_photos">Photos</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
 </resources>

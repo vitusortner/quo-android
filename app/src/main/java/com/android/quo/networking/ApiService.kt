@@ -76,6 +76,7 @@ interface ApiService {
     companion object {
 
         private const val BASE_URL = "http://10.0.2.2:3000/"
+//        private const val BASE_URL = "http://ec2-52-57-50-127.eu-central-1.compute.amazonaws.com/"
 
         private val okClient: OkHttpClient
             get() {
