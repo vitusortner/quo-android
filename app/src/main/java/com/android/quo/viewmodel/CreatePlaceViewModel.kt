@@ -28,21 +28,20 @@ class CreatePlaceViewModel : ViewModel() {
 
     // TODO change host id
     fun savePlace() {
-        Log.e("save place", "*****")
 //        CreatePlace.place.host = "5a4788298608db84ae2d86a9" //local
         CreatePlace.place.host = "5a2aac590b0132796939a3f6" //aws
 
         apiService.addPlace(CreatePlace.place)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.e("post place", "$it")
+                    Log.i("save post place", "$it")
                     val response = it as ServerPlace
                     uploadQrCode(response)
                     uploadImage(response)
 
 
                 }, {
-                    Log.e("post place", "$it")
+                    Log.e("save post place", "$it")
                 })
 
     }
@@ -69,20 +68,20 @@ class CreatePlaceViewModel : ViewModel() {
                 apiService.uploadPicture(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.e("upload picture", "$it")
+                            Log.i("save upload picture", "$it")
                             response.titlePicture = it.path
 
                             apiService.putPlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
-                                        Log.e("put place", "$it")
+                                        Log.i("save put place", "$it")
                                         uploadComponents(it)
                                     }, {
-                                        Log.e("put place", "$it")
+                                        Log.e("save put place", "$it")
                                     })
 
                         }, {
-                            Log.e("upload picture", "$it")
+                            Log.e("save upload picture", "$it")
                         })
 
             } else {
@@ -90,19 +89,19 @@ class CreatePlaceViewModel : ViewModel() {
                 apiService.getDefaultPicture(titlePicture)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.e("get default picture", "$it")
+                            Log.i("save get default pic", "$it")
                             response.titlePicture = it.path
                             apiService.putPlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
-                                        Log.e("put place", "$it")
+                                        Log.i("save put place", "$it")
                                         uploadComponents(it)
                                     }, {
-                                        Log.e("put place", "$it")
+                                        Log.e("save put place", "$it")
                                     })
 
                         }, {
-                            Log.e("get default picture", "$it")
+                            Log.e("save get default pic", "$it")
                         })
             }
         }
@@ -123,7 +122,7 @@ class CreatePlaceViewModel : ViewModel() {
                 apiService.uploadPicture(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.e("upload picture com", "$it")
+                            Log.i("save upload picture com", "$it")
 
                             val picture = ServerPicture(null, response.host,
                                     response.id ?: "", it.path,
@@ -132,31 +131,31 @@ class CreatePlaceViewModel : ViewModel() {
                             apiService.addPicture(response.id ?: "", picture)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
-                                        Log.e("add picture", "$it")
+                                        Log.i("save add picture", "$it")
                                         c.picture = it.src
 
                                         //post component to server
                                         apiService.addComponent(it.placeId, c)
                                                 .subscribeOn(Schedulers.io())
                                                 .subscribe({
-                                                    Log.e("post component", "$it")
+                                                    Log.i("save post component", "$it")
                                                 }, {
-                                                    Log.e("post component", "$it")
+                                                    Log.e("save post component", "$it")
                                                 })
                                     }, {
-                                        Log.e("add picture", "$it")
+                                        Log.e("save add picture", "$it")
                                     })
                         }, {
-                            Log.e("upload picture com", "$it")
+                            Log.e("save upload picture com", "$it")
                         })
             } else if (c.text != null) {
                 //post component with text to server
                 apiService.addComponent(response.id ?: "", c)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.e("post component", "$it")
+                            Log.i("save post component", "$it")
                         }, {
-                            Log.e("post component", "$it")
+                            Log.e("save post component", "$it")
                         })
             }
         }
@@ -173,35 +172,32 @@ class CreatePlaceViewModel : ViewModel() {
         apiService.uploadPicture(imageFileBody)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.e("upload qr code", "$it")
+                    Log.i("save upload qr code", "$it")
                     response.qrCode = it.path
                     apiService.putPlace(response.id ?: "", response)
                             .subscribeOn(Schedulers.io())
                             .subscribe({
-                                Log.e("put place", "$it")
+                                Log.i("save put place", "$it")
                             }, {
-                                Log.e("put place", "$it")
+                                Log.e("save put place", "$it")
                             })
                 }, {
-                    Log.e("upload qr code", "$it")
+                    Log.e("save upload qr code", "$it")
                 })
     }
 
     private fun saveQrCode(bitmap: Bitmap, qrCodeId: String?): String {
-        Log.e("save qr code", "*******")
-
-
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
 
-        val file = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo/$qrCodeId.jpg")
+        val path = File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo/")
+        val file = File(path, "$qrCodeId.jpg")
+        path.mkdirs()
         file.createNewFile()
         val fo = FileOutputStream(file)
         fo.write(bytes.toByteArray())
         fo.close()
-
-        Log.e("save qr code", file.path)
         return file.path
     }
 }
