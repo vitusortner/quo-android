@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         Flowable.just(1)
                 .observeOn(Schedulers.io())
                 .subscribe {
-                    QuoApplication.database.userDao().insertUser(User("5a3835952abb591b0b1fd69b"))
+                    QuoApplication.database.userDao().insertUser(User("5a2aac590b0132796939a3f6"))
                 }
 
         /**
