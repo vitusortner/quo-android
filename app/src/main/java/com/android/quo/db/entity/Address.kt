@@ -18,5 +18,5 @@ data class Address(
         @ColumnInfo(name = "zip_code")
         var zipCode: Int = 0,
 
-        var name: String? = ""
+        var name: String = ""
 ) : Parcelable
