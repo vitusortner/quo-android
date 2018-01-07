@@ -33,8 +33,8 @@ class MyPlacesViewModel(
 
     fun updatePlaces() {
         compositDisposabel.add(userDao.getUser()
-                .observeOn(Schedulers.io())
-                .subscribe {
+                .subscribeOn(Schedulers.io())
+                .subscribe({
                     placeRepository.getHostedPlaces(it.id)
                             .distinctUntilChanged()
                             .subscribe({
@@ -44,7 +44,9 @@ class MyPlacesViewModel(
                             }, {
                                 Log.e("sync", "$it")
                             })
-                }
+                }, {
+                    Log.e("auth", "no user found")
+                })
         )
     }
 

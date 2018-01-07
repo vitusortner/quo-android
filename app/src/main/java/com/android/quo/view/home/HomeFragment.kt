@@ -52,7 +52,14 @@ class HomeFragment : Fragment() {
                 .get(HomeViewModel::class.java)
 
         observePlaces()
+
         setupSwipeRefresh()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.updatePlaces()
     }
 
     /**

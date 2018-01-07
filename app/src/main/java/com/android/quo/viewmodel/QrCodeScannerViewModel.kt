@@ -32,15 +32,17 @@ class QrCodeScannerViewModel(
 
     private fun loadPlace(qrCodeId: String) {
         compositDisposabel.add(userDao.getUser()
-                .observeOn(Schedulers.io())
-                .subscribe { user ->
+                .subscribeOn(Schedulers.io())
+                .subscribe({ user ->
                     placeRepository.getPlace(qrCodeId, user.id)
                             .subscribe({
                                 place?.value = it
                             }, {
                                 Log.e("sync", "$it")
                             })
-                }
+                }, {
+                    Log.e("auth", "no user found")
+                })
         )
     }
 

@@ -1,10 +1,13 @@
 package com.android.quo.viewmodel
 
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import android.util.Patterns
+import com.android.quo.QuoApplication
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by Jung on 09.11.17.
@@ -66,5 +69,15 @@ class LoginViewModel : ViewModel() {
                 Observable.just("")
             }
         }
+    }
+
+    fun validateLoginState(openLogin: () -> Unit) {
+        QuoApplication.database.userDao().getUser()
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    Log.i("auth", "User: ${it.id} is logged in")
+                }, {
+                    openLogin()
+                })
     }
 }

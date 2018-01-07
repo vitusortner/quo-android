@@ -33,8 +33,8 @@ class HomeViewModel(
 
     fun updatePlaces() {
         compositDisposabel.add(userDao.getUser()
-                .observeOn(Schedulers.io())
-                .subscribe {
+                .subscribeOn(Schedulers.io())
+                .subscribe({
                     placeRepository.getVisitedPlaces(it.id)
                             .distinctUntilChanged()
                             .subscribe({
@@ -44,7 +44,9 @@ class HomeViewModel(
                             }, {
                                 Log.e("sync", "$it")
                             })
-                }
+                }, {
+                    Log.e("auth", "no user found")
+                })
         )
     }
 
