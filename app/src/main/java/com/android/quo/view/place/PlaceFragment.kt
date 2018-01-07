@@ -12,7 +12,6 @@ import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
@@ -29,7 +27,6 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.cameraButton
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.galleryButton
-import kotlinx.android.synthetic.main.fragment_place.appBarLayout
 import kotlinx.android.synthetic.main.fragment_place.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_place.imageView
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
@@ -47,6 +44,16 @@ class PlaceFragment : Fragment() {
     private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
 
     private var place: Place? = null
+
+    private val isPhotoUploadAllowed: Boolean by lazy {
+        place?.let { place ->
+            place.isPhotoUploadAllowed?.let {
+                it || place.isHost
+            }
+        } ?: run {
+            false
+        }
+    }
 
     private val compositDisposable = CompositeDisposable()
 
@@ -78,11 +85,13 @@ class PlaceFragment : Fragment() {
     private fun setupFab() {
         floatingActionButton.hide()
 
-        compositDisposable.add(RxView.clicks(floatingActionButton)
-                .subscribe {
-                    openBottomSheet()
-                }
-        )
+        if (isPhotoUploadAllowed) {
+            compositDisposable.add(RxView.clicks(floatingActionButton)
+                    .subscribe {
+                        openBottomSheet()
+                    }
+            )
+        }
     }
 
     private fun openBottomSheet() {
@@ -230,29 +239,29 @@ class PlaceFragment : Fragment() {
                         }
         )
 
-        this.context?.let {
-            // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
-            // set tab layout colors denpendent on how far scrolled
-            var scrollRange = -1
-
-            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                // set shadow
-                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
-
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset <= 150) {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
-                            resources.getColor(R.color.colorTextBlack))
-                } else {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
-                            resources.getColor(R.color.colorTextWhite))
-                }
-            }
-        }
+//        this.context?.let {
+//            // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
+//            // set tab layout colors denpendent on how far scrolled
+//            var scrollRange = -1
+//
+//            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+//                // set shadow
+//                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
+//
+//                if (scrollRange == -1) {
+//                    scrollRange = appBarLayout.totalScrollRange
+//                }
+//                if (scrollRange + verticalOffset <= 150) {
+//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
+//                            resources.getColor(R.color.colorTextBlack))
+//                } else {
+//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
+//                            resources.getColor(R.color.colorTextWhite))
+//                }
+//            }
+//        }
     }
 
     private fun setupViewPager() {
@@ -262,26 +271,28 @@ class PlaceFragment : Fragment() {
             }
         }
 
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        if (isPhotoUploadAllowed) {
+            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    floatingActionButton.hide()
-                } else {
-                    floatingActionButton.show()
+                override fun onPageScrollStateChanged(state: Int) {
                 }
-            }
-        })
+
+                override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    if (position == 0) {
+                        floatingActionButton.hide()
+                    } else {
+                        floatingActionButton.show()
+                    }
+                }
+            })
+        }
     }
 
     override fun onDestroy() {
