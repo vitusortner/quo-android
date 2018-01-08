@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName
  */
 data class ServerPicture(
         @SerializedName("_id")
-        val id: String,
+        var id: String? = null,
 
         @SerializedName("owner")
-        val ownerId: String,
+        var ownerId: String,
 
         @SerializedName("place")
-        val placeId: String,
+        var placeId: String,
 
-        val src: String,
+        var src: String,
 
         @SerializedName("is_visible")
-        val isVisible: Boolean,
+        var isVisible: Boolean,
 
-        val timestamp: String
+        var timestamp: String
 )

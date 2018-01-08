@@ -1,4 +1,4 @@
-package com.android.quo.general
+package com.android.quo
 
 import android.app.Application
 import android.arch.persistence.room.Room

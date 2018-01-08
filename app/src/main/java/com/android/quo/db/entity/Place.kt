@@ -32,9 +32,9 @@ data class Place(
         @ColumnInfo(name = "end_date")
         var endDate: String? = "",
 
-        var latitude: String = "",
+        var latitude: Double = -1.0,
 
-        var longitude: String = "",
+        var longitude: Double = -1.0,
 
         @Embedded
         var address: Address? = null,

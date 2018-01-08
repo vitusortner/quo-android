@@ -1,20 +1,38 @@
 package com.android.quo.view.myplaces.createplace
 
 
+import android.Manifest
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
+import com.android.quo.QuoApplication
 import com.android.quo.R
+import com.android.quo.db.entity.User
+import com.android.quo.networking.ApiService
+import com.android.quo.networking.model.ServerPlace
+import com.android.quo.viewmodel.CreatePlaceViewModel
+import com.android.quo.viewmodel.factory.CreatePlaceViewModelFactory
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
 import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
+import org.apache.commons.codec.binary.Hex
+import org.apache.commons.codec.digest.DigestUtils
+import java.sql.Timestamp
 
 
 /**
@@ -22,7 +40,11 @@ import kotlinx.android.synthetic.main.fragment_place.toolbar
  */
 
 class CreatePlaceFragment : Fragment() {
+    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
     private val compositDisposable = CompositeDisposable()
+    lateinit var place: ServerPlace
+    private lateinit var viewModel: CreatePlaceViewModel
+
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -33,6 +55,10 @@ class CreatePlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProviders
+                .of(this, CreatePlaceViewModelFactory(ApiService.instance))
+                .get(CreatePlaceViewModel::class.java)
+
         this.context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }
@@ -40,6 +66,16 @@ class CreatePlaceFragment : Fragment() {
 
         setupStatusBar()
         setupToolbar()
+
+        requestPermissions(arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_EXTERNAL_STORAGE)
+
+        generateQrCodeObservable()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
     }
 
     /**
@@ -47,7 +83,7 @@ class CreatePlaceFragment : Fragment() {
      */
     private fun setupStatusBar() {
         activity?.window?.decorView?.systemUiVisibility = 0
-        activity?.window?.statusBarColor = resources.getColor(R.color.colorAccentDark)
+        activity?.window?.statusBarColor = resources.getColor(R.color.colorSysBarCreatePlace)
     }
 
     private fun setupToolbar() {
@@ -66,11 +102,38 @@ class CreatePlaceFragment : Fragment() {
         compositDisposable.add(
                 RxToolbar.itemClicks(toolbar)
                         .subscribe {
-                            //TODO save
+                            if (!CreatePlace.place.titlePicture.isNullOrEmpty() && !CreatePlace.place.title.isNullOrEmpty()
+                                    && !CreatePlace.place.latitude.isNaN() && !CreatePlace.place.longitude.isNaN()
+                                    && !CreatePlace.place.description.isNullOrEmpty()) {
+
+                                viewModel.savePlace()
+                                fragmentManager?.beginTransaction()
+                                        ?.replace(R.id.content, QrCodeFragment())
+                                        ?.addToBackStack(null)
+                                        ?.commit()
+
+                            } else {
+                                //TODO add message please fill required boxes
+                            }
+
+
                         }
         )
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                this.context?.let {
+                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    if (result == PackageManager.PERMISSION_DENIED) {
+                        fragmentManager?.popBackStack()
+                    }
+                }
+            }
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -98,7 +161,33 @@ class CreatePlaceFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        //set place to default
+        CreatePlace.place = ServerPlace(null, (QuoApplication.database.userDao().getUser() as User).id, "", "", "", "",
+                -1.0, -1.0, null, null, "quo_default_1.png",
+                "", null, "")
         compositDisposable.dispose()
+    }
+
+    private fun generateQrCodeObservable(): Observable<Bitmap> {
+        return Observable.create {
+            val timestamp = Timestamp(System.currentTimeMillis())
+            val userId = QuoApplication.database.userDao().getUser()
+            val qrCodeId = String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
+            val uri = "quo://" + String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
+            val width = 1024
+            val height = 1024
+            val multiFormatWriter = MultiFormatWriter()
+            val bm = multiFormatWriter.encode(uri, BarcodeFormat.QR_CODE, width, height)
+            val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+            for (i in 0 until width) {
+                for (j in 0 until height) {
+                    imageBitmap.setPixel(i, j, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
+                }
+            }
+
+            CreatePlace.place.qrCodeId = qrCodeId
+            CreatePlace.qrCodeImage = imageBitmap
+        }
     }
 }

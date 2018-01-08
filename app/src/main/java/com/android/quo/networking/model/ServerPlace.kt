@@ -7,35 +7,39 @@ import com.google.gson.annotations.SerializedName
  */
 data class ServerPlace(
         @SerializedName("_id")
-        val id: String? = null,
+        var id: String? = null,
 
-        val host: String,
+        var host: String,
 
-        val title: String,
+        var title: String,
 
-        val description: String? = null,
+        var description: String? = null,
 
         @SerializedName("start")
-        val startDate: String,
+        var startDate: String,
 
         @SerializedName("end")
-        val endDate: String? = null,
+        var endDate: String? = null,
 
         @SerializedName("lat")
-        val latitude: String,
+        var latitude: Double,
 
         @SerializedName("long")
-        val longitude: String,
+        var longitude: Double,
 
         val address: ServerAddress? = null,
 
-        val settings: ServerSettings? = null,
+        var settings: ServerSettings? = null,
 
         @SerializedName("title_picture")
-        val titlePicture: String? = null,
+        var titlePicture: String? = null,
 
         @SerializedName("qr_code_id")
-        val qrCodeId: String? = null,
+        var qrCodeId: String? = null,
+
+        @SerializedName("qr_code")
+        var qrCode: String? = null,
 
         val timestamp: String
+
 )

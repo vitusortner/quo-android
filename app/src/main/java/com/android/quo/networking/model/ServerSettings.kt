@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
  */
 data class ServerSettings(
         @SerializedName("is_photo_upload_allowed")
-        val isPhotoUploadAllowed: Boolean,
+        var isPhotoUploadAllowed: Boolean,
 
         @SerializedName("has_to_validate_gps")
-        val hasToValidateGps: Boolean
+        var hasToValidateGps: Boolean
 )
