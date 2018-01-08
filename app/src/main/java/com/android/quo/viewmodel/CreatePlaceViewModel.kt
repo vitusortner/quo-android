@@ -7,8 +7,8 @@ import android.os.Environment
 import android.util.Log
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
-import com.android.quo.network.service.ApiService
-import com.android.quo.view.myplaces.createplace.CreatePlace
+import com.android.quo.service.ApiService
+import com.android.quo.view.createplace.CreatePlace
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.MultipartBody

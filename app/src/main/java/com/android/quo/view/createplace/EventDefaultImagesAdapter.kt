@@ -1,4 +1,4 @@
-package com.android.quo.view.myplaces.createplace
+package com.android.quo.view.createplace
 
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView

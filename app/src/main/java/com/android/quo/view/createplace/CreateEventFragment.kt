@@ -1,4 +1,4 @@
-package com.android.quo.view.myplaces.createplace
+package com.android.quo.view.createplace
 
 import android.Manifest
 import android.annotation.SuppressLint

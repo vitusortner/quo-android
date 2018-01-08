@@ -1,9 +1,9 @@
-package com.android.quo.network.service
+package com.android.quo.service
 
 import com.android.quo.util.Constants
-import com.android.quo.network.service.ApiService.Companion.Endpoints.AUTH
-import com.android.quo.network.service.ApiService.Companion.Endpoints.PLACES
-import com.android.quo.network.service.ApiService.Companion.Endpoints.USERS
+import com.android.quo.service.ApiService.Companion.Endpoints.AUTH
+import com.android.quo.service.ApiService.Companion.Endpoints.PLACES
+import com.android.quo.service.ApiService.Companion.Endpoints.USERS
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerFacebookSignup
 import com.android.quo.network.model.ServerLogin
@@ -17,8 +17,8 @@ import com.android.quo.network.model.ServerSignup
 import com.android.quo.network.model.ServerSignupResponse
 import com.android.quo.network.model.ServerUploadPicture
 import com.android.quo.network.model.ServerUser
-import com.android.quo.network.service.ApiService.Companion.Endpoints.COMPONENTS
-import com.android.quo.network.service.ApiService.Companion.Endpoints.UPLOAD
+import com.android.quo.service.ApiService.Companion.Endpoints.COMPONENTS
+import com.android.quo.service.ApiService.Companion.Endpoints.UPLOAD
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.Single
 import okhttp3.Headers
@@ -156,7 +156,6 @@ interface ApiService {
 
             const val AUTH = "auth"
             const val PLACES = "places"
-            const val PICTURES = "pictures"
             const val COMPONENTS = "components"
             const val USERS = "users"
             const val UPLOAD = "upload"

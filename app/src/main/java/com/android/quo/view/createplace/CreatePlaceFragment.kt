@@ -1,4 +1,4 @@
-package com.android.quo.view.myplaces.createplace
+package com.android.quo.view.createplace
 
 
 import android.Manifest
@@ -17,7 +17,7 @@ import com.android.quo.R
 import com.android.quo.db.entity.User
 import com.android.quo.Application
 import com.android.quo.network.model.ServerPlace
-import com.android.quo.network.service.ApiService
+import com.android.quo.service.ApiService
 import com.android.quo.viewmodel.CreatePlaceViewModel
 import com.android.quo.viewmodel.factory.CreatePlaceViewModelFactory
 import com.google.zxing.BarcodeFormat

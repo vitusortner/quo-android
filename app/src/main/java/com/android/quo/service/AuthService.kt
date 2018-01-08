@@ -1,4 +1,4 @@
-package com.android.quo.network.service
+package com.android.quo.service
 
 import android.util.Log
 import com.android.quo.db.dao.UserDao
