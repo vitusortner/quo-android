@@ -1,4 +1,4 @@
-package com.android.quo.general
+package com.android.quo.util
 
 /**
  * Created by vitusortner on 04.01.18.

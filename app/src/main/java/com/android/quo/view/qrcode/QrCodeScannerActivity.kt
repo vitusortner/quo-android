@@ -21,13 +21,13 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
-import com.android.quo.general.QuoApplication
+import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.networking.service.ApiService
 import com.android.quo.networking.service.SyncService
 import com.android.quo.networking.repository.PlaceRepository
-import com.android.quo.view.main.MainActivity
+import com.android.quo.MainActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
 import com.google.zxing.BinaryBitmap
@@ -54,7 +54,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private lateinit var scannerView: ZXingScannerView
 
-    private val database = QuoApplication.database
+    private val database = Application.database
     private val apiService = ApiService.instance
     private val placeDao = database.placeDao()
     private val userDao = database.userDao()

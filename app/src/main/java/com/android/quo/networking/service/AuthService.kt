@@ -3,7 +3,7 @@ package com.android.quo.networking.service
 import android.util.Log
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.User
-import com.android.quo.general.Constants
+import com.android.quo.util.Constants
 import com.android.quo.networking.model.ServerLogin
 import com.android.quo.networking.model.ServerSignup
 import devliving.online.securedpreferencestore.SecuredPreferenceStore

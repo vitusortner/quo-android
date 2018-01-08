@@ -2,8 +2,7 @@ package com.android.quo.view.myplaces.createplace
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import com.android.quo.QuoApplication
-import com.android.quo.db.entity.User
+import com.android.quo.Application
 import com.android.quo.networking.model.ServerComponent
 import com.android.quo.networking.model.ServerPlace
 
@@ -12,7 +11,7 @@ import com.android.quo.networking.model.ServerPlace
  */
 
 object CreatePlace {
-    var place: ServerPlace = ServerPlace(null, QuoApplication.database.userDao().getUser().toString(), "", "", "", "",
+    var place: ServerPlace = ServerPlace(null, Application.database.userDao().getUser().toString(), "", "", "", "",
             -1.0, -1.0, null, null, "quo_default_1.png",
             "", null, "")
     val components = ArrayList<ServerComponent>()

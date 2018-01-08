@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import com.android.quo.general.QuoApplication
+import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.networking.service.ApiService
 import com.android.quo.networking.service.SyncService
@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
  */
 class HomeFragment : Fragment() {
 
-    private val database = QuoApplication.database
+    private val database = Application.database
     private val placeDao = database.placeDao()
     private val userDao = database.userDao()
     private val apiService = ApiService.instance

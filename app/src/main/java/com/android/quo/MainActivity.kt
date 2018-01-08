@@ -1,4 +1,4 @@
-package com.android.quo.view.main
+package com.android.quo
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.android.quo.R
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode

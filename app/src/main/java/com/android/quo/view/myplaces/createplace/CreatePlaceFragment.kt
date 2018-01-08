@@ -13,11 +13,11 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.QuoApplication
 import com.android.quo.R
 import com.android.quo.db.entity.User
-import com.android.quo.networking.ApiService
+import com.android.quo.Application
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.service.ApiService
 import com.android.quo.viewmodel.CreatePlaceViewModel
 import com.android.quo.viewmodel.factory.CreatePlaceViewModelFactory
 import com.google.zxing.BarcodeFormat
@@ -162,7 +162,7 @@ class CreatePlaceFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         //set place to default
-        CreatePlace.place = ServerPlace(null, (QuoApplication.database.userDao().getUser() as User).id, "", "", "", "",
+        CreatePlace.place = ServerPlace(null, (Application.database.userDao().getUser() as User).id, "", "", "", "",
                 -1.0, -1.0, null, null, "quo_default_1.png",
                 "", null, "")
         compositDisposable.dispose()
@@ -171,7 +171,7 @@ class CreatePlaceFragment : Fragment() {
     private fun generateQrCodeObservable(): Observable<Bitmap> {
         return Observable.create {
             val timestamp = Timestamp(System.currentTimeMillis())
-            val userId = QuoApplication.database.userDao().getUser()
+            val userId = Application.database.userDao().getUser()
             val qrCodeId = String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
             val uri = "quo://" + String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
             val width = 1024

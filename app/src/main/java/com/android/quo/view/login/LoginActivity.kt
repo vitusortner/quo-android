@@ -10,12 +10,12 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.android.quo.general.QuoApplication
+import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
 import com.android.quo.networking.service.ApiService
 import com.android.quo.networking.service.AuthService
-import com.android.quo.view.main.MainActivity
+import com.android.quo.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.android.quo.viewmodel.factory.LoginViewModelFactory
 import com.facebook.CallbackManager
@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit
 class LoginActivity : AppCompatActivity() {
 
     private val apiService = ApiService.instance
-    private val userDao = QuoApplication.database.userDao()
+    private val userDao = Application.database.userDao()
     private val preferenceStore = SecuredPreferenceStore.getSharedInstance()
     private val authService = AuthService(apiService, userDao, preferenceStore)
 

@@ -11,7 +11,7 @@ import devliving.online.securedpreferencestore.SecuredPreferenceStore
 /**
  * Created by FlorianSchlueter on 20.11.2017.
  */
-class QuoApplication : Application() {
+class Application : Application() {
 
     companion object {
         lateinit var database: AppDatabase

@@ -1,6 +1,6 @@
 package com.android.quo.networking.service
 
-import com.android.quo.general.Constants
+import com.android.quo.util.Constants
 import com.android.quo.networking.service.ApiService.Companion.Endpoints.AUTH
 import com.android.quo.networking.service.ApiService.Companion.Endpoints.PLACES
 import com.android.quo.networking.service.ApiService.Companion.Endpoints.USERS
@@ -15,11 +15,15 @@ import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerSignupResponse
+import com.android.quo.networking.model.ServerUploadPicture
 import com.android.quo.networking.model.ServerUser
+import com.android.quo.networking.service.ApiService.Companion.Endpoints.COMPONENTS
+import com.android.quo.networking.service.ApiService.Companion.Endpoints.UPLOAD
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.Single
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -27,8 +31,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 /**
@@ -54,7 +60,7 @@ interface ApiService {
     @DELETE("users/{id}")
     fun deleteUser(@Path("id") userId: String)
 
-    @POST("places")
+    @POST(PLACES)
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
 
     @GET("$PLACES/qrcode/{qr_code_id}/{user_id}")
@@ -69,6 +75,9 @@ interface ApiService {
     @GET("$USERS/{id}/hosted_places")
     fun getHostedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
+    @PUT("$PLACES/{id}")
+    fun updatePlace(@Path("id") id: String, @Body place: ServerPlace): Single<ServerPlace>
+
     @POST("$PLACES/{id}/pictures")
     fun addPicture(
             @Path("id") placeId: String,
@@ -77,6 +86,13 @@ interface ApiService {
 
     @GET("$PLACES/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
+
+    @GET("$UPLOAD/{default}")
+    fun getDefaultPicture(@Path("default") default: String): Single<ServerUploadPicture>
+
+    @Multipart
+    @POST(UPLOAD)
+    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<ServerUploadPicture>
 
     @POST("$PLACES/{id}/components")
     fun addComponent(
@@ -87,7 +103,7 @@ interface ApiService {
     @GET("$PLACES/{id}/components")
     fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>
 
-    @PUT("components/{id}")
+    @PUT("$COMPONENTS/{id}")
     fun updateComponent(
             @Path("id") componentId: String,
             @Body data: ServerComponent

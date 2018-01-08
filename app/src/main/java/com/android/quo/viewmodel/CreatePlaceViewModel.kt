@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import com.android.quo.networking.ApiService
 import com.android.quo.networking.model.ServerPicture
 import com.android.quo.networking.model.ServerPlace
+import com.android.quo.networking.service.ApiService
 import com.android.quo.view.myplaces.createplace.CreatePlace
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -70,7 +70,7 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
                             Log.i("save upload picture", "$it")
                             response.titlePicture = it.path
 
-                            apiService.putPlace(response.id ?: "", response)
+                            apiService.updatePlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
                                         Log.i("save put place", "$it")
@@ -90,7 +90,7 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
                         .subscribe({
                             Log.i("save get default pic", "$it")
                             response.titlePicture = it.path
-                            apiService.putPlace(response.id ?: "", response)
+                            apiService.updatePlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
                                         Log.i("save put place", "$it")
@@ -172,7 +172,7 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
                 .subscribe({
                     Log.i("save upload qr code", "$it")
                     response.qrCode = it.path
-                    apiService.putPlace(response.id ?: "", response)
+                    apiService.updatePlace(response.id ?: "", response)
                             .subscribeOn(Schedulers.io())
                             .subscribe({
                                 Log.i("save put place", "$it")

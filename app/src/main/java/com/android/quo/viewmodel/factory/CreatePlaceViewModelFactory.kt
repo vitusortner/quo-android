@@ -2,7 +2,7 @@ package com.android.quo.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.android.quo.networking.ApiService
+import com.android.quo.networking.service.ApiService
 import com.android.quo.viewmodel.CreatePlaceViewModel
 
 /**
