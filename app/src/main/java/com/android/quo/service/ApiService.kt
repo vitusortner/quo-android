@@ -15,7 +15,7 @@ import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerPlaceResponse
 import com.android.quo.network.model.ServerSignup
 import com.android.quo.network.model.ServerSignupResponse
-import com.android.quo.network.model.ServerUploadPicture
+import com.android.quo.network.model.ServerUploadImage
 import com.android.quo.network.model.ServerUser
 import com.android.quo.service.ApiService.Companion.Endpoints.COMPONENTS
 import com.android.quo.service.ApiService.Companion.Endpoints.UPLOAD
@@ -88,11 +88,11 @@ interface ApiService {
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
     @GET("$UPLOAD/{default}")
-    fun getDefaultPicture(@Path("default") default: String): Single<ServerUploadPicture>
+    fun getDefaultPicture(@Path("default") default: String): Single<ServerUploadImage>
 
     @Multipart
     @POST(UPLOAD)
-    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<ServerUploadPicture>
+    fun uploadImage(@Part filePart: MultipartBody.Part): Single<ServerUploadImage>
 
     @POST("$PLACES/{id}/components")
     fun addComponent(

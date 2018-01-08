@@ -70,12 +70,11 @@ class CreatePlaceViewModel(
                 val uri = Uri.parse(title.src)
                 val file = File(uri.path)
 
-
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
                 // sync title picture to server and add the response answer to the created place
-                apiService.uploadPicture(imageFileBody)
+                apiService.uploadImage(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Titlepicture uploaded: $it")
@@ -131,7 +130,7 @@ class CreatePlaceViewModel(
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
-                apiService.uploadPicture(imageFileBody)
+                apiService.uploadImage(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Picture uploaded: $it")
@@ -188,7 +187,7 @@ class CreatePlaceViewModel(
         val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
         // sync title picture to server and add the response answer to the created place
-        apiService.uploadPicture(imageFileBody)
+        apiService.uploadImage(imageFileBody)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Picture uploaded: $it")
