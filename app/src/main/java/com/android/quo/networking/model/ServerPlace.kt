@@ -40,10 +40,6 @@ data class ServerPlace(
         @SerializedName("qr_code")
         var qrCode: String? = null,
 
-        val components: List<String>? = null,
-
-        val pictures: List<String>? = null,
-
         val timestamp: String
 
 )

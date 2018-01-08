@@ -96,26 +96,6 @@ class SyncService(private val database: AppDatabase) {
         database.userDao().insertUser(user)
     }
 
-    fun savePictures(data: List<ServerPicture>) {
-        if (data.isNotEmpty()) {
-            val pictures = data.map { picture ->
-                Picture(
-                        id = picture.id ?: "",
-                        ownerId = picture.ownerId,
-                        placeId = picture.placeId,
-                        src = picture.src,
-                        isVisible = picture.isVisible,
-                        timestamp = picture.timestamp
-                )
-            }
-            // delete pictures of given place
-            database.pictureDao().deletePicturesOfPlace(data[0].placeId)
-            database.pictureDao().insertAllPictures(pictures)
-        }
-        Log.i("sync", "picture sync success!")
-    }
-
-
     private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
         return Place(
                 id = serverPlace.id ?: "",

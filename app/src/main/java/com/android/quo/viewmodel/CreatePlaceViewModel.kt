@@ -23,8 +23,7 @@ import java.sql.Timestamp
  * Created by Jung on 11.12.17.
  */
 
-class CreatePlaceViewModel : ViewModel() {
-    private val apiService = ApiService.instance
+class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
 
     // TODO change host id
     fun savePlace() {
@@ -110,7 +109,6 @@ class CreatePlaceViewModel : ViewModel() {
 
     private fun uploadComponents(response: ServerPlace) {
         // sync all images from components and add the response to the right component
-        Log.e("list of components", CreatePlace.components.size.toString())
         for (c in CreatePlace.components) {
             if (c.picture != null) {
                 val uri = Uri.parse(c.picture)

@@ -36,7 +36,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
-import com.android.quo.model.EventDates
+import com.android.quo.dataclass.EventDates
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
@@ -284,9 +284,6 @@ class CreateEventFragment : Fragment(), LocationListener {
                     }
                 }
             }
-            else -> {
-
-            }
         }
     }
 
@@ -488,7 +485,7 @@ class CreateEventFragment : Fragment(), LocationListener {
             calendar.set(Calendar.MONTH, monthOfYear)
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            updateCalendarLabel(isStartDate)
+            updateLabel(isStartDate, false)
         }
 
         DatePickerDialog(this.context,
@@ -500,31 +497,11 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .show()
     }
 
-    private fun updateCalendarLabel(isStartDate: Boolean) {
-        val sdf = SimpleDateFormat(dateFormat, Locale.US)
-
-        val timestampFormat = SimpleDateFormat(timestampDateFormat, Locale.US)
-        val timestamp = timestampFormat.format(calendar.time)
-        /**
-         * Save into DB-Object
-         */
-        if (isStartDate) {
-            startDate.date = timestamp
-            CreatePlace.place.startDate = Timestamp.valueOf("${startDate.date} ${startDate.time}").time.toString()
-        } else {
-            endDate.date = timestamp
-            CreatePlace.place.endDate = Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
-
-        }
-        currentEditText.setText(sdf.format(calendar.time))
-
-    }
-
     private fun showTimeView(isStartDate: Boolean) {
         val time = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
             calendar.set(Calendar.HOUR, hour)
             calendar.set(Calendar.MINUTE, minute)
-            updateTimeLabel(isStartDate)
+            updateLabel(isStartDate, true)
         }
 
         TimePickerDialog(this.context,
@@ -536,21 +513,40 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .show()
     }
 
-    private fun updateTimeLabel(isStartDate: Boolean) {
-        val sdf = SimpleDateFormat(timeFormat, Locale.US)
 
-        val timestampFormat = SimpleDateFormat(timestampTimeFormat, Locale.US)
-        val timestamp = timestampFormat.format(calendar.time)
+    private fun updateLabel(isStartDate: Boolean, isTimeLabel: Boolean) {
+        val sdf: SimpleDateFormat
+        val timestampFormat: SimpleDateFormat
+        val timestamp: String
+
+        if (isTimeLabel) {
+            sdf = SimpleDateFormat(timeFormat, Locale.US)
+            timestampFormat = SimpleDateFormat(timestampTimeFormat, Locale.US)
+            timestamp = timestampFormat.format(calendar.time)
+            if (isStartDate) {
+                startDate.time = timestamp
+            } else {
+                endDate.time = timestamp
+            }
+        } else {
+            sdf = SimpleDateFormat(dateFormat, Locale.US)
+            timestampFormat = SimpleDateFormat(timestampDateFormat, Locale.US)
+            timestamp = timestampFormat.format(calendar.time)
+            if (isStartDate) {
+                startDate.date = timestamp
+            } else {
+                endDate.date = timestamp
+            }
+        }
+
+
         /**
          * Save into DB-Object
          */
         if (isStartDate) {
-            startDate.time = timestamp
             CreatePlace.place.startDate = Timestamp.valueOf("${startDate.date} ${startDate.time}").time.toString()
         } else {
-            endDate.time = timestamp
             CreatePlace.place.endDate = Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
-
         }
         currentEditText.setText(sdf.format(calendar.time))
     }

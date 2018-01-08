@@ -46,7 +46,6 @@ class QrCodeFragment : Fragment() {
                             sendIntent.putExtra(Intent.EXTRA_STREAM, "uri")
                             this.startActivity(sendIntent)
                         })
-        floatingActionButton
     }
 
     private fun setupToolbar() {

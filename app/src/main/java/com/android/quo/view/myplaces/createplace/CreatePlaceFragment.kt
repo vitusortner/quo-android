@@ -15,8 +15,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.QuoApplication
 import com.android.quo.R
+import com.android.quo.db.entity.User
+import com.android.quo.networking.ApiService
 import com.android.quo.networking.model.ServerPlace
 import com.android.quo.viewmodel.CreatePlaceViewModel
+import com.android.quo.viewmodel.factory.CreatePlaceViewModelFactory
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
@@ -52,7 +55,9 @@ class CreatePlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
+        viewModel = ViewModelProviders
+                .of(this, CreatePlaceViewModelFactory(ApiService.instance))
+                .get(CreatePlaceViewModel::class.java)
 
         this.context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
@@ -157,9 +162,9 @@ class CreatePlaceFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         //set place to default
-        CreatePlace.place = ServerPlace(null, QuoApplication.database.userDao().getUser().toString(), "", "", "", "",
+        CreatePlace.place = ServerPlace(null, (QuoApplication.database.userDao().getUser() as User).id, "", "", "", "",
                 -1.0, -1.0, null, null, "quo_default_1.png",
-                "", null, null, null, "")
+                "", null, "")
         compositDisposable.dispose()
     }
 

@@ -1,4 +1,4 @@
-package com.android.quo.model
+package com.android.quo.dataclass
 
 /**
  * Created by Jung on 12.12.17.

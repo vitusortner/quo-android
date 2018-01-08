@@ -29,7 +29,6 @@ class CreateSettingsFragment : Fragment() {
         compositeDisposable.add(RxCompoundButton.checkedChanges(gpsSwitch)
                 .subscribe { checked ->
                     CreatePlace.place.settings?.hasToValidateGps = checked
-                    println(CreatePlace.place)
                 })
 
         compositeDisposable.add(RxCompoundButton.checkedChanges(photosSwitch)

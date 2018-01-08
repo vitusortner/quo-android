@@ -5,11 +5,9 @@ import com.android.quo.db.entity.Picture
 import com.android.quo.networking.ApiService
 import com.android.quo.networking.SyncService
 import com.android.quo.networking.model.ServerPicture
-import com.android.quo.networking.model.UploadImage
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
-import retrofit2.Call
 
 /**
  * Created by vitusortner on 05.12.17.

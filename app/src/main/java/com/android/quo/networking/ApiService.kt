@@ -10,7 +10,7 @@ import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
-import com.android.quo.networking.model.UploadImage
+import com.android.quo.networking.model.ServerUploadPicture
 import io.reactivex.Single
 import okhttp3.Headers
 import okhttp3.MultipartBody
@@ -70,16 +70,16 @@ interface ApiService {
 
     @Multipart
     @POST("upload")
-    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<UploadImage>
+    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<ServerUploadPicture>
 
     @GET("upload/{default}")
-    fun getDefaultPicture(@Path("default") default: String): Single<UploadImage>
+    fun getDefaultPicture(@Path("default") default: String): Single<ServerUploadPicture>
 
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
     @POST("places/{id}/components")
-    fun addComponent(@Path("id") componentId: String, @Body data: ServerComponent): Single<ServerComponent>
+    fun addComponent(@Path("id") placeId: String, @Body data: ServerComponent): Single<ServerComponent>
 
     @GET("places/{id}/components")
     fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>

@@ -35,7 +35,6 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fragment_create_page.createPageLayout
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
 import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewLayout
@@ -229,9 +228,6 @@ class CreatePageFragment : Fragment() {
                         openPhoneGallery()
                     }
                 }
-            }
-            else -> {
-
             }
         }
     }
