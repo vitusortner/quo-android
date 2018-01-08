@@ -1,4 +1,4 @@
-package com.android.quo.networking.service
+package com.android.quo.network.service
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -7,10 +7,10 @@ import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
 import com.android.quo.db.entity.Place
-import com.android.quo.networking.model.ServerComponent
-import com.android.quo.networking.model.ServerPicture
-import com.android.quo.networking.model.ServerPlace
-import com.android.quo.networking.model.ServerPlaceResponse
+import com.android.quo.network.model.ServerComponent
+import com.android.quo.network.model.ServerPicture
+import com.android.quo.network.model.ServerPlace
+import com.android.quo.network.model.ServerPlaceResponse
 import java.text.SimpleDateFormat
 import java.util.*
 

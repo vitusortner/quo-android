@@ -1,4 +1,4 @@
-package com.android.quo.networking.model
+package com.android.quo.network.model
 
 /**
  * Created by vitusortner on 03.01.18.

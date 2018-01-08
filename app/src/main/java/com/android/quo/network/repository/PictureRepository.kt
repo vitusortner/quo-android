@@ -1,11 +1,11 @@
-package com.android.quo.networking.repository
+package com.android.quo.network.repository
 
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.entity.Picture
-import com.android.quo.networking.service.ApiService
-import com.android.quo.networking.NetworkBoundResource
-import com.android.quo.networking.service.SyncService
-import com.android.quo.networking.model.ServerPicture
+import com.android.quo.network.service.ApiService
+import com.android.quo.network.NetworkBoundResource
+import com.android.quo.network.service.SyncService
+import com.android.quo.network.model.ServerPicture
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single

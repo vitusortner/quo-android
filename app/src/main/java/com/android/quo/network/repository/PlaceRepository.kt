@@ -1,12 +1,12 @@
-package com.android.quo.networking.repository
+package com.android.quo.network.repository
 
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place
-import com.android.quo.networking.service.ApiService
-import com.android.quo.networking.NetworkBoundResource
-import com.android.quo.networking.service.SyncService
-import com.android.quo.networking.model.ServerPlace
-import com.android.quo.networking.model.ServerPlaceResponse
+import com.android.quo.network.service.ApiService
+import com.android.quo.network.NetworkBoundResource
+import com.android.quo.network.service.SyncService
+import com.android.quo.network.model.ServerPlace
+import com.android.quo.network.model.ServerPlaceResponse
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single

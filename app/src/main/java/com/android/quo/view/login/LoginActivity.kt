@@ -13,8 +13,8 @@ import android.view.View
 import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.networking.service.ApiService
-import com.android.quo.networking.service.AuthService
+import com.android.quo.network.service.ApiService
+import com.android.quo.network.service.AuthService
 import com.android.quo.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.android.quo.viewmodel.factory.LoginViewModelFactory

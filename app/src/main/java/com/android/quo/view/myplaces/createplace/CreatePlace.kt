@@ -3,8 +3,8 @@ package com.android.quo.view.myplaces.createplace
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.android.quo.Application
-import com.android.quo.networking.model.ServerComponent
-import com.android.quo.networking.model.ServerPlace
+import com.android.quo.network.model.ServerComponent
+import com.android.quo.network.model.ServerPlace
 
 /**
  * Created by Jung on 05.12.17.

@@ -1,4 +1,4 @@
-package com.android.quo.networking.model
+package com.android.quo.network.model
 
 import com.google.gson.annotations.SerializedName
 

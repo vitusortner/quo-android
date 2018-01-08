@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import com.android.quo.networking.model.ServerPicture
-import com.android.quo.networking.model.ServerPlace
-import com.android.quo.networking.service.ApiService
+import com.android.quo.network.model.ServerPicture
+import com.android.quo.network.model.ServerPlace
+import com.android.quo.network.service.ApiService
 import com.android.quo.view.myplaces.createplace.CreatePlace
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType

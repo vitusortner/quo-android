@@ -1,4 +1,4 @@
-package com.android.quo.networking
+package com.android.quo.network
 
 import android.util.Log
 import io.reactivex.Flowable

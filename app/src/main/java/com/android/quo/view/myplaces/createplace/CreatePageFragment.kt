@@ -29,7 +29,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.quo.R
-import com.android.quo.networking.model.ServerComponent
+import com.android.quo.network.model.ServerComponent
 import com.android.quo.view.myplaces.createplace.CreatePlace.components
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView

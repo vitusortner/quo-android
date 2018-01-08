@@ -11,9 +11,9 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.networking.service.ApiService
-import com.android.quo.networking.service.SyncService
-import com.android.quo.networking.repository.PlaceRepository
+import com.android.quo.network.service.ApiService
+import com.android.quo.network.service.SyncService
+import com.android.quo.network.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.factory.HomeViewModelFactory
