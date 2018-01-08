@@ -10,8 +10,10 @@ import com.android.quo.networking.model.ServerPlace
 import com.android.quo.networking.model.ServerPlaceResponse
 import com.android.quo.networking.model.ServerSignup
 import com.android.quo.networking.model.ServerUser
+import com.android.quo.networking.model.ServerUploadPicture
 import io.reactivex.Single
 import okhttp3.Headers
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -19,8 +21,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 /**
@@ -52,20 +56,30 @@ interface ApiService {
     @GET("places/qrcode/{qr_code_id}/{user_id}")
     fun getPlace(@Path("qr_code_id") qrCodeId: String, @Path("user_id") userId: String): Single<ServerPlace>
 
+    @PUT("places/{id}")
+    fun putPlace(@Path("id") id: String, @Body place: ServerPlace): Single<ServerPlace>
+
     @GET("users/{id}/visited_places")
     fun getVisitedPlaces(@Path("id") userId: String): Single<List<ServerPlaceResponse>>
 
     @GET("users/{id}/hosted_places")
     fun getHostedPlaces(@Path("id") userId: String): Single<List<ServerPlace>>
 
-    @POST("pictures")
-    fun addPicture(@Body picture: ServerPicture): Single<ServerPicture>
+    @POST("/places/{id}/pictures")
+    fun addPicture(@Path("id") id: String, @Body picture: ServerPicture): Single<ServerPicture>
+
+    @Multipart
+    @POST("upload")
+    fun uploadPicture(@Part filePart: MultipartBody.Part): Single<ServerUploadPicture>
+
+    @GET("upload/{default}")
+    fun getDefaultPicture(@Path("default") default: String): Single<ServerUploadPicture>
 
     @GET("places/{id}/pictures")
     fun getPictures(@Path("id") placeId: String): Single<List<ServerPicture>>
 
-    @POST("components")
-    fun addComponent(@Body data: ServerComponent): Single<ServerComponent>
+    @POST("places/{id}/components")
+    fun addComponent(@Path("id") placeId: String, @Body data: ServerComponent): Single<ServerComponent>
 
     @GET("places/{id}/components")
     fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>
@@ -75,7 +89,8 @@ interface ApiService {
 
     companion object {
 
-        private const val BASE_URL = "http://10.0.2.2:3000/"
+//        private const val BASE_URL = "http://10.0.2.2:3000/" //local
+        private const val BASE_URL = "http://ec2-52-57-50-127.eu-central-1.compute.amazonaws.com/"  //aws
 
         private val okClient: OkHttpClient
             get() {

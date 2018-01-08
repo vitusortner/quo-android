@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
  */
 data class ServerComponent(
         @SerializedName("_id")
-        val id: String? = null,
+        var id: String? = null,
 
-        val picture: String? = null,
+        var picture: String? = null,
 
-        val text: String? = null,
+        var text: String? = null,
 
-        val position: Int? = null
+        var position: Int? = null
 )

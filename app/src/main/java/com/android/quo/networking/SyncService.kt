@@ -133,7 +133,7 @@ class SyncService(private val database: AppDatabase) {
 
     private fun mapToPicture(serverPicture: ServerPicture): Picture {
         return Picture(
-                id = serverPicture.id,
+                id = serverPicture.id ?: "",
                 ownerId = serverPicture.ownerId,
                 placeId = serverPicture.placeId,
                 src = serverPicture.src,
