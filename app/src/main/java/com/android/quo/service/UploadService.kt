@@ -15,7 +15,7 @@ class UploadService(private val apiService: ApiService) {
 
     private val TAG = javaClass.simpleName
 
-    fun uploadImage(image: File, completionHandler: (Boolean, ServerUploadImage?) -> Unit) {
+    fun uploadImage(image: File, completionHandler: (ServerUploadImage?) -> Unit) {
         val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), image)
         val imageFileBody = MultipartBody.Part.createFormData("imgUpload", image.name, requestBody)
 
@@ -25,11 +25,11 @@ class UploadService(private val apiService: ApiService) {
                 .subscribe({
                     Log.i(TAG, "Image uploaded: $it")
 
-                    completionHandler(true, it)
+                    completionHandler(it)
                 }, {
                     Log.e(TAG, "Error while uploading image: $it")
 
-                    completionHandler(false, null)
+                    completionHandler(null)
                 })
     }
 }

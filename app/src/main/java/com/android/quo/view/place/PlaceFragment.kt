@@ -2,12 +2,14 @@ package com.android.quo.view.place
 
 import android.Manifest
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
@@ -21,11 +23,21 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.extension.toPx
+import com.android.quo.network.model.ServerPicture
+import com.android.quo.network.repository.PictureRepository
+import com.android.quo.service.ApiService
+import com.android.quo.service.UploadService
 import com.android.quo.view.place.info.InfoFragment
+import com.android.quo.viewmodel.GalleryViewModel
+import com.android.quo.viewmodel.PlaceViewModel
+import com.android.quo.viewmodel.factory.GalleryViewModelFactory
+import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import com.jakewharton.rxbinding2.view.RxView
+import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.cameraButton
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.galleryButton
@@ -35,6 +47,7 @@ import kotlinx.android.synthetic.main.fragment_place.imageView
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import kotlinx.android.synthetic.main.fragment_place.viewPager
+import java.io.File
 
 /**
  * Created by vitusortner on 12.11.17.
@@ -49,6 +62,11 @@ class PlaceFragment : Fragment() {
     private var place: Place? = null
 
     private val compositDisposable = CompositeDisposable()
+
+    private val apiService = ApiService.instance
+    private val uploadService = UploadService(apiService)
+
+    private lateinit var viewModel: PlaceViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -65,6 +83,10 @@ class PlaceFragment : Fragment() {
         if (activity?.bottomNavigationView?.visibility == View.GONE) {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
+
+        viewModel = ViewModelProviders
+                .of(this, PlaceViewModelFactory(uploadService, apiService))
+                .get(PlaceViewModel::class.java)
 
         tabLayout.setupWithViewPager(viewPager)
 
@@ -163,12 +185,25 @@ class PlaceFragment : Fragment() {
             if (resultCode != Activity.RESULT_CANCELED) {
                 if (requestCode == RESULT_GALLERY) {
                     val selectedImageUri = data?.data
-                    val path = selectedImageUri?.let { getPath(it) }
-                    path?.let {
-                        val bitmap = BitmapFactory.decodeFile(it)
-                    }
 
-                    // TODO upload image
+                    val image = File(selectedImageUri?.let { getPath(it) })
+
+                    val compressedImage = Compressor(this.context)
+                            .setMaxWidth(640)
+                            .setMaxHeight(480)
+                            .setQuality(75)
+                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                            .setDestinationDirectoryPath(
+                                    Environment.getExternalStoragePublicDirectory(
+                                            Environment.DIRECTORY_PICTURES).absolutePath + "/Quo"
+                            )
+                            .compressToFile(image)
+
+                    place?.id?.let {
+                        viewModel.uploadImage(compressedImage, it)
+
+                        // TODO refresh gallery
+                    }
                     // bottomSheetDialog.hide()
                 } else if (resultCode == RESULT_CAMERA) {
                     val image = data?.extras?.get("data") as Bitmap
