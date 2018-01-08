@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.User
 import com.android.quo.Application
+import com.android.quo.db.dao.UserDao
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.service.ApiService
 import com.android.quo.viewmodel.CreatePlaceViewModel
@@ -40,11 +41,17 @@ import java.sql.Timestamp
  */
 
 class CreatePlaceFragment : Fragment() {
-    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
-    private val compositDisposable = CompositeDisposable()
-    lateinit var place: ServerPlace
-    private lateinit var viewModel: CreatePlaceViewModel
 
+    private val compositDisposable = CompositeDisposable()
+
+    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
+
+    lateinit var place: ServerPlace
+
+    private val apiService: ApiService = ApiService.instance
+    private val userDao: UserDao = Application.database.userDao()
+
+    private lateinit var viewModel: CreatePlaceViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -56,7 +63,7 @@ class CreatePlaceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProviders
-                .of(this, CreatePlaceViewModelFactory(ApiService.instance))
+                .of(this, CreatePlaceViewModelFactory(apiService, userDao))
                 .get(CreatePlaceViewModel::class.java)
 
         this.context?.let {

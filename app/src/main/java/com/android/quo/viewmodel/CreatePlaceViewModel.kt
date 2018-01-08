@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import com.android.quo.db.dao.UserDao
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.service.ApiService
@@ -23,33 +24,43 @@ import java.sql.Timestamp
  * Created by Jung on 11.12.17.
  */
 
-class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
+class CreatePlaceViewModel(
+        private val apiService: ApiService,
+        private val userDao: UserDao
+) : ViewModel() {
 
-    // TODO change host id
+    private val TAG = javaClass.simpleName
+
     fun savePlace() {
-//        CreatePlace.place.host = "5a4788298608db84ae2d86a9" //local
-        CreatePlace.place.host = "5a2aac590b0132796939a3f6" //aws
+        userDao.getUser()
+                .observeOn(Schedulers.io())
+                .subscribe {
+                    CreatePlace.place.host = it.id
 
-        apiService.addPlace(CreatePlace.place)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    Log.i("save post place", "$it")
-                    val response = it as ServerPlace
-                    uploadQrCode(response)
-                    uploadImage(response)
+                    apiService.addPlace(CreatePlace.place)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                Log.i(TAG, "Add place: $it")
 
-
-                }, {
-                    Log.e("save post place", "$it")
-                })
-
+                                uploadQrCode(it)
+                                uploadImage(it)
+                            }, {
+                                Log.e(TAG, "Error while adding place: $it")
+                            })
+                }
     }
 
     private fun uploadImage(response: ServerPlace) {
         // create ServerPicture for title picture
-        var title = ServerPicture(null, response.host,
-                response.id ?: "", "", true,
-                Timestamp(System.currentTimeMillis()).toString())
+        val title = ServerPicture(
+                id = null,
+                ownerId = response.host,
+                placeId = response.id ?: "",
+                src = "",
+                isVisible = true,
+                // TODO timestamp should be set by server
+                timestamp = Timestamp(System.currentTimeMillis()).toString()
+        )
 
         //check if title picture is from user or default image
         response.titlePicture?.let { titlePicture ->
@@ -67,20 +78,20 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
                 apiService.uploadPicture(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.i("save upload picture", "$it")
+                            Log.i(TAG, "Titlepicture uploaded: $it")
                             response.titlePicture = it.path
 
                             apiService.updatePlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
-                                        Log.i("save put place", "$it")
+                                        Log.i(TAG, "Place updated: $it")
                                         uploadComponents(it)
                                     }, {
-                                        Log.e("save put place", "$it")
+                                        Log.e(TAG, "Error while updating place: $it")
                                     })
 
                         }, {
-                            Log.e("save upload picture", "$it")
+                            Log.e(TAG, "Error while uploading image: $it")
                         })
 
             } else {
@@ -88,19 +99,22 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
                 apiService.getDefaultPicture(titlePicture)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.i("save get default pic", "$it")
+                            Log.i(TAG, "Default picture: $it")
+
                             response.titlePicture = it.path
+
                             apiService.updatePlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
-                                        Log.i("save put place", "$it")
+                                        Log.i(TAG, "Place updated: $it")
+
                                         uploadComponents(it)
                                     }, {
-                                        Log.e("save put place", "$it")
+                                        Log.e(TAG, "Error while saving place: $it")
                                     })
 
                         }, {
-                            Log.e("save get default pic", "$it")
+                            Log.e(TAG, "Error while getting default image: $it")
                         })
             }
         }
@@ -120,40 +134,47 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
                 apiService.uploadPicture(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.i("save upload picture com", "$it")
+                            Log.i(TAG, "Picture uploaded: $it")
 
-                            val picture = ServerPicture(null, response.host,
-                                    response.id ?: "", it.path,
-                                    true, System.currentTimeMillis().toString())
+                            val picture = ServerPicture(
+                                    id = null,
+                                    ownerId = response.host,
+                                    placeId = response.id ?: "",
+                                    src = it.path,
+                                    isVisible = true,
+                                    // TODO should get set by server
+                                    timestamp = System.currentTimeMillis().toString()
+                            )
 
                             apiService.addPicture(response.id ?: "", picture)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
-                                        Log.i("save add picture", "$it")
+                                        Log.i(TAG, "Picture added: $it")
+
                                         c.picture = it.src
 
                                         //post component to server
                                         apiService.addComponent(it.placeId, c)
                                                 .subscribeOn(Schedulers.io())
                                                 .subscribe({
-                                                    Log.i("save post component", "$it")
+                                                    Log.i(TAG, "Component uploaded: $it")
                                                 }, {
-                                                    Log.e("save post component", "$it")
+                                                    Log.e(TAG, "Error while uploading component: $it")
                                                 })
                                     }, {
-                                        Log.e("save add picture", "$it")
+                                        Log.e(TAG, "Error while adding picture: $it")
                                     })
                         }, {
-                            Log.e("save upload picture com", "$it")
+                            Log.e(TAG, "Error while uploading picture: $it")
                         })
             } else if (c.text != null) {
                 //post component with text to server
                 apiService.addComponent(response.id ?: "", c)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            Log.i("save post component", "$it")
+                            Log.i(TAG, "Component added: $it")
                         }, {
-                            Log.e("save post component", "$it")
+                            Log.e(TAG, "Error while adding component: $it")
                         })
             }
         }
@@ -170,17 +191,19 @@ class CreatePlaceViewModel(private val apiService: ApiService) : ViewModel() {
         apiService.uploadPicture(imageFileBody)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.i("save upload qr code", "$it")
+                    Log.i(TAG, "Picture uploaded: $it")
+
                     response.qrCode = it.path
+
                     apiService.updatePlace(response.id ?: "", response)
                             .subscribeOn(Schedulers.io())
                             .subscribe({
-                                Log.i("save put place", "$it")
+                                Log.i(TAG, "Place updated: $it")
                             }, {
-                                Log.e("save put place", "$it")
+                                Log.e(TAG, "Error while updating place: $it")
                             })
                 }, {
-                    Log.e("save upload qr code", "$it")
+                    Log.e(TAG, "Error while uploading picture: $it")
                 })
     }
 
