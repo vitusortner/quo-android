@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_settings.changePasswordTextView
 import kotlinx.android.synthetic.main.fragment_settings.deleteAccountTextView
 import kotlinx.android.synthetic.main.layout_change_password.view.newPasswordEditText
 import kotlinx.android.synthetic.main.layout_change_password.view.newPasswordWrapper
+import kotlinx.android.synthetic.main.layout_change_password.view.oldPasswordEditText
 import kotlinx.android.synthetic.main.layout_change_password.view.passwordWrapper
 import kotlinx.android.synthetic.main.layout_change_password.view.repeatNewPasswordEditText
 import kotlinx.android.synthetic.main.layout_change_password.view.repeatNewPasswordWrapper
@@ -92,7 +93,7 @@ class SettingsFragment : Fragment() {
             dialog.setView(dialogView)
             passwordEditText = dialogView.newPasswordEditText
 
-            compositDisposable.add(afterTextChangeEvents(dialogView.passwordEditText)
+            compositDisposable.add(afterTextChangeEvents(dialogView.oldPasswordEditText)
                     .skipInitialValue()
                     .map {
                         dialogView.passwordWrapper.error = null
@@ -102,7 +103,7 @@ class SettingsFragment : Fragment() {
                     .compose(lengthGreaterThanSix)
                     .compose(retryWhenError {
                         dialogView.passwordWrapper.error = it.message
-                        ViewCompat.setBackgroundTintList(dialogView.newPasswordEditText, ColorStateList
+                        ViewCompat.setBackgroundTintList(dialogView.oldPasswordEditText, ColorStateList
                                 .valueOf(checkEditTextTintColor(it.message)))
                     })
                     .subscribe())
