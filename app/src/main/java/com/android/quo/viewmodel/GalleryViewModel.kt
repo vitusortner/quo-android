@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Picture
+import com.android.quo.extension.toDate
 import com.android.quo.network.repository.PictureRepository
 import io.reactivex.disposables.CompositeDisposable
 
@@ -31,7 +32,7 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
                         .distinctUntilChanged()
                         .subscribe({
                             if (it.isNotEmpty()) {
-                                pictures?.value = it
+                                pictures?.value = it.sortedByDescending { it.timestamp.toDate() }
                             }
                         }, {
                             Log.e("sync", "$it")
