@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.Place
-import com.android.quo.extension.toDate
+import com.android.quo.util.extension.toDate
 import com.android.quo.network.repository.PlaceRepository
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

@@ -1,4 +1,4 @@
-package com.android.quo.extension
+package com.android.quo.util.extension
 
 import android.annotation.SuppressLint
 import android.content.Context
