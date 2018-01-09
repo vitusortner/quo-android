@@ -47,7 +47,7 @@
     <string name="qr_code_error_title">Error</string>
     <string name="qr_code_error_message">We are sorry! There is not QR Code in image</string>
     <string name="qr_code_done">DONE</string>
-
+    <string name="qr_code_not_found">Not found</string>
 
     <!-- CREATE EVENT -->
     <string name="to">To</string>
@@ -86,6 +86,9 @@
     <string name="camera">Camera</string>
     <string name="photo">Photo</string>
     <string name="select_picture">Select Picture</string>
+    <string name="qr_code">QR Code</string>
+    <string name="info">Info</string>
+
 
     <!-- PLACE GALLERY -->
     <string name="place_bottom_sheet_add_photo">Add Photo</string>

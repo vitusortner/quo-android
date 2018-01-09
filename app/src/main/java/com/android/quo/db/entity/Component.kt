@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey
  * Created by FlorianSchlueter on 17.11.2017.
  */
 
-// TODO disabled cascade delete otherwise cache doesn't work properly
+// Disabled cascade delete otherwise cache doesn't work properly
 // When getching places from API, we delete all places and insert them again, which leads
 // to deletion of components (cascade delete)
 @Entity(tableName = "component")

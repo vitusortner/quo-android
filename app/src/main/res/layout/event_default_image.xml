@@ -7,6 +7,7 @@
         android:id="@+id/defaultImageView"
         android:layout_width="@dimen/event_default_image_size"
         android:layout_height="@dimen/event_default_image_size"
-        android:layout_marginEnd="@dimen/event_default_image_margin" />
+        android:layout_marginEnd="@dimen/event_default_image_margin"
+        android:scaleType="centerCrop"/>
 
 </LinearLayout>
