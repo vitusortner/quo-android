@@ -3,6 +3,7 @@ package com.android.quo.viewmodel
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import android.util.Patterns
+import com.android.quo.db.dao.UserDao
 import com.android.quo.service.AuthService
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
@@ -12,7 +13,12 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by Jung on 09.11.17.
  */
-class LoginViewModel(private val authService: AuthService) : ViewModel() {
+class LoginViewModel(
+        private val authService: AuthService,
+        private val userDao: UserDao
+) : ViewModel() {
+
+    private val TAG = javaClass.simpleName
 
     fun sendEmailToUser(email: String): Boolean {
         //TODO check if email exist
@@ -77,10 +83,10 @@ class LoginViewModel(private val authService: AuthService) : ViewModel() {
     }
 
     fun validateLoginState(openLogin: () -> Unit) {
-        QuoApplication.database.userDao().getUser()
+        userDao.getUser()
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.i("auth", "User: ${it.id} is logged in")
+                    Log.i(TAG, "User: ${it.id} is logged in")
                 }, {
                     openLogin()
                 })
