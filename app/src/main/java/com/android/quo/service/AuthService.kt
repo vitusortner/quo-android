@@ -18,11 +18,13 @@ class AuthService(
         private val preferenceStore: SecuredPreferenceStore
 ) {
 
-    fun login(email: String, password: String, callback: (Boolean) -> Unit) {
+    private val TAG = javaClass.simpleName
+
+    fun login(email: String, password: String, completionHandler: (Boolean) -> Unit) {
         apiService.login(ServerLogin(email, password))
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.i("login", "Login successful: $it")
+                    Log.i(TAG, "Login successful: $it")
 
                     // Delete existing user from local DB and insert new user
                     userDao.deleteAllUsers()
@@ -32,19 +34,19 @@ class AuthService(
                     preferenceStore.edit().clear().commit()
                     preferenceStore.edit().putString(Constants.TOKEN_KEY, it.token).apply()
 
-                    callback(true)
+                    completionHandler(true)
                 }, {
                     // TODO error handling
-                    Log.e("login", "Error while logging in: $it")
-                    callback(false)
+                    Log.e(TAG, "Error while logging in: $it")
+                    completionHandler(false)
                 })
     }
 
-    fun signup(email: String, password: String, callback: (Boolean) -> Unit) {
+    fun signup(email: String, password: String, completionHandler: (Boolean) -> Unit) {
         apiService.signup(ServerSignup(email, password))
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.i("signup", "Signup successful: $it")
+                    Log.i(TAG, "Signup successful: $it")
 
                     // Delete existing user from local DB and insert new user
                     userDao.deleteAllUsers()
@@ -54,11 +56,11 @@ class AuthService(
                     preferenceStore.edit().clear().commit()
                     preferenceStore.edit().putString(Constants.TOKEN_KEY, it.token).apply()
 
-                    callback(true)
+                    completionHandler(true)
                 }, {
                     // TODO error handling
-                    Log.e("signup", "Error while signing in: $it")
-                    callback(false)
+                    Log.e(TAG, "Error while signing in: $it")
+                    completionHandler(false)
                 })
     }
 

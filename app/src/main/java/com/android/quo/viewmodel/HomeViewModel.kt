@@ -19,6 +19,8 @@ class HomeViewModel(
         private val userDao: UserDao
 ) : ViewModel() {
 
+    private val TAG = javaClass.simpleName
+
     private val compositDisposabel = CompositeDisposable()
 
     private var places: MutableLiveData<List<Place>>? = null
@@ -33,8 +35,8 @@ class HomeViewModel(
 
     fun updatePlaces() {
         compositDisposabel.add(userDao.getUser()
-                .observeOn(Schedulers.io())
-                .subscribe {
+                .subscribeOn(Schedulers.io())
+                .subscribe({
                     placeRepository.getVisitedPlaces(it.id)
                             .distinctUntilChanged()
                             .subscribe({
@@ -42,9 +44,11 @@ class HomeViewModel(
                                     places?.value = it.sortedByDescending { it.lastScanned.toDate() }
                                 }
                             }, {
-                                Log.e("sync", "$it")
+                                Log.e(TAG, "Error while getting visited places: $it")
                             })
-                }
+                }, {
+                    Log.e(TAG, "Error while getting user $it")
+                })
         )
     }
 

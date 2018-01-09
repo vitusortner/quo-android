@@ -1,5 +1,6 @@
 package com.android.quo
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -10,18 +11,34 @@ import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.db.entity.Place
+import com.android.quo.service.ApiService
+import com.android.quo.service.AuthService
 import com.android.quo.view.home.HomeFragment
+import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.myplaces.MyPlacesFragment
 import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
+import com.android.quo.viewmodel.LoginViewModel
+import com.android.quo.viewmodel.factory.LoginViewModelFactory
+import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
-
 class MainActivity : AppCompatActivity() {
+
+    private val apiService = ApiService.instance
+    private val userDao = Application.database.userDao()
+    private val preferenceStore = SecuredPreferenceStore.getSharedInstance()
+    private val authService = AuthService(apiService, userDao, preferenceStore)
+
+    private lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewModel = ViewModelProviders
+                .of(this, LoginViewModelFactory(authService, userDao))
+                .get(LoginViewModel::class.java)
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
@@ -32,6 +49,19 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        validateLoginState()
+    }
+
+    private fun validateLoginState() {
+        viewModel.validateLoginState {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 
