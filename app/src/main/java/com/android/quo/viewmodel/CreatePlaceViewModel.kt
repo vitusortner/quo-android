@@ -34,7 +34,7 @@ class CreatePlaceViewModel(
     fun savePlace() {
         userDao.getUser()
                 .observeOn(Schedulers.io())
-                .subscribe {
+                .subscribe({
                     CreatePlace.place.host = it.id
 
                     apiService.addPlace(CreatePlace.place)
@@ -47,7 +47,9 @@ class CreatePlaceViewModel(
                             }, {
                                 Log.e(TAG, "Error while adding place: $it")
                             })
-                }
+                }, {
+                    Log.e(TAG, "Error while getting user")
+                })
     }
 
     private fun uploadImage(response: ServerPlace) {

@@ -7,6 +7,7 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 import com.android.quo.db.entity.User
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 /**
  * Created by FlorianSchlueter on 18.11.2017.
@@ -15,8 +16,9 @@ import io.reactivex.Flowable
 @Dao
 interface UserDao {
 
+    // Returns error when no user is found
     @Query("SELECT * FROM user LIMIT 1")
-    fun getUser(): Flowable<User>
+    fun getUser(): Single<User>
 
     @Query("SELECT * FROM user WHERE id = :id LIMIT 1")
     fun getUserById(id: String): Flowable<User>?

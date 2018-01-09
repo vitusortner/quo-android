@@ -12,7 +12,7 @@ import java.util.*
 fun Context.getDisplayMetrics(): DisplayMetrics = this.resources.displayMetrics
 
 fun Float.toPx(context: Context): Int {
-    return this.toInt() * context.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT
+    return (this * (context.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
 }
 
 @SuppressLint("SimpleDateFormat")
