@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.util.extension.toPx
 import com.android.quo.extension.toPx
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.repository.PictureRepository

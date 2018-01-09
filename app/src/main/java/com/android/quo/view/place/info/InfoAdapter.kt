@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.extension.toDate
+import com.android.quo.util.extension.toDate
 import com.android.quo.view.place.info.ViewType.ADDRESS
 import com.android.quo.view.place.info.ViewType.DESCRIPTION
 import com.android.quo.view.place.info.ViewType.TIME

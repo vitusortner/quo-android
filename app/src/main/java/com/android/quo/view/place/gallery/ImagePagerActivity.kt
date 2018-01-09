@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.android.quo.R
 import com.android.quo.db.entity.Picture
-import com.android.quo.extension.toPx
+import com.android.quo.util.extension.toPx
 import kotlinx.android.synthetic.main.activity_gallery_image_pager.viewPager
 
 
