@@ -2,7 +2,6 @@ package com.android.quo.view.place
 
 import android.Manifest
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,23 +21,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.util.extension.toPx
-import com.android.quo.extension.toPx
-import com.android.quo.network.model.ServerPicture
-import com.android.quo.network.repository.PictureRepository
 import com.android.quo.service.ApiService
 import com.android.quo.service.UploadService
+import com.android.quo.util.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
-import com.android.quo.viewmodel.GalleryViewModel
 import com.android.quo.viewmodel.PlaceViewModel
-import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import com.jakewharton.rxbinding2.view.RxView
 import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.cameraButton
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.galleryButton
