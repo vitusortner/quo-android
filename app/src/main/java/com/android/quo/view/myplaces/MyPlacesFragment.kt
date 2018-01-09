@@ -8,13 +8,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.QuoApplication
+import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.networking.ApiService
-import com.android.quo.networking.SyncService
-import com.android.quo.networking.repository.PlaceRepository
+import com.android.quo.service.ApiService
+import com.android.quo.service.SyncService
+import com.android.quo.network.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
-import com.android.quo.view.myplaces.createplace.CreatePlaceFragment
+import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.viewmodel.MyPlacesViewModel
 import com.android.quo.viewmodel.factory.MyPlacesViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
  */
 class MyPlacesFragment : Fragment() {
 
-    private val database = QuoApplication.database
+    private val database = Application.database
     private val placeDao = database.placeDao()
     private val userDao = database.userDao()
     private val apiService = ApiService.instance

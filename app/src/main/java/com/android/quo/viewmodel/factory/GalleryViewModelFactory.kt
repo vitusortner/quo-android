@@ -2,7 +2,7 @@ package com.android.quo.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.android.quo.networking.repository.PictureRepository
+import com.android.quo.network.repository.PictureRepository
 import com.android.quo.viewmodel.GalleryViewModel
 
 /**

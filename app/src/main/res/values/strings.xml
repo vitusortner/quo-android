@@ -47,7 +47,7 @@
     <string name="qr_code_error_title">Error</string>
     <string name="qr_code_error_message">We are sorry! There is not QR Code in image</string>
     <string name="qr_code_done">DONE</string>
-
+    <string name="qr_code_not_found">Not found</string>
 
     <!-- CREATE EVENT -->
     <string name="to">To</string>
