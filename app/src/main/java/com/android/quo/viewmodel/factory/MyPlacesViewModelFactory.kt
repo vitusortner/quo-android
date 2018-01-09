@@ -3,7 +3,7 @@ package com.android.quo.viewmodel.factory
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.android.quo.db.dao.UserDao
-import com.android.quo.networking.repository.PlaceRepository
+import com.android.quo.network.repository.PlaceRepository
 import com.android.quo.viewmodel.MyPlacesViewModel
 
 /**

@@ -2,7 +2,7 @@ package com.android.quo.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.android.quo.networking.repository.ComponentRepository
+import com.android.quo.network.repository.ComponentRepository
 import com.android.quo.viewmodel.PageViewModel
 
 /**

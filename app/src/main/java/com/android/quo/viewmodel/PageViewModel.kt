@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Component
-import com.android.quo.networking.repository.ComponentRepository
+import com.android.quo.network.repository.ComponentRepository
 import io.reactivex.disposables.CompositeDisposable
 
 /**

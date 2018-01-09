@@ -12,6 +12,7 @@
     <!-- COLOR FOR TEXT -->
     <color name="colorTextWhite">#FFFFFF</color>
     <color name="colorTextGray">#95989A</color>
+    <color name="colorTextDarkGray">#8c000000</color>
     <color name="colorTextBlack">#000000</color>
 
     <color name="colorStatusBarSdkPre23">#BDBDBD</color>
