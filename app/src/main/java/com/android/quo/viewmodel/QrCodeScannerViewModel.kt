@@ -18,6 +18,8 @@ class QrCodeScannerViewModel(
         private val userDao: UserDao
 ) : ViewModel() {
 
+    private val TAG = javaClass.simpleName
+
     private val compositDisposabel = CompositeDisposable()
 
     private var place: MutableLiveData<Place>? = null
@@ -38,10 +40,10 @@ class QrCodeScannerViewModel(
                             .subscribe({
                                 place?.value = it
                             }, {
-                                Log.e("sync", "$it")
+                                Log.e(TAG, "Error while getting place: $it")
                             })
                 }, {
-                    Log.e("auth", "no user found")
+                    Log.e(TAG, "Error while getting user $it")
                 })
         )
     }

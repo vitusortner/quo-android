@@ -19,6 +19,8 @@ class HomeViewModel(
         private val userDao: UserDao
 ) : ViewModel() {
 
+    private val TAG = javaClass.simpleName
+
     private val compositDisposabel = CompositeDisposable()
 
     private var places: MutableLiveData<List<Place>>? = null
@@ -42,10 +44,10 @@ class HomeViewModel(
                                     places?.value = it.sortedByDescending { it.lastScanned.toDate() }
                                 }
                             }, {
-                                Log.e("sync", "$it")
+                                Log.e(TAG, "Error while getting visited places: $it")
                             })
                 }, {
-                    Log.e("auth", "no user found")
+                    Log.e(TAG, "Error while getting user $it")
                 })
         )
     }

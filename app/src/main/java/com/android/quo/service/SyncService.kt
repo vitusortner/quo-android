@@ -19,6 +19,8 @@ import java.util.*
  */
 class SyncService(private val database: AppDatabase) {
 
+    private val TAG = javaClass.simpleName
+
     fun saveHostedPlaces(data: List<ServerPlace>) {
         savePlaces(data, true) {
             mapToPlace(it, true)
@@ -41,7 +43,7 @@ class SyncService(private val database: AppDatabase) {
         database.placeDao().deletePlace(place)
         database.placeDao().insertPlace(place)
 
-        Log.i("sync", "place sync success! $place")
+        Log.i(TAG, "place sync success!")
     }
 
     private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapToPlace: (T) -> Place) {
@@ -51,9 +53,9 @@ class SyncService(private val database: AppDatabase) {
             database.placeDao().deletePlaces(isHost)
             database.placeDao().insertAllPlaces(places)
 
-            Log.i("sync", "place sync success! $places")
+            Log.i(TAG, "Place sync success! ${places.size} places")
         } else {
-            Log.i("sync", "no places to sync!")
+            Log.i(TAG, "No places to sync!")
         }
     }
 
@@ -66,9 +68,9 @@ class SyncService(private val database: AppDatabase) {
             database.componentDao().deleteComponentsOfPlace(placeId)
             database.componentDao().insertAllComponents(components)
 
-            Log.i("sync", "component sync success! $components")
+            Log.i(TAG, "Component sync success! ${components.size} components")
         } else {
-            Log.i("sync", "no components to sync!")
+            Log.i(TAG, "No components to sync!")
         }
     }
 
@@ -81,9 +83,9 @@ class SyncService(private val database: AppDatabase) {
             database.pictureDao().deletePicturesOfPlace(placeId)
             database.pictureDao().insertAllPictures(pictures)
 
-            Log.i("sync", "picture sync success! $pictures")
+            Log.i(TAG, "Picture sync success! ${pictures.size} pictures")
         } else {
-            Log.i("sync", "no pictures to sync!")
+            Log.i(TAG, "No pictures to sync!")
         }
     }
 
