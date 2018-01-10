@@ -55,11 +55,9 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
     private lateinit var scannerView: ZXingScannerView
 
     private val database = Application.database
-    private val apiService = ApiService.instance
-    private val placeDao = database.placeDao()
     private val userDao = database.userDao()
-    private val syncService = SyncService(database)
-    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+    private val placeRepository = Application.placeRepository
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: QrCodeScannerViewModel
 

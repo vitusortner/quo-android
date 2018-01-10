@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Picture
-import com.android.quo.extension.toDate
+import com.android.quo.util.extension.toDate
 import com.android.quo.network.repository.PictureRepository
 import io.reactivex.disposables.CompositeDisposable
 

@@ -2,7 +2,7 @@ package com.android.quo.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.android.quo.service.ApiService
+import com.android.quo.network.repository.PictureRepository
 import com.android.quo.service.UploadService
 import com.android.quo.viewmodel.PlaceViewModel
 
@@ -11,10 +11,10 @@ import com.android.quo.viewmodel.PlaceViewModel
  */
 class PlaceViewModelFactory(
         private val uploadService: UploadService,
-        private val apiService: ApiService
+        private val pictureRepository: PictureRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return PlaceViewModel(uploadService, apiService) as T
+        return PlaceViewModel(uploadService, pictureRepository) as T
     }
 }

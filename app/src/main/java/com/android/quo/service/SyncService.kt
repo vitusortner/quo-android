@@ -2,7 +2,9 @@ package com.android.quo.service
 
 import android.annotation.SuppressLint
 import android.util.Log
-import com.android.quo.db.AppDatabase
+import com.android.quo.db.dao.ComponentDao
+import com.android.quo.db.dao.PictureDao
+import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Address
 import com.android.quo.db.entity.Component
 import com.android.quo.db.entity.Picture
@@ -17,7 +19,11 @@ import java.util.*
 /**
  * Created by vitusortner on 30.11.17.
  */
-class SyncService(private val database: AppDatabase) {
+class SyncService(
+        private val placeDao: PlaceDao,
+        private val componentDao: ComponentDao,
+        private val pictureDao: PictureDao
+) {
 
     private val TAG = javaClass.simpleName
 
@@ -40,8 +46,8 @@ class SyncService(private val database: AppDatabase) {
         val date = dateFormat.format(Date())
 
         val place = mapToPlace(data, userId == data.host, date)
-        database.placeDao().deletePlace(place)
-        database.placeDao().insertPlace(place)
+        placeDao.deletePlace(place)
+        placeDao.insertPlace(place)
 
         Log.i(TAG, "place sync success!")
     }
@@ -50,8 +56,8 @@ class SyncService(private val database: AppDatabase) {
         if (data.isNotEmpty()) {
             val places = data.map(mapToPlace)
             // delete places before inserting updated places
-            database.placeDao().deletePlaces(isHost)
-            database.placeDao().insertAllPlaces(places)
+            placeDao.deletePlaces(isHost)
+            placeDao.insertAllPlaces(places)
 
             Log.i(TAG, "Place sync success! ${places.size} places")
         } else {
@@ -65,8 +71,8 @@ class SyncService(private val database: AppDatabase) {
                 mapToComponent(component, placeId)
             }
             // delete components of place before inserting updated comonents
-            database.componentDao().deleteComponentsOfPlace(placeId)
-            database.componentDao().insertAllComponents(components)
+            componentDao.deleteComponentsOfPlace(placeId)
+            componentDao.insertAllComponents(components)
 
             Log.i(TAG, "Component sync success! ${components.size} components")
         } else {
@@ -80,8 +86,8 @@ class SyncService(private val database: AppDatabase) {
                 mapToPicture(serverPicture)
             }
             // delete pictures of given place before inserting updated pictures
-            database.pictureDao().deletePicturesOfPlace(placeId)
-            database.pictureDao().insertAllPictures(pictures)
+            pictureDao.deletePicturesOfPlace(placeId)
+            pictureDao.insertAllPictures(pictures)
 
             Log.i(TAG, "Picture sync success! ${pictures.size} pictures")
         } else {

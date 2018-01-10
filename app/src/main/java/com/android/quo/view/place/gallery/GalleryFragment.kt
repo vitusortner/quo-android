@@ -10,9 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.PictureRepository
 import com.android.quo.viewmodel.GalleryViewModel
 import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
@@ -23,11 +20,7 @@ import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
  */
 class GalleryFragment : Fragment() {
 
-    private val database = Application.database
-    private val pictureDao = database.pictureDao()
-    private val apiService = ApiService.instance
-    private val syncService = SyncService(database)
-    private val pictureRepository = PictureRepository(pictureDao, apiService, syncService)
+    private val pictureRepository = Application.pictureRepository
 
     private lateinit var viewModel: GalleryViewModel
 
@@ -63,8 +56,6 @@ class GalleryFragment : Fragment() {
                 })
             }
         }
-
-        setupSwipeRefresh()
     }
 
     private fun setupSwipeRefresh() {

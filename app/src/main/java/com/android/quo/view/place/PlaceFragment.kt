@@ -19,9 +19,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.network.repository.PictureRepository
 import com.android.quo.service.ApiService
+import com.android.quo.service.SyncService
 import com.android.quo.service.UploadService
 import com.android.quo.util.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
@@ -57,8 +60,8 @@ class PlaceFragment : Fragment() {
 
     private val compositDisposable = CompositeDisposable()
 
-    private val apiService = ApiService.instance
-    private val uploadService = UploadService(apiService)
+    private val pictureRepository = Application.pictureRepository
+    private val uploadService = Application.uploadService
 
     private lateinit var viewModel: PlaceViewModel
 
@@ -79,7 +82,7 @@ class PlaceFragment : Fragment() {
         }
 
         viewModel = ViewModelProviders
-                .of(this, PlaceViewModelFactory(uploadService, apiService))
+                .of(this, PlaceViewModelFactory(uploadService, pictureRepository))
                 .get(PlaceViewModel::class.java)
 
         tabLayout.setupWithViewPager(viewPager)

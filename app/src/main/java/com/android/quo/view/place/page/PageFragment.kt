@@ -23,11 +23,7 @@ import kotlinx.android.synthetic.main.fragment_place_page.swipeRefreshLayout
  */
 class PageFragment : Fragment() {
 
-    private val database = Application.database
-    private val componentDao = database.componentDao()
-    private val apiService = ApiService.instance
-    private val syncService = SyncService(database)
-    private val componentRepository = ComponentRepository(componentDao, apiService, syncService)
+    private val componentRepository = Application.componentRepository
 
     private lateinit var viewModel: PageViewModel
 

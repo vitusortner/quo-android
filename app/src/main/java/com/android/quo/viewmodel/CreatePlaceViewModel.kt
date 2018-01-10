@@ -33,7 +33,7 @@ class CreatePlaceViewModel(
 
     fun savePlace() {
         userDao.getUser()
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .subscribe({
                     CreatePlace.place.host = it.id
 

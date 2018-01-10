@@ -49,10 +49,8 @@ import java.util.concurrent.TimeUnit
  */
 class LoginActivity : AppCompatActivity() {
 
-    private val apiService = ApiService.instance
-    private val userDao = Application.database.userDao()
-    private val preferenceStore = SecuredPreferenceStore.getSharedInstance()
-    private val authService = AuthService(apiService, userDao, preferenceStore)
+    private val authService = Application.authService
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: LoginViewModel
 
@@ -66,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
 
         viewModel = ViewModelProviders
-                .of(this, LoginViewModelFactory(authService, userDao))
+                .of(this, LoginViewModelFactory(authService, userRepository))
                 .get(LoginViewModel::class.java)
 
         handleFacebookLogin()

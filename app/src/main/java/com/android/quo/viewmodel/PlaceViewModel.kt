@@ -1,11 +1,9 @@
 package com.android.quo.viewmodel
 
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.android.quo.network.model.ServerPicture
-import com.android.quo.service.ApiService
+import com.android.quo.network.repository.PictureRepository
 import com.android.quo.service.UploadService
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 /**
@@ -13,10 +11,9 @@ import java.io.File
  */
 class PlaceViewModel(
         private val uploadService: UploadService,
-        private val apiService: ApiService
+        private val pictureRepository: PictureRepository
 ) : ViewModel() {
 
-    private val TAG = javaClass.simpleName
 
     fun uploadImage(image: File, placeId: String) {
         uploadService.uploadImage(image) {
@@ -32,13 +29,7 @@ class PlaceViewModel(
                         timestamp = ""
                 )
 
-                apiService.addPicture(placeId, picture)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            Log.i(TAG, "Picture added: $it")
-                        }, {
-                            Log.e(TAG, "Error while adding picture: $it")
-                        })
+                pictureRepository.addPicture(placeId, picture)
             }
         }
     }

@@ -19,7 +19,6 @@ class UploadService(private val apiService: ApiService) {
         val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), image)
         val imageFileBody = MultipartBody.Part.createFormData("imgUpload", image.name, requestBody)
 
-
         apiService.uploadImage(imageFileBody)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
