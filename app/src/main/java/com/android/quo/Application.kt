@@ -2,7 +2,7 @@ package com.android.quo
 
 import android.app.Application
 import android.arch.persistence.room.Room
-import com.android.quo.db.AppDatabase
+import com.android.quo.db.Database
 import com.android.quo.network.repository.ComponentRepository
 import com.android.quo.network.repository.PictureRepository
 import com.android.quo.network.repository.PlaceRepository
@@ -22,7 +22,7 @@ import devliving.online.securedpreferencestore.SecuredPreferenceStore
 class Application : Application() {
 
     companion object {
-        lateinit var database: AppDatabase
+        lateinit var database: Database
 
         lateinit var apiService: ApiService
         lateinit var authService: AuthService
@@ -51,7 +51,7 @@ class Application : Application() {
 
         val securedPreferenceStore = SecuredPreferenceStore.getSharedInstance()
 
-        database = Room.databaseBuilder(this, AppDatabase::class.java, "qouDB").build()
+        database = Room.databaseBuilder(this, Database::class.java, "qouDB").build()
 
         val userDao = database.userDao()
         val pictureDao = database.pictureDao()

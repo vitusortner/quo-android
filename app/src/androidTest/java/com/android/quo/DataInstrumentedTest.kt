@@ -5,7 +5,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.android.quo.db.AppDatabase
+import com.android.quo.db.Database
 import com.android.quo.db.dao.ComponentDao
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.dao.PlaceDao
@@ -30,7 +30,7 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class DataInstrumentedTest {
-    lateinit var database: AppDatabase
+    lateinit var database: Database
 
     var userDao: UserDao? = null
     var placeDao: PlaceDao? = null
@@ -40,7 +40,7 @@ class DataInstrumentedTest {
     @Before
     fun createDB() {
         val appContext = InstrumentationRegistry.getTargetContext()
-        database = Room.inMemoryDatabaseBuilder(appContext, AppDatabase::class.java)
+        database = Room.inMemoryDatabaseBuilder(appContext, Database::class.java)
                 .allowMainThreadQueries()
                 .build()
 
