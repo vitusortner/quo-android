@@ -48,8 +48,8 @@ class CreatePlaceFragment : Fragment() {
 
     lateinit var place: ServerPlace
 
-    private val apiService: ApiService = ApiService.instance
-    private val userDao: UserDao = Application.database.userDao()
+    private val apiService = Application.apiService
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: CreatePlaceViewModel
 
@@ -63,7 +63,7 @@ class CreatePlaceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProviders
-                .of(this, CreatePlaceViewModelFactory(apiService, userDao))
+                .of(this, CreatePlaceViewModelFactory(apiService, userRepository))
                 .get(CreatePlaceViewModel::class.java)
 
         this.context?.let {
@@ -122,8 +122,6 @@ class CreatePlaceFragment : Fragment() {
                             } else {
                                 //TODO add message please fill required boxes
                             }
-
-
                         }
         )
     }

@@ -177,35 +177,44 @@ class PlaceFragment : Fragment() {
         activity?.startActivityForResult(cameraIntent, RESULT_CAMERA)
     }
 
+    private fun compressImage(image: File): File {
+        return Compressor(this.context)
+                .setMaxWidth(640)
+                .setMaxHeight(480)
+                .setQuality(75)
+                .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                .setDestinationDirectoryPath(
+                        Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo"
+                )
+                .compressToFile(image)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         try {
             if (resultCode != Activity.RESULT_CANCELED) {
                 if (requestCode == RESULT_GALLERY) {
-                    val selectedImageUri = data?.data
-
-                    val image = File(selectedImageUri?.let { getPath(it) })
-
-                    val compressedImage = Compressor(this.context)
-                            .setMaxWidth(640)
-                            .setMaxHeight(480)
-                            .setQuality(75)
-                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                            .setDestinationDirectoryPath(
-                                    Environment.getExternalStoragePublicDirectory(
-                                            Environment.DIRECTORY_PICTURES).absolutePath + "/Quo"
-                            )
-                            .compressToFile(image)
-
                     place?.id?.let {
+                        val selectedImageUri = data?.data
+                        val image = File(selectedImageUri?.let { getPath(it) })
+                        val compressedImage = compressImage(image)
+
                         viewModel.uploadImage(compressedImage, it)
 
                         // TODO refresh gallery
                     }
                     // bottomSheetDialog.hide()
                 } else if (resultCode == RESULT_CAMERA) {
-                    val image = data?.extras?.get("data") as Bitmap
+                    place?.id?.let {
+                        val image = data?.extras?.get("data") as Bitmap
+
+                        val file: File? = null
+
+
+                    }
 
                     // TODO upload image
+                    // TODO refresh gallery
                 }
             }
         } catch (e: Exception) {

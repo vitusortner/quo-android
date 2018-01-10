@@ -22,12 +22,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
 import com.android.quo.Application
+import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.PlaceRepository
-import com.android.quo.MainActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
 import com.google.zxing.BinaryBitmap
@@ -49,6 +46,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
  */
 
 class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
+
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val RESULT_GALLERY = 0
 

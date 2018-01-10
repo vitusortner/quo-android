@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import com.android.quo.db.dao.UserDao
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
+import com.android.quo.network.repository.UserRepository
 import com.android.quo.service.ApiService
 import com.android.quo.view.createplace.CreatePlace
 import io.reactivex.schedulers.Schedulers
@@ -26,30 +26,28 @@ import java.sql.Timestamp
 
 class CreatePlaceViewModel(
         private val apiService: ApiService,
-        private val userDao: UserDao
+        private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val TAG = javaClass.simpleName
 
     fun savePlace() {
-        userDao.getUser()
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    CreatePlace.place.host = it.id
+        userRepository.getUser {
+            it?.let {
+                CreatePlace.place.host = it.id
 
-                    apiService.addPlace(CreatePlace.place)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                Log.i(TAG, "Add place: $it")
+                apiService.addPlace(CreatePlace.place)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            Log.i(TAG, "Add place: $it")
 
-                                uploadQrCode(it)
-                                uploadImage(it)
-                            }, {
-                                Log.e(TAG, "Error while adding place: $it")
-                            })
-                }, {
-                    Log.e(TAG, "Error while getting user")
-                })
+                            uploadQrCode(it)
+                            uploadImage(it)
+                        }, {
+                            Log.e(TAG, "Error while adding place: $it")
+                        })
+            }
+        }
     }
 
     private fun uploadImage(response: ServerPlace) {

@@ -29,8 +29,8 @@ class Application : Application() {
         lateinit var syncService: SyncService
         lateinit var uploadService: UploadService
 
-        lateinit var pictureRepository: PictureRepository
         lateinit var componentRepository: ComponentRepository
+        lateinit var pictureRepository: PictureRepository
         lateinit var placeRepository: PlaceRepository
         lateinit var userRepository: UserRepository
     }
@@ -49,7 +49,7 @@ class Application : Application() {
 
         SecuredPreferenceStore.init(applicationContext, DefaultRecoveryHandler())
 
-        val preferenceStore = SecuredPreferenceStore.getSharedInstance()
+        val securedPreferenceStore = SecuredPreferenceStore.getSharedInstance()
 
         database = Room.databaseBuilder(this, AppDatabase::class.java, "qouDB").build()
 
@@ -58,13 +58,13 @@ class Application : Application() {
         val componentDao = database.componentDao()
         val placeDao = database.placeDao()
 
-        apiService = ApiService.instance
-        authService = AuthService(apiService, userDao, preferenceStore)
+        apiService = ApiService.instance(securedPreferenceStore)
+        authService = AuthService(apiService, userDao, securedPreferenceStore)
         syncService = SyncService(placeDao, componentDao, pictureDao)
         uploadService = UploadService(apiService)
 
-        pictureRepository = PictureRepository(pictureDao, apiService, syncService)
         componentRepository = ComponentRepository(componentDao, apiService, syncService)
+        pictureRepository = PictureRepository(pictureDao, apiService, syncService)
         placeRepository = PlaceRepository(placeDao, apiService, syncService)
         userRepository = UserRepository(userDao)
     }

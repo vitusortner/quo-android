@@ -113,25 +113,36 @@ interface ApiService {
 
         private const val BASE_URL = "http://ec2-52-57-50-127.eu-central-1.compute.amazonaws.com/"
 
-        private val okClient: OkHttpClient
-            get() {
-                val clientBuilder = OkHttpClient.Builder()
+        @Volatile
+        private var INSTANCE: ApiService? = null
 
-                clientBuilder.addInterceptor { chain ->
-                    val original = chain.request()
-                    val requestBuilder = original.newBuilder().headers(headers(original.url()))
-                    val request = requestBuilder.build()
-                    chain.proceed(request)
-                }
-                return clientBuilder.build()
+        fun instance(securedPreferenceStore: SecuredPreferenceStore): ApiService {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: retrofit(securedPreferenceStore)
+                        .create(ApiService::class.java)
+                        .also { INSTANCE = it }
             }
+        }
 
-        private fun headers(url: HttpUrl): Headers {
+        private fun okClient(securedPreferenceStore: SecuredPreferenceStore): OkHttpClient {
+            val clientBuilder = OkHttpClient.Builder()
+
+            clientBuilder.addInterceptor { chain ->
+                val original = chain.request()
+                val requestBuilder = original
+                        .newBuilder()
+                        .headers(headers(original.url(), securedPreferenceStore))
+                val request = requestBuilder.build()
+                chain.proceed(request)
+            }
+            return clientBuilder.build()
+        }
+
+        private fun headers(url: HttpUrl, securedPreferenceStore: SecuredPreferenceStore): Headers {
             val headers = mutableMapOf("Accept" to "application/json")
 
             if (Endpoints.needsBearerToken(url)) {
-                val preferenceStore = SecuredPreferenceStore.getSharedInstance()
-                val token = preferenceStore.getString(Constants.TOKEN_KEY, "")
+                val token = securedPreferenceStore.getString(Constants.TOKEN_KEY, "")
 
                 headers.put("Authorization", "Bearer $token")
             }
@@ -143,14 +154,14 @@ interface ApiService {
             return Headers.of(headers)
         }
 
-        private val retrofit: Retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(BASE_URL)
-                .client(okClient)
-                .build()
-
-        val instance: ApiService = retrofit.create(ApiService::class.java)
+        private fun retrofit(securedPreferenceStore: SecuredPreferenceStore): Retrofit {
+            return Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(BASE_URL)
+                    .client(okClient(securedPreferenceStore))
+                    .build()
+        }
 
         object Endpoints {
 

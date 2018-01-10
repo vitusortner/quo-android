@@ -49,6 +49,7 @@ import java.io.File
  */
 
 class CreatePageFragment : Fragment() {
+
     private var compositeDisposable = CompositeDisposable()
     private val RESULT_GALLERY = 2
     private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 101
