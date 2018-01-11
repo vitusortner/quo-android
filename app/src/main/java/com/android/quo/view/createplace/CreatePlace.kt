@@ -11,11 +11,21 @@ import com.android.quo.network.model.ServerPlace
  */
 
 object CreatePlace {
-    var place: ServerPlace = ServerPlace(null, Application.database.userDao().getUser().toString(), "", "", "", "",
-            -1.0, -1.0, null, null, "quo_default_1.png",
-            "", null, "")
-    val components = ArrayList<ServerComponent>()
-    var list: ArrayList<Drawable>? = null
-    lateinit var qrCodeImage: Bitmap
 
+    var place = ServerPlace(
+            host = Application.database.userDao().getUser().toString(),
+            title = "",
+            startDate = "",
+            latitude = -1.0,
+            longitude = -1.0,
+            titlePicture = "quo_default_1.png",
+            qrCodeId = "",
+            timestamp = ""
+    )
+
+    val components = ArrayList<ServerComponent>()
+
+    var list: ArrayList<Drawable>? = null
+
+    lateinit var qrCodeImage: Bitmap
 }
