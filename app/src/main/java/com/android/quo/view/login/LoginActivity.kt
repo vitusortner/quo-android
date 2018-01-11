@@ -1,6 +1,5 @@
 package com.android.quo.view.login
 
-
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -13,8 +12,6 @@ import android.view.View
 import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.service.ApiService
-import com.android.quo.service.AuthService
 import com.android.quo.MainActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.android.quo.viewmodel.factory.LoginViewModelFactory
@@ -25,7 +22,6 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
-import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView

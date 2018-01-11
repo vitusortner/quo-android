@@ -111,8 +111,6 @@ interface ApiService {
 
     companion object {
 
-        private const val BASE_URL = "http://ec2-52-57-50-127.eu-central-1.compute.amazonaws.com/"
-
         @Volatile
         private var INSTANCE: ApiService? = null
 
@@ -158,7 +156,7 @@ interface ApiService {
             return Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl(BASE_URL)
+                    .baseUrl(Constants.BASE_URL)
                     .client(okClient(securedPreferenceStore))
                     .build()
         }

@@ -21,7 +21,7 @@ interface UserDao {
     fun getUser(): Single<User>
 
     @Query("SELECT * FROM user WHERE id = :id LIMIT 1")
-    fun getUserById(id: String): Flowable<User>?
+    fun getUserById(id: String): Flowable<User>
 
     @Insert(onConflict = REPLACE)
     fun insertUser(user: User)

@@ -49,7 +49,7 @@ class SyncService(
         placeDao.deletePlace(place)
         placeDao.insertPlace(place)
 
-        Log.i(TAG, "place sync success!")
+        Log.i(TAG, "Place sync success!")
     }
 
     private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapToPlace: (T) -> Place) {

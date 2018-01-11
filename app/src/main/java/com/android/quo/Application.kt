@@ -22,6 +22,7 @@ import devliving.online.securedpreferencestore.SecuredPreferenceStore
 class Application : Application() {
 
     companion object {
+
         lateinit var database: Database
 
         lateinit var apiService: ApiService
@@ -53,10 +54,10 @@ class Application : Application() {
 
         database = Room.databaseBuilder(this, Database::class.java, "qouDB").build()
 
-        val userDao = database.userDao()
-        val pictureDao = database.pictureDao()
         val componentDao = database.componentDao()
+        val pictureDao = database.pictureDao()
         val placeDao = database.placeDao()
+        val userDao = database.userDao()
 
         apiService = ApiService.instance(securedPreferenceStore)
         authService = AuthService(apiService, userDao, securedPreferenceStore)

@@ -22,10 +22,6 @@ import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.network.repository.PictureRepository
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.service.UploadService
 import com.android.quo.util.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.android.quo.viewmodel.PlaceViewModel
@@ -178,7 +174,7 @@ class PlaceFragment : Fragment() {
     }
 
     private fun compressImage(image: File): File {
-        return Compressor(this.context)
+        return Compressor(context)
                 .setMaxWidth(640)
                 .setMaxHeight(480)
                 .setQuality(75)
