@@ -48,6 +48,16 @@ class PlaceFragment : Fragment() {
 
     private var place: Place? = null
 
+    private val isPhotoUploadAllowed: Boolean by lazy {
+        place?.let { place ->
+            place.isPhotoUploadAllowed?.let {
+                it || place.isHost
+            }
+        } ?: run {
+            false
+        }
+    }
+
     private val compositDisposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -78,11 +88,13 @@ class PlaceFragment : Fragment() {
     private fun setupFab() {
         floatingActionButton.hide()
 
-        compositDisposable.add(RxView.clicks(floatingActionButton)
-                .subscribe {
-                    openBottomSheet()
-                }
-        )
+        if (isPhotoUploadAllowed) {
+            compositDisposable.add(RxView.clicks(floatingActionButton)
+                    .subscribe {
+                        openBottomSheet()
+                    }
+            )
+        }
     }
 
     private fun openBottomSheet() {
@@ -262,26 +274,28 @@ class PlaceFragment : Fragment() {
             }
         }
 
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        if (isPhotoUploadAllowed) {
+            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    floatingActionButton.hide()
-                } else {
-                    floatingActionButton.show()
+                override fun onPageScrollStateChanged(state: Int) {
                 }
-            }
-        })
+
+                override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    if (position == 0) {
+                        floatingActionButton.hide()
+                    } else {
+                        floatingActionButton.show()
+                    }
+                }
+            })
+        }
     }
 
     override fun onDestroy() {
