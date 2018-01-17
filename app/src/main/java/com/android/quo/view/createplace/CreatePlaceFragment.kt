@@ -70,8 +70,7 @@ class CreatePlaceFragment : Fragment() {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
-
-        setupStatusBar()
+        
         setupToolbar()
 
         requestPermissions(arrayOf(
@@ -148,6 +147,11 @@ class CreatePlaceFragment : Fragment() {
         for (fragment in childFragmentManager.fragments) {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupStatusBar()
     }
 
     override fun onStop() {
