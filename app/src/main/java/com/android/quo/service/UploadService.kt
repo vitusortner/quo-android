@@ -23,11 +23,9 @@ class UploadService(private val apiService: ApiService) {
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Image uploaded: $it")
-
                     completionHandler(it)
                 }, {
                     Log.e(TAG, "Error while uploading image: $it")
-
                     completionHandler(null)
                 })
     }

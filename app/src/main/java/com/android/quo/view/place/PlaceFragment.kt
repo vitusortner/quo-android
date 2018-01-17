@@ -26,8 +26,11 @@ import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
 import com.android.quo.util.extension.toPx
+import com.android.quo.view.place.gallery.GalleryFragment
 import com.android.quo.view.place.info.InfoFragment
+import com.android.quo.viewmodel.GalleryViewModel
 import com.android.quo.viewmodel.PlaceViewModel
+import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
@@ -67,6 +70,7 @@ class PlaceFragment : Fragment() {
     private val compositDisposable = CompositeDisposable()
 
     private val pictureRepository = Application.pictureRepository
+    private val userRepository = Application.userRepository
     private val uploadService = Application.uploadService
 
     private lateinit var viewModel: PlaceViewModel
@@ -80,7 +84,7 @@ class PlaceFragment : Fragment() {
         }
 
         viewModel = ViewModelProviders
-                .of(this, PlaceViewModelFactory(uploadService, pictureRepository))
+                .of(this, PlaceViewModelFactory(uploadService, pictureRepository, userRepository))
                 .get(PlaceViewModel::class.java)
 
         place = arguments?.getParcelable("place")
@@ -256,6 +260,7 @@ class PlaceFragment : Fragment() {
                     compressImage(image) {
                         it?.let {
                             viewModel.uploadImage(it, placeId)
+                            // TODO hide bottom sheet and refresh gallery
                         }
                     }
                 }
@@ -268,6 +273,7 @@ class PlaceFragment : Fragment() {
                         compressImage(image) {
                             it?.let {
                                 viewModel.uploadImage(it, placeId)
+                                // TODO hide bottom sheet and refresh gallery
                             }
                         }
                     }

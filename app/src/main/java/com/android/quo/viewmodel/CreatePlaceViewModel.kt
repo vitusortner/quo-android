@@ -58,8 +58,8 @@ class CreatePlaceViewModel(
                 placeId = response.id ?: "",
                 src = "",
                 isVisible = true,
-                // TODO timestamp should be set by server
-                timestamp = Timestamp(System.currentTimeMillis()).toString()
+                // TODO timestamp should be set by server make it nullable
+                timestamp = ""
         )
 
         //check if title picture is from user or default image

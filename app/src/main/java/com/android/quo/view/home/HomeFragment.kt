@@ -28,6 +28,16 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: HomeViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.bottomNavigationView?.visibility = VISIBLE
+
+        viewModel = ViewModelProviders
+                .of(this, HomeViewModelFactory(placeRepository, userRepository))
+                .get(HomeViewModel::class.java)
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -38,11 +48,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.bottomNavigationView?.visibility = VISIBLE
-
-        viewModel = ViewModelProviders
-                .of(this, HomeViewModelFactory(placeRepository, userRepository))
-                .get(HomeViewModel::class.java)
 
         observePlaces()
 

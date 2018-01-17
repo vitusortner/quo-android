@@ -2,7 +2,6 @@ package com.android.quo.view.createplace
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import com.android.quo.Application
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPlace
 
@@ -13,7 +12,7 @@ import com.android.quo.network.model.ServerPlace
 object CreatePlace {
 
     var place = ServerPlace(
-            host = Application.database.userDao().getUser().toString(),
+            host = "",
             title = "",
             startDate = "",
             latitude = -1.0,
