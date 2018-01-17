@@ -70,8 +70,7 @@ class CreatePlaceFragment : Fragment() {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
-
-        setupStatusBar()
+        
         setupToolbar()
 
         requestPermissions(arrayOf(
@@ -148,6 +147,11 @@ class CreatePlaceFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupStatusBar()
+    }
+
     override fun onStop() {
         super.onStop()
 
@@ -167,9 +171,16 @@ class CreatePlaceFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         //set place to default
-        CreatePlace.place = ServerPlace(null, (Application.database.userDao().getUser() as User).id, "", "", "", "",
-                -1.0, -1.0, null, null, "quo_default_1.png",
-                "", null, "")
+        CreatePlace.place = ServerPlace(
+                host = "",
+                title = "",
+                startDate = "",
+                latitude = -1.0,
+                longitude = -1.0,
+                titlePicture = "quo_default_1.png",
+                qrCodeId = "",
+                timestamp = ""
+        )
         compositDisposable.dispose()
     }
 
