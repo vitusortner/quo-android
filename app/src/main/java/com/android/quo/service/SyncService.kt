@@ -110,6 +110,7 @@ class SyncService(private val database: AppDatabase) {
                 hasToValidateGps = serverPlace.settings?.hasToValidateGps,
                 titlePicture = serverPlace.titlePicture ?: "",
                 qrCodeId = serverPlace.qrCodeId ?: "",
+                qrCode = serverPlace.qrCode ?: "",
                 timestamp = serverPlace.timestamp,
                 lastScanned = date
         )
