@@ -57,7 +57,9 @@ import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.cameraLayout
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.defaultImageListView
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.photosLayout
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -74,8 +76,8 @@ class CreateEventFragment : Fragment(), LocationListener {
     private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
     private val PERMISSION_REQUEST_CAMERA = 103
     private val DRAWABLE_RIGHT = 2
-    private val RESULT_GALLERY = 0
-    private var RESULT_CAMERA = 1
+    private val RESULT_GALLERY = 201
+    private var RESULT_CAMERA = 202
     private lateinit var calendar: Calendar
     private lateinit var currentEditText: EditText
     private val dateFormat = "E, MMM dd yyyy"
@@ -421,10 +423,12 @@ class CreateEventFragment : Fragment(), LocationListener {
                     CreatePlace.place.titlePicture = compressedImage.absolutePath
                     bottomSheetDialog.dismiss()
 
-                } else if (resultCode == RESULT_CAMERA) {
-                    val image = data?.extras?.get("data") as Bitmap
-                    headerImageView.setImageBitmap(image)
-                    CreatePlace.place.titlePicture = data?.extras?.get("data") as String
+                } else if (requestCode == RESULT_CAMERA) {
+                    val path = savePhotoFromCamera(data?.extras?.get("data") as Bitmap)
+                    val bitmap = BitmapFactory.decodeFile(path)
+                    headerImageView.setImageBitmap(bitmap)
+                    CreatePlace.place.titlePicture = path
+                    bottomSheetDialog.dismiss()
                 }
             }
         } catch (e: Exception) {
@@ -573,6 +577,20 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES).absolutePath + "/Quo")
                 .compressToFile(file)
+    }
+
+    private fun savePhotoFromCamera(bitmap: Bitmap): String {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
+        val path = File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo/")
+        val file = File(path, "${System.currentTimeMillis()}.jpg")
+        path.mkdirs()
+        file.createNewFile()
+        val fileOutputStream = FileOutputStream(file)
+        fileOutputStream.write(bytes.toByteArray())
+        fileOutputStream.close()
+        return file.path
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
