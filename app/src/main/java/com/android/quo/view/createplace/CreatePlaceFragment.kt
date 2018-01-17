@@ -169,7 +169,7 @@ class CreatePlaceFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         //set place to default
-        CreatePlace.place = ServerPlace(null, (Application.database.userDao().getUser() as User).id, "", "", "", "",
+        CreatePlace.place = ServerPlace(null, Application.database.userDao().getUser().toString(), "", "", "", "",
                 -1.0, -1.0, null, null, "quo_default_1.png",
                 "", null, "")
         compositDisposable.dispose()
