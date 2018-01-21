@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import com.android.quo.db.dao.UserDao
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
+import com.android.quo.repository.UserRepository
 import com.android.quo.service.ApiService
 import com.android.quo.view.createplace.CreatePlace
 import io.reactivex.schedulers.Schedulers
@@ -17,7 +17,6 @@ import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.sql.Timestamp
 
 
 /**
@@ -26,30 +25,28 @@ import java.sql.Timestamp
 
 class CreatePlaceViewModel(
         private val apiService: ApiService,
-        private val userDao: UserDao
+        private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val TAG = javaClass.simpleName
 
     fun savePlace() {
-        userDao.getUser()
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    CreatePlace.place.host = it.id
+        userRepository.getUser {
+            it?.let {
+                CreatePlace.place.host = it.id
 
-                    apiService.addPlace(CreatePlace.place)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                Log.i(TAG, "Add place: $it")
+                apiService.addPlace(CreatePlace.place)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            Log.i(TAG, "Add place: $it")
 
-                                uploadQrCode(it)
-                                uploadImage(it)
-                            }, {
-                                Log.e(TAG, "Error while adding place: $it")
-                            })
-                }, {
-                    Log.e(TAG, "Error while getting user: $it")
-                })
+                            uploadQrCode(it)
+                            uploadImage(it)
+                        }, {
+                            Log.e(TAG, "Error while adding place: $it")
+                        })
+            }
+        }
     }
 
     private fun uploadImage(response: ServerPlace) {
@@ -60,8 +57,8 @@ class CreatePlaceViewModel(
                 placeId = response.id ?: "",
                 src = "",
                 isVisible = true,
-                // TODO timestamp should be set by server
-                timestamp = Timestamp(System.currentTimeMillis()).toString()
+                // TODO timestamp should be set by server make it nullable
+                timestamp = ""
         )
 
         //check if title picture is from user or default image
@@ -72,12 +69,11 @@ class CreatePlaceViewModel(
                 val uri = Uri.parse(title.src)
                 val file = File(uri.path)
 
-
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
                 // sync title picture to server and add the response answer to the created place
-                apiService.uploadPicture(imageFileBody)
+                apiService.uploadImage(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Titlepicture uploaded: $it")
@@ -133,7 +129,7 @@ class CreatePlaceViewModel(
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
-                apiService.uploadPicture(imageFileBody)
+                apiService.uploadImage(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Picture uploaded: $it")
@@ -190,7 +186,7 @@ class CreatePlaceViewModel(
         val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
         // sync title picture to server and add the response answer to the created place
-        apiService.uploadPicture(imageFileBody)
+        apiService.uploadImage(imageFileBody)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Picture uploaded: $it")

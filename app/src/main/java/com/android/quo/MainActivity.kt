@@ -11,8 +11,6 @@ import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.db.entity.Place
-import com.android.quo.service.ApiService
-import com.android.quo.service.AuthService
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.myplaces.MyPlacesFragment
@@ -20,15 +18,12 @@ import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.android.quo.viewmodel.factory.LoginViewModelFactory
-import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private val apiService = ApiService.instance
-    private val userDao = Application.database.userDao()
-    private val preferenceStore = SecuredPreferenceStore.getSharedInstance()
-    private val authService = AuthService(apiService, userDao, preferenceStore)
+    private val authService = Application.authService
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: LoginViewModel
 
@@ -37,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProviders
-                .of(this, LoginViewModelFactory(authService, userDao))
+                .of(this, LoginViewModelFactory(authService, userRepository))
                 .get(LoginViewModel::class.java)
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)

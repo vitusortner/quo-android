@@ -11,9 +11,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.factory.HomeViewModelFactory
@@ -26,14 +23,20 @@ import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
  */
 class HomeFragment : Fragment() {
 
-    private val database = Application.database
-    private val placeDao = database.placeDao()
-    private val userDao = database.userDao()
-    private val apiService = ApiService.instance
-    private val syncService = SyncService(database)
-    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+    private val placeRepository = Application.placeRepository
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: HomeViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.bottomNavigationView?.visibility = VISIBLE
+
+        viewModel = ViewModelProviders
+                .of(this, HomeViewModelFactory(placeRepository, userRepository))
+                .get(HomeViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -45,11 +48,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.bottomNavigationView?.visibility = VISIBLE
-
-        viewModel = ViewModelProviders
-                .of(this, HomeViewModelFactory(placeRepository, userDao))
-                .get(HomeViewModel::class.java)
 
         observePlaces()
 
