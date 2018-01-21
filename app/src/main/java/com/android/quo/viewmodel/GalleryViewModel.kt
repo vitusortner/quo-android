@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Picture
 import com.android.quo.util.extension.toDate
-import com.android.quo.network.repository.PictureRepository
+import com.android.quo.repository.PictureRepository
 import io.reactivex.disposables.CompositeDisposable
 
 /**

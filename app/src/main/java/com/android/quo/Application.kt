@@ -3,10 +3,10 @@ package com.android.quo
 import android.app.Application
 import android.arch.persistence.room.Room
 import com.android.quo.db.Database
-import com.android.quo.network.repository.ComponentRepository
-import com.android.quo.network.repository.PictureRepository
-import com.android.quo.network.repository.PlaceRepository
-import com.android.quo.network.repository.UserRepository
+import com.android.quo.repository.ComponentRepository
+import com.android.quo.repository.PictureRepository
+import com.android.quo.repository.PlaceRepository
+import com.android.quo.repository.UserRepository
 import com.android.quo.service.ApiService
 import com.android.quo.service.AuthService
 import com.android.quo.service.SyncService

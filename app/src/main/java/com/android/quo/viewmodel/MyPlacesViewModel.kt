@@ -5,8 +5,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.android.quo.db.entity.Place
-import com.android.quo.network.repository.PlaceRepository
-import com.android.quo.network.repository.UserRepository
+import com.android.quo.repository.PlaceRepository
+import com.android.quo.repository.UserRepository
 import com.android.quo.util.extension.toDate
 import io.reactivex.disposables.CompositeDisposable
 

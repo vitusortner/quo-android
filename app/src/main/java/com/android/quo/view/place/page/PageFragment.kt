@@ -10,9 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.ComponentRepository
 import com.android.quo.viewmodel.PageViewModel
 import com.android.quo.viewmodel.factory.PageViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_page.recyclerView

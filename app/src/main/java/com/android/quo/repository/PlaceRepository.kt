@@ -1,4 +1,4 @@
-package com.android.quo.network.repository
+package com.android.quo.repository
 
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place

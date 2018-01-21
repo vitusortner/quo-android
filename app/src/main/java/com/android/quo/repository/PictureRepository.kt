@@ -1,4 +1,4 @@
-package com.android.quo.network.repository
+package com.android.quo.repository
 
 import android.util.Log
 import com.android.quo.db.dao.PictureDao

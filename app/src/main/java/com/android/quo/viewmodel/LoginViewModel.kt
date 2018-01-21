@@ -2,7 +2,7 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.util.Patterns
-import com.android.quo.network.repository.UserRepository
+import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
