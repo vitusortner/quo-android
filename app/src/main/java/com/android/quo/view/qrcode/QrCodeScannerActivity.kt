@@ -28,9 +28,6 @@ import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.db.entity.Place
-import com.android.quo.network.repository.PlaceRepository
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
 import com.android.quo.util.Constants
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
@@ -116,12 +113,8 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            ASK_MULTIPLE_PERMISSION_REQUEST_CODE -> {
-                setupLocationClient()
-            }
-            PERMISSION_REQUEST_GPS -> {
-                setupLocationClient()
-            }
+            ASK_MULTIPLE_PERMISSION_REQUEST_CODE -> setupLocationClient()
+            PERMISSION_REQUEST_GPS -> setupLocationClient()
         }
     }
 
@@ -151,10 +144,10 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
         if (scannerView.flash) {
             flashButton.background = ContextCompat.getDrawable(this, R.drawable.ic_flash_on)
-            flashTextView.setText(R.string.qr_code_flash_off)
+            flashTextView.setText(R.string.qr_code_flash_on)
         } else {
             flashButton.background = ContextCompat.getDrawable(this, R.drawable.ic_flash_off)
-            flashTextView.setText(R.string.qr_code_flash_on)
+            flashTextView.setText(R.string.qr_code_flash_off)
         }
     }
 
