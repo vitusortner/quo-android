@@ -294,16 +294,21 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
      * Gets called, when gallery returns image
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == RESULT_GALLERY) {
-                val selectedImageUri = data?.data
-                val reader = MultiFormatReader()
-                val path = selectedImageUri?.let { getPath(it) }
-                val bitmap = BitmapFactory.decodeFile(path)
-                val result = reader.decode(getBinaryBitmap(bitmap))
+        try {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == RESULT_GALLERY) {
+                    val selectedImageUri = data?.data
+                    val reader = MultiFormatReader()
+                    val path = selectedImageUri?.let { getPath(it) }
+                    val bitmap = BitmapFactory.decodeFile(path)
+                    val result = reader.decode(getBinaryBitmap(bitmap))
 
-                handleQrCodeUri(result.text)
+                    handleQrCodeUri(result.text)
+                }
             }
+        } catch (exception: Exception) {
+            Log.e(TAG, "$exception")
+            openNoQrCodeFoundDialog()
         }
     }
 
