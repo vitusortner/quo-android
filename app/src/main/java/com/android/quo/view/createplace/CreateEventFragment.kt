@@ -424,7 +424,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 } else if (resultCode == RESULT_CAMERA) {
                     val image = data?.extras?.get("data") as Bitmap
                     headerImageView.setImageBitmap(image)
-                    CreatePlace.place.titlePicture = data?.extras?.get("data") as String
+                    CreatePlace.place.titlePicture = data.extras?.get("data") as String
                 }
             }
         } catch (e: Exception) {

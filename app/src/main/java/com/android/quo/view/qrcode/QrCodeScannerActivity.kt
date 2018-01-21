@@ -22,12 +22,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
 import com.android.quo.Application
+import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.PlaceRepository
-import com.android.quo.MainActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
 import com.google.zxing.BinaryBitmap
@@ -49,17 +46,14 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
  */
 
 class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
+
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
     private val RESULT_GALLERY = 0
 
     private lateinit var scannerView: ZXingScannerView
 
-    private val database = Application.database
-    private val apiService = ApiService.instance
-    private val placeDao = database.placeDao()
-    private val userDao = database.userDao()
-    private val syncService = SyncService(database)
-    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+    private val placeRepository = Application.placeRepository
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: QrCodeScannerViewModel
 
@@ -68,7 +62,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         setContentView(R.layout.activity_qr_code_scanner)
 
         viewModel = ViewModelProviders
-                .of(this, QrCodeScannerViewModelFactory(placeRepository, userDao))
+                .of(this, QrCodeScannerViewModelFactory(placeRepository, userRepository))
                 .get(QrCodeScannerViewModel::class.java)
 
         requestPermissions(arrayOf(

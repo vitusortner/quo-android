@@ -2,7 +2,7 @@ package com.android.quo.viewmodel.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.android.quo.db.dao.UserDao
+import com.android.quo.repository.UserRepository
 import com.android.quo.service.ApiService
 import com.android.quo.viewmodel.CreatePlaceViewModel
 
@@ -11,10 +11,10 @@ import com.android.quo.viewmodel.CreatePlaceViewModel
  */
 class CreatePlaceViewModelFactory(
         private val apiService: ApiService,
-        private val userDao: UserDao
+        private val userRepository: UserRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return CreatePlaceViewModel(apiService, userDao) as T
+        return CreatePlaceViewModel(apiService, userRepository) as T
     }
 }

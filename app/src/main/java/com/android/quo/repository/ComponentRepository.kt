@@ -1,4 +1,4 @@
-package com.android.quo.network.repository
+package com.android.quo.repository
 
 import com.android.quo.db.dao.ComponentDao
 import com.android.quo.db.entity.Component

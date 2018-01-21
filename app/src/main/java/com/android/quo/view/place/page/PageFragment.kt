@@ -10,9 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.ComponentRepository
 import com.android.quo.viewmodel.PageViewModel
 import com.android.quo.viewmodel.factory.PageViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_page.recyclerView
@@ -23,11 +20,7 @@ import kotlinx.android.synthetic.main.fragment_place_page.swipeRefreshLayout
  */
 class PageFragment : Fragment() {
 
-    private val database = Application.database
-    private val componentDao = database.componentDao()
-    private val apiService = ApiService.instance
-    private val syncService = SyncService(database)
-    private val componentRepository = ComponentRepository(componentDao, apiService, syncService)
+    private val componentRepository = Application.componentRepository
 
     private lateinit var viewModel: PageViewModel
 
