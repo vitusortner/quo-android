@@ -4,19 +4,18 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
-import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.Place
+import com.android.quo.repository.PlaceRepository
+import com.android.quo.repository.UserRepository
 import com.android.quo.util.extension.toDate
-import com.android.quo.network.repository.PlaceRepository
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by vitusortner on 21.12.17.
  */
 class MyPlacesViewModel(
         private val placeRepository: PlaceRepository,
-        private val userDao: UserDao
+        private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val TAG = javaClass.simpleName
@@ -34,22 +33,19 @@ class MyPlacesViewModel(
     }
 
     fun updatePlaces() {
-        compositDisposabel.add(userDao.getUser()
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    placeRepository.getHostedPlaces(it.id)
-                            .distinctUntilChanged()
-                            .subscribe({
-                                if (it.isNotEmpty()) {
-                                    places?.value = it.sortedByDescending { it.timestamp.toDate() }
-                                }
-                            }, {
-                                Log.e(TAG, "Error while getting hosted places: $it")
-                            })
-                }, {
-                    Log.e(TAG, "Error while getting user $it")
-                })
-        )
+        userRepository.getUser {
+            it?.let {
+                placeRepository.getHostedPlaces(it.id)
+                        .distinctUntilChanged()
+                        .subscribe({
+                            if (it.isNotEmpty()) {
+                                places?.value = it.sortedByDescending { it.timestamp.toDate() }
+                            }
+                        }, {
+                            Log.e(TAG, "Error while getting hosted places: $it")
+                        })
+            }
+        }
     }
 
     override fun onCleared() {

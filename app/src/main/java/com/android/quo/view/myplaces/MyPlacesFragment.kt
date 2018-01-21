@@ -10,9 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
-import com.android.quo.service.ApiService
-import com.android.quo.service.SyncService
-import com.android.quo.network.repository.PlaceRepository
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.viewmodel.MyPlacesViewModel
@@ -27,12 +24,8 @@ import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
  */
 class MyPlacesFragment : Fragment() {
 
-    private val database = Application.database
-    private val placeDao = database.placeDao()
-    private val userDao = database.userDao()
-    private val apiService = ApiService.instance
-    private val syncService = SyncService(database)
-    private val placeRepository = PlaceRepository(placeDao, apiService, syncService)
+    private val placeRepository = Application.placeRepository
+    private val userRepository = Application.userRepository
 
     private lateinit var viewModel: MyPlacesViewModel
 
@@ -49,7 +42,7 @@ class MyPlacesFragment : Fragment() {
         activity?.bottomNavigationView?.visibility = View.VISIBLE
 
         viewModel = ViewModelProviders
-                .of(this, MyPlacesViewModelFactory(placeRepository, userDao))
+                .of(this, MyPlacesViewModelFactory(placeRepository, userRepository))
                 .get(MyPlacesViewModel::class.java)
 
         observePlaces()

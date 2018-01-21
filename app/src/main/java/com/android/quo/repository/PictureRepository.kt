@@ -1,5 +1,6 @@
-package com.android.quo.network.repository
+package com.android.quo.repository
 
+import android.util.Log
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.entity.Picture
 import com.android.quo.service.ApiService
@@ -9,6 +10,7 @@ import com.android.quo.network.model.ServerPicture
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by vitusortner on 05.12.17.
@@ -18,6 +20,8 @@ class PictureRepository(
         private val apiService: ApiService,
         private val syncService: SyncService
 ) {
+
+    private val TAG = javaClass.simpleName
 
     fun getPictures(placeId: String): Flowable<List<Picture>> {
         return Flowable.create({ emitter ->
@@ -30,5 +34,15 @@ class PictureRepository(
                 override fun sync(data: List<ServerPicture>) = syncService.savePictures(data, placeId)
             }
         }, BackpressureStrategy.BUFFER)
+    }
+
+    fun addPicture(placeId: String, picture: ServerPicture) {
+        apiService.addPicture(placeId, picture)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    Log.i(TAG, "Picture added: $it")
+                }, {
+                    Log.e(TAG, "Error while adding picture: $it")
+                })
     }
 }

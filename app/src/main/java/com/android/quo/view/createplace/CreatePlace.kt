@@ -2,7 +2,6 @@ package com.android.quo.view.createplace
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import com.android.quo.Application
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPlace
 
@@ -11,11 +10,21 @@ import com.android.quo.network.model.ServerPlace
  */
 
 object CreatePlace {
-    var place: ServerPlace = ServerPlace(null, Application.database.userDao().getUser().toString(), "", "", "", "",
-            -1.0, -1.0, null, null, "quo_default_1.png",
-            "", null, "")
-    val components = ArrayList<ServerComponent>()
-    var list: ArrayList<Drawable>? = null
-    lateinit var qrCodeImage: Bitmap
 
+    var place = ServerPlace(
+            host = "",
+            title = "",
+            startDate = "",
+            latitude = -1.0,
+            longitude = -1.0,
+            titlePicture = "quo_default_1.png",
+            qrCodeId = "",
+            timestamp = ""
+    )
+
+    val components = ArrayList<ServerComponent>()
+
+    var list: ArrayList<Drawable>? = null
+
+    lateinit var qrCodeImage: Bitmap
 }
