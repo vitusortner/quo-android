@@ -26,15 +26,11 @@ import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
 import com.android.quo.util.extension.toPx
-import com.android.quo.view.place.gallery.GalleryFragment
 import com.android.quo.view.place.info.InfoFragment
-import com.android.quo.viewmodel.GalleryViewModel
 import com.android.quo.viewmodel.PlaceViewModel
-import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
-import com.jakewharton.rxbinding2.view.RxView
 import id.zelory.compressor.Compressor
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -66,6 +62,7 @@ class PlaceFragment : Fragment() {
 
     private var place: Place? = null
     private var currentPhotoPath: String? = null
+    private var bottomSheetDialog: BottomSheetDialog? = null
 
     private val isPhotoUploadAllowed: Boolean by lazy {
         place?.let { place ->
@@ -114,30 +111,26 @@ class PlaceFragment : Fragment() {
         setupToolbar()
         setupViewPager()
         setupFab()
+        setupBottomSheetDialog()
     }
 
     private fun setupFab() {
         floatingActionButton.hide()
 
         if (isPhotoUploadAllowed) {
-            compositDisposable.add(RxView.clicks(floatingActionButton)
-                    .subscribe {
-                        openBottomSheet()
-                    }
-            )
+            floatingActionButton.setOnClickListener {
+                bottomSheetDialog?.show()
+            }
         }
     }
 
-    private fun openBottomSheet() {
+    private fun setupBottomSheetDialog() {
         context?.let { context ->
-            val bottomSheetDialog = BottomSheetDialog(context)
-            val layout = activity?.layoutInflater?.inflate(R.layout.bottom_sheet_add_image, null)
-            layout?.let {
-                setupBottomSheetButtons(it)
+            bottomSheetDialog = BottomSheetDialog(context)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_add_image, null)
 
-                bottomSheetDialog.setContentView(it)
-                bottomSheetDialog.show()
-            }
+            setupBottomSheetButtons(view)
+            bottomSheetDialog?.setContentView(view)
         }
     }
 
@@ -171,31 +164,27 @@ class PlaceFragment : Fragment() {
         }
     }
 
-    private fun setupBottomSheetButtons(layout: View) {
-        compositDisposable.add(RxView.clicks(layout.cameraButton)
-                .subscribe {
-                    requestPermissions(
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.CAMERA
-                            ),
-                            PERMISSION_REQUEST_CAMERA
-                    )
-                }
-        )
+    private fun setupBottomSheetButtons(view: View) {
+        view.cameraButton.setOnClickListener {
+            requestPermissions(
+                    arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
+                    ),
+                    PERMISSION_REQUEST_CAMERA
+            )
+        }
 
-        compositDisposable.add(RxView.clicks(layout.galleryButton)
-                .subscribe {
-                    requestPermissions(
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            ),
-                            PERMISSION_REQUEST_EXTERNAL_STORAGE
-                    )
-                }
-        )
+        view.galleryButton.setOnClickListener {
+            requestPermissions(
+                    arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    PERMISSION_REQUEST_EXTERNAL_STORAGE
+            )
+        }
     }
 
     private fun openGallery() {
@@ -272,11 +261,11 @@ class PlaceFragment : Fragment() {
                     compressImage(image) {
                         it?.let {
                             viewModel.uploadImage(it, placeId)
-                            // TODO hide bottom sheet and refresh gallery
+                            // TODO refresh gallery
+                            bottomSheetDialog?.hide()
                         }
                     }
                 }
-//                 bottomSheetDialog.hide()
             } else if (requestCode == RESULT_CAMERA) {
                 place?.id?.let { placeId ->
                     currentPhotoPath?.let {
@@ -285,9 +274,10 @@ class PlaceFragment : Fragment() {
                         compressImage(image) {
                             it?.let {
                                 viewModel.uploadImage(it, placeId)
-                                // TODO hide bottom sheet and refresh gallery
+                                // TODO refresh gallery
                                 // https://app.clickup.com/751518/751948/t/xazx
                                 // maybe add completionHandler to uploadImage function and update gallery then
+                                bottomSheetDialog?.hide()
                             }
                         }
                     }
@@ -345,29 +335,29 @@ class PlaceFragment : Fragment() {
                         }
         )
 
-//        this.context?.let {
-//            // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
-//            // set tab layout colors denpendent on how far scrolled
-//            var scrollRange = -1
-//
-//            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-//                // set shadow
-//                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
-//
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.totalScrollRange
-//                }
-//                if (scrollRange + verticalOffset <= 150) {
-//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
-//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
-//                            resources.getColor(R.color.colorTextBlack))
-//                } else {
-//                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
-//                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
-//                            resources.getColor(R.color.colorTextWhite))
-//                }
-//            }
-//        }
+        this.context?.let {
+            // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
+            // set tab layout colors denpendent on how far scrolled
+            var scrollRange = -1
+
+            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+                // set shadow
+                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
+
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.totalScrollRange
+                }
+                if (scrollRange + verticalOffset <= 150) {
+                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
+                            resources.getColor(R.color.colorTextBlack))
+                } else {
+                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
+                            resources.getColor(R.color.colorTextWhite))
+                }
+            }
+        }
     }
 
     private fun setupViewPager() {
