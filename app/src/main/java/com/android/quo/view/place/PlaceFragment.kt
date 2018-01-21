@@ -236,8 +236,8 @@ class PlaceFragment : Fragment() {
 
     private fun compressImage(image: File, completionHandler: (File?) -> Unit) {
         Compressor(context)
-                .setMaxWidth(2000)
-                .setMaxHeight(2000)
+                .setMaxWidth(640)
+                .setMaxHeight(640)
                 .setQuality(75)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .compressToFileAsFlowable(image)
