@@ -2,6 +2,7 @@ package com.android.quo.view.home
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -12,11 +13,16 @@ import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.view.PlacePreviewAdapter
+import com.android.quo.view.login.LoginActivity
 import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.factory.HomeViewModelFactory
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_home.toolbar
 
 /**
  * Created by Jung on 01.11.17.
@@ -49,8 +55,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
         observePlaces()
-
         setupSwipeRefresh()
     }
 
@@ -58,6 +64,36 @@ class HomeFragment : Fragment() {
         super.onResume()
 
         viewModel.updatePlaces()
+    }
+
+    private fun setupToolbar() {
+        toolbar.inflateMenu(R.menu.home_menu)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.title) {
+                resources.getString(R.string.menu_settings) -> {
+                }
+                resources.getString(R.string.menu_help) -> {
+                }
+                resources.getString(R.string.menu_info) -> {
+                }
+                resources.getString(R.string.menu_logout) -> {
+                    logoutUserObservable()
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe()
+                }
+            }
+
+            true
+        }
+    }
+
+    private fun logoutUserObservable(): Observable<Unit> {
+        return Observable.create {
+            Application.database.userDao().deleteAllUsers()
+            val intent = Intent(this.context, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     /**
