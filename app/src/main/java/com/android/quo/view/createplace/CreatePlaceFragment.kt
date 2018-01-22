@@ -16,6 +16,8 @@ import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.network.model.ServerPlace
+import com.android.quo.network.model.ServerSettings
+import com.android.quo.service.ApiService
 import com.android.quo.viewmodel.CreatePlaceViewModel
 import com.android.quo.viewmodel.factory.CreatePlaceViewModelFactory
 import com.google.zxing.BarcodeFormat
@@ -174,6 +176,7 @@ class CreatePlaceFragment : Fragment() {
                 startDate = "",
                 latitude = -1.0,
                 longitude = -1.0,
+                settings = ServerSettings(false, false),
                 titlePicture = "quo_default_1.png",
                 qrCodeId = "",
                 timestamp = ""
