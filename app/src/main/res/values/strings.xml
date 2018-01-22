@@ -45,9 +45,19 @@
     <string name="qr_code_photos">photos</string>
     <string name="qr_code_cancel">cancel</string>
     <string name="qr_code_error_title">Error</string>
-    <string name="qr_code_error_message">We are sorry! There is not QR Code in image</string>
+    <string name="qr_code_error_message">We are sorry! There is no QR-Code</string>
     <string name="qr_code_done">DONE</string>
     <string name="qr_code_not_found">Not found</string>
+    <string name="qr_code_wrong_location_title">Too far away</string>
+    <string name="qr_code_wrong_location_message">It seems you\'re not at the right location.</string>
+    <string name="qr_code_wrong_location_ok">OK</string>
+    <string name="qr_code_location_off_title">Where are you?</string>
+    <string name="qr_code_location_off_message">Please turn on location services to access the place.</string>
+    <string name="qr_code_location_off_turn_on">TURN ON</string>
+    <string name="qr_code_location_off_no">NO</string>
+    <string name="qr_core_location_error_title">Oh!</string>
+    <string name="qr_code_location_error_message">Looks like something went wrong. Try again!</string>
+    <string name="qr_code_location_error_ok">OK</string>
 
     <!-- CREATE EVENT -->
     <string name="to">To</string>
