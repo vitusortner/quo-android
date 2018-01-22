@@ -1,12 +1,16 @@
 package com.android.quo.service
 
 import android.util.Log
+import com.android.quo.db.dao.ComponentDao
+import com.android.quo.db.dao.PictureDao
+import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.User
 import com.android.quo.util.Constants
 import com.android.quo.network.model.ServerLogin
 import com.android.quo.network.model.ServerSignup
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -14,6 +18,9 @@ import io.reactivex.schedulers.Schedulers
  */
 class AuthService(
         private val apiService: ApiService,
+        private val componentDao: ComponentDao,
+        private val pictureDao: PictureDao,
+        private val placeDao: PlaceDao,
         private val userDao: UserDao,
         private val preferenceStore: SecuredPreferenceStore
 ) {
@@ -68,7 +75,18 @@ class AuthService(
      * Removes user form local DB, removes token from shared preferences
      */
     fun logout() {
-        userDao.deleteAllUsers()
-        preferenceStore.edit().clear().commit()
+        // TODO make me nicer
+        Single.just(1)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    componentDao.deleteAllComponents()
+                    pictureDao.deleteAllPictures()
+                    placeDao.deleteAllPlaces()
+                    userDao.deleteAllUsers()
+                    preferenceStore.edit().clear().commit()
+
+                    Log.i(TAG, "Data cleared and user logged out.")
+                }, {
+                })
     }
 }
