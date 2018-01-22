@@ -60,7 +60,14 @@ class Application : Application() {
         val userDao = database.userDao()
 
         apiService = ApiService.instance(securedPreferenceStore)
-        authService = AuthService(apiService, userDao, securedPreferenceStore)
+        authService = AuthService(
+                apiService,
+                componentDao,
+                pictureDao,
+                placeDao,
+                userDao,
+                securedPreferenceStore
+        )
         syncService = SyncService(placeDao, componentDao, pictureDao)
         uploadService = UploadService(apiService)
 

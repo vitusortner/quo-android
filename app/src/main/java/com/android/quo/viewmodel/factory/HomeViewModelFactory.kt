@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
+import com.android.quo.service.AuthService
 import com.android.quo.viewmodel.HomeViewModel
 
 
@@ -12,10 +13,11 @@ import com.android.quo.viewmodel.HomeViewModel
  */
 class HomeViewModelFactory(
         private val placeRepository: PlaceRepository,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val authService: AuthService
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return HomeViewModel(placeRepository, userRepository) as T
+        return HomeViewModel(placeRepository, userRepository, authService) as T
     }
 }

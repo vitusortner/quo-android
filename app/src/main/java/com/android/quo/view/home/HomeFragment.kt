@@ -16,9 +16,6 @@ import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.viewmodel.HomeViewModel
 import com.android.quo.viewmodel.factory.HomeViewModelFactory
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
@@ -31,6 +28,7 @@ class HomeFragment : Fragment() {
 
     private val placeRepository = Application.placeRepository
     private val userRepository = Application.userRepository
+    private val authService = Application.authService
 
     private lateinit var viewModel: HomeViewModel
 
@@ -40,7 +38,7 @@ class HomeFragment : Fragment() {
         activity?.bottomNavigationView?.visibility = VISIBLE
 
         viewModel = ViewModelProviders
-                .of(this, HomeViewModelFactory(placeRepository, userRepository))
+                .of(this, HomeViewModelFactory(placeRepository, userRepository, authService))
                 .get(HomeViewModel::class.java)
     }
 
@@ -77,22 +75,13 @@ class HomeFragment : Fragment() {
                 resources.getString(R.string.menu_info) -> {
                 }
                 resources.getString(R.string.menu_logout) -> {
-                    logoutUserObservable()
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe()
+                    viewModel.logout()
+
+                    val intent = Intent(this.context, LoginActivity::class.java)
+                    startActivity(intent)
                 }
             }
-
             true
-        }
-    }
-
-    private fun logoutUserObservable(): Observable<Unit> {
-        return Observable.create {
-            Application.database.userDao().deleteAllUsers()
-            val intent = Intent(this.context, LoginActivity::class.java)
-            startActivity(intent)
         }
     }
 
