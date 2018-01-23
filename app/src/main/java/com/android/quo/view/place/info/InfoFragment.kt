@@ -21,13 +21,17 @@ class InfoFragment : Fragment() {
 
     private var place: Place? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        place = arguments?.getParcelable("place")
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        place = arguments?.getParcelable("place")
-
         return inflater.inflate(R.layout.fragment_info, container, false)
     }
 
@@ -43,7 +47,7 @@ class InfoFragment : Fragment() {
 
         place?.let {
             recyclerView.adapter = InfoAdapter(it)
-            recyclerView.layoutManager = LinearLayoutManager(this.context)
+            recyclerView.layoutManager = LinearLayoutManager(context)
         }
     }
 

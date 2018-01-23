@@ -51,6 +51,9 @@ data class Place(
         @ColumnInfo(name = "qr_code_id")
         var qrCodeId: String = "",
 
+        @ColumnInfo(name = "qr_code")
+        var qrCode: String = "",
+
         var timestamp: String = "",
 
         @ColumnInfo(name = "last_scanned")
