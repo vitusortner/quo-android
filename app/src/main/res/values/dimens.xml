@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- qr code scanner -->
+    <!-- General -->
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- QR Code Scanner -->
     <dimen name="qr_code_scanner_gallery_button_height">64dp</dimen>
     <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
     <dimen name="qr_code_scanner_icon_width">42dp</dimen>
@@ -19,15 +22,13 @@
     <dimen name="cardview_margin_start">8dp</dimen>
     <dimen name="cardview_margin_end">8dp</dimen>
 
-    <!-- action bar -->
-
+    <!-- Action Bar -->
     <dimen name="title_textsize">20sp</dimen>
     <dimen name="content_textsize">14sp</dimen>
     <!-- line height gets defined by adding line spacing extra to text size -->
     <dimen name="content_line_spacing_extra">6dp</dimen>
 
-    <!-- home -->
-
+    <!-- Home -->
     <dimen name="home_cardview_image_height">150dp</dimen>
     <dimen name="home_cardview_textview_padding_bottom">5dp</dimen>
     <dimen name="home_cardview_textview_padding_top">7dp</dimen>
@@ -117,9 +118,6 @@
     <dimen name="info_collapsing_toolbar_height">238dp</dimen>
     <dimen name="info_toolbar_elevation">4dp</dimen>
     <dimen name="info_recyclerview_overlap_top">60dp</dimen>
-
-    <!-- My Places -->
-    <dimen name="my_places_fab_margin">16dp</dimen>
 
     <!-- Main -->
     <dimen name="main_toolbar_elevation">4dp</dimen>

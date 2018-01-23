@@ -25,6 +25,7 @@
     <color name="colorTitle">#000000</color>
     <color name="colorTitleWhite">#FFFFFF</color>
     <color name="colorInfoIcon">#FFFFFF</color>
+    <color name="colorInfoIconDark">#95989A</color>
     <color name="colorImagePagerBackground">#000000</color>
 
     <color name="colorBackgroundWhite">#FFFFFF</color>
