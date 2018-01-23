@@ -3,8 +3,8 @@ package com.android.quo.repository
 import android.util.Log
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.entity.Picture
-import com.android.quo.service.ApiService
-import com.android.quo.network.NetworkBoundResource
+import com.android.quo.network.ApiClient
+import com.android.quo.util.NetworkBoundResource
 import com.android.quo.service.SyncService
 import com.android.quo.network.model.ServerPicture
 import io.reactivex.BackpressureStrategy
@@ -17,7 +17,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class PictureRepository(
         private val pictureDao: PictureDao,
-        private val apiService: ApiService,
+        private val apiClient: ApiClient,
         private val syncService: SyncService
 ) {
 
@@ -27,7 +27,7 @@ class PictureRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Picture>, List<ServerPicture>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPicture>> = apiService.getPictures(placeId)
+                override fun getRemote(): Single<List<ServerPicture>> = apiClient.getPictures(placeId)
 
                 override fun getLocal(): Flowable<List<Picture>> = pictureDao.getPictures(placeId)
 
@@ -37,7 +37,7 @@ class PictureRepository(
     }
 
     fun addPicture(placeId: String, picture: ServerPicture) {
-        apiService.addPicture(placeId, picture)
+        apiClient.addPicture(placeId, picture)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Picture added: $it")

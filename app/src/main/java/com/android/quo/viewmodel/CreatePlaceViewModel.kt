@@ -8,7 +8,7 @@ import android.util.Log
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.repository.UserRepository
-import com.android.quo.service.ApiService
+import com.android.quo.network.ApiClient
 import com.android.quo.view.createplace.CreatePlace
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -24,7 +24,7 @@ import java.io.FileOutputStream
  */
 
 class CreatePlaceViewModel(
-        private val apiService: ApiService,
+        private val apiClient: ApiClient,
         private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -35,7 +35,7 @@ class CreatePlaceViewModel(
             it?.let {
                 CreatePlace.place.host = it.id
 
-                apiService.addPlace(CreatePlace.place)
+                apiClient.addPlace(CreatePlace.place)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Add place: $it")
@@ -73,13 +73,13 @@ class CreatePlaceViewModel(
                 val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
                 // sync title picture to server and add the response answer to the created place
-                apiService.uploadImage(imageFileBody)
+                apiClient.uploadImage(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Titlepicture uploaded: $it")
                             response.titlePicture = it.path
 
-                            apiService.updatePlace(response.id ?: "", response)
+                            apiClient.updatePlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
                                         Log.i(TAG, "Place updated: $it")
@@ -94,14 +94,14 @@ class CreatePlaceViewModel(
 
             } else {
                 // get default picture from server and set it as title picture source
-                apiService.getDefaultPicture(titlePicture)
+                apiClient.getDefaultPicture(titlePicture)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Default picture: $it")
 
                             response.titlePicture = it.path
 
-                            apiService.updatePlace(response.id ?: "", response)
+                            apiClient.updatePlace(response.id ?: "", response)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
                                         Log.i(TAG, "Place updated: $it")
@@ -129,7 +129,7 @@ class CreatePlaceViewModel(
                 val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
-                apiService.uploadImage(imageFileBody)
+                apiClient.uploadImage(imageFileBody)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Picture uploaded: $it")
@@ -144,7 +144,7 @@ class CreatePlaceViewModel(
                                     timestamp = System.currentTimeMillis().toString()
                             )
 
-                            apiService.addPicture(response.id ?: "", picture)
+                            apiClient.addPicture(response.id ?: "", picture)
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({
                                         Log.i(TAG, "Picture added: $it")
@@ -152,7 +152,7 @@ class CreatePlaceViewModel(
                                         c.picture = it.src
 
                                         //post component to server
-                                        apiService.addComponent(it.placeId, c)
+                                        apiClient.addComponent(it.placeId, c)
                                                 .subscribeOn(Schedulers.io())
                                                 .subscribe({
                                                     Log.i(TAG, "Component uploaded: $it")
@@ -167,7 +167,7 @@ class CreatePlaceViewModel(
                         })
             } else if (c.text != null) {
                 //post component with text to server
-                apiService.addComponent(response.id ?: "", c)
+                apiClient.addComponent(response.id ?: "", c)
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             Log.i(TAG, "Component added: $it")
@@ -186,14 +186,14 @@ class CreatePlaceViewModel(
         val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
 
         // sync title picture to server and add the response answer to the created place
-        apiService.uploadImage(imageFileBody)
+        apiClient.uploadImage(imageFileBody)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Picture uploaded: $it")
 
                     response.qrCode = it.path
 
-                    apiService.updatePlace(response.id ?: "", response)
+                    apiClient.updatePlace(response.id ?: "", response)
                             .subscribeOn(Schedulers.io())
                             .subscribe({
                                 Log.i(TAG, "Place updated: $it")

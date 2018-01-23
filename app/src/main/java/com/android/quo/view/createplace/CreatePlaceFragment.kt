@@ -46,7 +46,7 @@ class CreatePlaceFragment : Fragment() {
 
     lateinit var place: ServerPlace
 
-    private val apiService = Application.apiService
+    private val apiService = Application.apiClient
     private val userRepository = Application.userRepository
 
     private lateinit var viewModel: CreatePlaceViewModel

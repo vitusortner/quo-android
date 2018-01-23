@@ -2,8 +2,8 @@ package com.android.quo.repository
 
 import com.android.quo.db.dao.ComponentDao
 import com.android.quo.db.entity.Component
-import com.android.quo.service.ApiService
-import com.android.quo.network.NetworkBoundResource
+import com.android.quo.network.ApiClient
+import com.android.quo.util.NetworkBoundResource
 import com.android.quo.service.SyncService
 import com.android.quo.network.model.ServerComponent
 import io.reactivex.BackpressureStrategy
@@ -15,7 +15,7 @@ import io.reactivex.Single
  */
 class ComponentRepository(
         private val componentDao: ComponentDao,
-        private val apiService: ApiService,
+        private val apiClient: ApiClient,
         private val syncService: SyncService
 ) {
 
@@ -23,7 +23,7 @@ class ComponentRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Component>, List<ServerComponent>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerComponent>> = apiService.getComponents(placeId)
+                override fun getRemote(): Single<List<ServerComponent>> = apiClient.getComponents(placeId)
 
                 override fun getLocal(): Flowable<List<Component>> = componentDao.getComponents(placeId)
 

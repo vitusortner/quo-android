@@ -1,9 +1,10 @@
-package com.android.quo.service
+package com.android.quo.network
 
-import com.android.quo.util.Constants
-import com.android.quo.service.ApiService.Companion.Endpoints.AUTH
-import com.android.quo.service.ApiService.Companion.Endpoints.PLACES
-import com.android.quo.service.ApiService.Companion.Endpoints.USERS
+import com.android.quo.network.ApiClient.Companion.Endpoints.AUTH
+import com.android.quo.network.ApiClient.Companion.Endpoints.COMPONENTS
+import com.android.quo.network.ApiClient.Companion.Endpoints.PLACES
+import com.android.quo.network.ApiClient.Companion.Endpoints.UPLOAD
+import com.android.quo.network.ApiClient.Companion.Endpoints.USERS
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerFacebookSignup
 import com.android.quo.network.model.ServerLogin
@@ -17,8 +18,7 @@ import com.android.quo.network.model.ServerSignup
 import com.android.quo.network.model.ServerSignupResponse
 import com.android.quo.network.model.ServerUploadImage
 import com.android.quo.network.model.ServerUser
-import com.android.quo.service.ApiService.Companion.Endpoints.COMPONENTS
-import com.android.quo.service.ApiService.Companion.Endpoints.UPLOAD
+import com.android.quo.util.Constants
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.Single
 import okhttp3.Headers
@@ -40,7 +40,7 @@ import retrofit2.http.Path
 /**
  * Created by vitusortner on 29.10.17.
  */
-interface ApiService {
+interface ApiClient {
 
     @POST("$AUTH/login")
     fun login(@Body data: ServerLogin): Single<ServerLoginResponse>
@@ -112,13 +112,14 @@ interface ApiService {
     companion object {
 
         @Volatile
-        private var INSTANCE: ApiService? = null
+        private var INSTANCE: ApiClient? = null
 
-        fun instance(securedPreferenceStore: SecuredPreferenceStore): ApiService {
+        fun instance(securedPreferenceStore: SecuredPreferenceStore): ApiClient {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: retrofit(securedPreferenceStore)
-                        .create(ApiService::class.java)
-                        .also { INSTANCE = it }
+                INSTANCE
+                        ?: retrofit(securedPreferenceStore)
+                                .create(ApiClient::class.java)
+                                .also { INSTANCE = it }
             }
         }
 
@@ -142,12 +143,12 @@ interface ApiService {
             if (Endpoints.needsBearerToken(url)) {
                 val token = securedPreferenceStore.getString(Constants.TOKEN_KEY, "")
 
-                headers.put("Authorization", "Bearer $token")
+                headers["Authorization"] = "Bearer $token"
             }
             if (Endpoints.isMultipartRequest(url)) {
-                headers.put("Content-Type", "multipart/form-data")
+                headers["Content-Type"] = "multipart/form-data"
             } else {
-                headers.put("Content-Type", "application/json")
+                headers["Content-Type"] = "application/json"
             }
             return Headers.of(headers)
         }

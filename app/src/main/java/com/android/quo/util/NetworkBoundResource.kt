@@ -1,4 +1,4 @@
-package com.android.quo.network
+package com.android.quo.util
 
 import android.util.Log
 import io.reactivex.Flowable
@@ -13,6 +13,8 @@ import io.reactivex.schedulers.Schedulers
 @Suppress("LeakingThis")
 abstract class NetworkBoundResource<LocalType, RemoteType>(emitter: FlowableEmitter<LocalType>) {
 
+    private val TAG = javaClass.simpleName
+
     init {
         getLocal()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -24,7 +26,7 @@ abstract class NetworkBoundResource<LocalType, RemoteType>(emitter: FlowableEmit
                 .subscribe({ remoteType ->
                     sync(remoteType)
                 }, { error ->
-                    Log.e("networking", "Fetching data from API failed with error: $error")
+                    Log.e(TAG, "Fetching data from API failed", error)
                 })
     }
 

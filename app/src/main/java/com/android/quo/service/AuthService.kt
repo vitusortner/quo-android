@@ -6,6 +6,7 @@ import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.dao.UserDao
 import com.android.quo.db.entity.User
+import com.android.quo.network.ApiClient
 import com.android.quo.util.Constants
 import com.android.quo.network.model.ServerLogin
 import com.android.quo.network.model.ServerSignup
@@ -17,7 +18,7 @@ import io.reactivex.schedulers.Schedulers
  * Created by vitusortner on 03.01.18.
  */
 class AuthService(
-        private val apiService: ApiService,
+        private val apiClient: ApiClient,
         private val componentDao: ComponentDao,
         private val pictureDao: PictureDao,
         private val placeDao: PlaceDao,
@@ -28,7 +29,7 @@ class AuthService(
     private val TAG = javaClass.simpleName
 
     fun login(email: String, password: String, completionHandler: (Boolean) -> Unit) {
-        apiService.login(ServerLogin(email, password))
+        apiClient.login(ServerLogin(email, password))
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Login successful: $it")
@@ -50,7 +51,7 @@ class AuthService(
     }
 
     fun signup(email: String, password: String, completionHandler: (Boolean) -> Unit) {
-        apiService.signup(ServerSignup(email, password))
+        apiClient.signup(ServerSignup(email, password))
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Signup successful: $it")

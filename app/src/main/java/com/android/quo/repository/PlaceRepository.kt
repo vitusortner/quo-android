@@ -2,8 +2,8 @@ package com.android.quo.repository
 
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place
-import com.android.quo.service.ApiService
-import com.android.quo.network.NetworkBoundResource
+import com.android.quo.network.ApiClient
+import com.android.quo.util.NetworkBoundResource
 import com.android.quo.service.SyncService
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerPlaceResponse
@@ -16,7 +16,7 @@ import io.reactivex.Single
  */
 class PlaceRepository(
         private val placeDao: PlaceDao,
-        private val apiService: ApiService,
+        private val apiClient: ApiClient,
         private val syncService: SyncService
 ) {
 
@@ -24,7 +24,7 @@ class PlaceRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Place>, List<ServerPlace>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiService.getHostedPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlace>> = apiClient.getHostedPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(true)
 
@@ -39,7 +39,7 @@ class PlaceRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Place>, List<ServerPlaceResponse>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlaceResponse>> = apiService.getVisitedPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlaceResponse>> = apiClient.getVisitedPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(false)
 
@@ -54,7 +54,7 @@ class PlaceRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<Place, ServerPlace>(emitter) {
 
-                override fun getRemote(): Single<ServerPlace> = apiService.getPlace(qrCodeId, userId)
+                override fun getRemote(): Single<ServerPlace> = apiClient.getPlace(qrCodeId, userId)
 
                 override fun getLocal(): Flowable<Place> = placeDao.getPlaceByQrCodeId(qrCodeId)
 

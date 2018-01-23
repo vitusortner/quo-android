@@ -7,7 +7,7 @@ import com.android.quo.repository.ComponentRepository
 import com.android.quo.repository.PictureRepository
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
-import com.android.quo.service.ApiService
+import com.android.quo.network.ApiClient
 import com.android.quo.service.AuthService
 import com.android.quo.service.SyncService
 import com.android.quo.service.UploadService
@@ -25,7 +25,8 @@ class Application : Application() {
 
         lateinit var database: Database
 
-        lateinit var apiService: ApiService
+        lateinit var apiClient: ApiClient
+
         lateinit var authService: AuthService
         lateinit var syncService: SyncService
         lateinit var uploadService: UploadService
@@ -59,9 +60,10 @@ class Application : Application() {
         val placeDao = database.placeDao()
         val userDao = database.userDao()
 
-        apiService = ApiService.instance(securedPreferenceStore)
+        apiClient = ApiClient.instance(securedPreferenceStore)
+
         authService = AuthService(
-                apiService,
+                apiClient,
                 componentDao,
                 pictureDao,
                 placeDao,
@@ -69,11 +71,11 @@ class Application : Application() {
                 securedPreferenceStore
         )
         syncService = SyncService(placeDao, componentDao, pictureDao)
-        uploadService = UploadService(apiService)
+        uploadService = UploadService(apiClient)
 
-        componentRepository = ComponentRepository(componentDao, apiService, syncService)
-        pictureRepository = PictureRepository(pictureDao, apiService, syncService)
-        placeRepository = PlaceRepository(placeDao, apiService, syncService)
+        componentRepository = ComponentRepository(componentDao, apiClient, syncService)
+        pictureRepository = PictureRepository(pictureDao, apiClient, syncService)
+        placeRepository = PlaceRepository(placeDao, apiClient, syncService)
         userRepository = UserRepository(userDao)
     }
 }

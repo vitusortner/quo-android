@@ -1,6 +1,6 @@
 package com.android.quo
 
-import com.android.quo.service.ApiService
+import com.android.quo.network.ApiClient
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerLogin
 import io.reactivex.schedulers.Schedulers
@@ -11,7 +11,7 @@ import org.junit.Test
  */
 class ApiTest {
 
-    private val apiService = ApiService.instance
+    private val apiService = ApiClient.instance
 
     @Test
     fun testLogin() {
