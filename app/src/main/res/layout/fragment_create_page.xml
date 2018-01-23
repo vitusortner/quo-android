@@ -51,8 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/create_page_margin"
-        android:layout_marginEnd="@dimen/create_page_margin_large"
+        android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/colorAccentDark" />
 

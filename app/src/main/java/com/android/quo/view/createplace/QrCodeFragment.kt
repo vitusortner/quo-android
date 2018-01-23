@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_qr_code_view.qrCodeImageView
  * Created by Jung on 05.12.17.
  */
 class QrCodeFragment : Fragment() {
-    private val compositDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -37,15 +36,13 @@ class QrCodeFragment : Fragment() {
         setupToolbar()
         qrCodeImageView.setImageBitmap(CreatePlace.qrCodeImage)
 
-        compositDisposable.add(
-                RxView.clicks(floatingActionButton)
-                        .subscribe {
-                            val sendIntent = Intent()
-                            sendIntent.action = Intent.ACTION_SEND
-                            sendIntent.type = "image/jpeg"
-                            sendIntent.putExtra(Intent.EXTRA_STREAM, "uri")
-                            this.startActivity(sendIntent)
-                        })
+        floatingActionButton.setOnClickListener {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.type = "image/jpeg"
+            sendIntent.putExtra(Intent.EXTRA_STREAM, "uri")
+            startActivity(sendIntent)
+        }
     }
 
     private fun setupToolbar() {
@@ -53,40 +50,13 @@ class QrCodeFragment : Fragment() {
         toolbar.inflateMenu(R.menu.qr_code_view_menu)
         toolbar.title = getString(R.string.qr_code)
 
-        compositDisposable.add(
-                RxToolbar.navigationClicks(toolbar)
-                        .subscribe {
-                            activity?.onBackPressed()
-                        }
-        )
-
-        compositDisposable.add(
-                RxToolbar.itemClicks(toolbar)
-                        .subscribe {
-                            //TODO open info box
-                        }
-        )
-    }
-
-
-    private fun generateQrCode(data: String): Bitmap {
-        val width = 1024
-        val height = 1024
-        var multiFormatWriter = MultiFormatWriter()
-        val bm = multiFormatWriter.encode(data, BarcodeFormat.QR_CODE, width, height)
-        val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        for (i in 0 until width) {
-            for (j in 0 until height) {
-                imageBitmap.setPixel(i, j, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
-            }
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
         }
-        return imageBitmap
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositDisposable.dispose()
+        toolbar.setOnMenuItemClickListener {
+            // TODO
+            true
+        }
     }
-
 }

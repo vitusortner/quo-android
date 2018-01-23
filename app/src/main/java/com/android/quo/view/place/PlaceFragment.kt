@@ -30,10 +30,8 @@ import com.android.quo.view.place.info.InfoFragment
 import com.android.quo.viewmodel.PlaceViewModel
 import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
-import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
 import id.zelory.compressor.Compressor
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.cameraButton
@@ -73,8 +71,6 @@ class PlaceFragment : Fragment() {
             false
         }
     }
-
-    private val compositDisposable = CompositeDisposable()
 
     private val pictureRepository = Application.pictureRepository
     private val userRepository = Application.userRepository
@@ -313,27 +309,22 @@ class PlaceFragment : Fragment() {
                 .load(imageUrl)
                 .into(imageView)
 
-        compositDisposable.add(
-                RxToolbar.navigationClicks(toolbar)
-                        .subscribe {
-                            activity?.onBackPressed()
-                        }
-        )
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
 
-        compositDisposable.add(
-                RxToolbar.itemClicks(toolbar)
-                        .subscribe {
-                            val bundle = Bundle()
-                            bundle.putParcelable("place", place)
-                            val fragment = InfoFragment()
-                            fragment.arguments = bundle
+        toolbar.setOnMenuItemClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable("place", place)
+            val fragment = InfoFragment()
+            fragment.arguments = bundle
 
-                            fragmentManager?.beginTransaction()
-                                    ?.add(R.id.content, fragment)
-                                    ?.addToBackStack(null)
-                                    ?.commit()
-                        }
-        )
+            fragmentManager?.beginTransaction()
+                    ?.add(R.id.content, fragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+            true
+        }
 
         this.context?.let {
             // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
@@ -389,11 +380,5 @@ class PlaceFragment : Fragment() {
                 }
             })
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        compositDisposable.dispose()
     }
 }
