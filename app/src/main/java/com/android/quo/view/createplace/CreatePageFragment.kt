@@ -31,7 +31,6 @@ import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.view.createplace.CreatePlace.components
-import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable
@@ -63,51 +62,46 @@ class CreatePageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        compositeDisposable.add(RxView.clicks(floatingActionButton)
-                .subscribe {
-                    roundEditButton.visibility = VISIBLE
-                    roundGalleryButton.visibility = VISIBLE
-                })
+        floatingActionButton.setOnClickListener {
+            roundEditButton.visibility = VISIBLE
+            roundGalleryButton.visibility = VISIBLE
+        }
 
-        compositeDisposable.add(RxView.clicks(roundEditButton)
-                .subscribe {
-                    pagePreviewLayout.visibility = GONE
-                    roundEditButton.visibility = GONE
-                    roundGalleryButton.visibility = GONE
-                    val editText = createEditText()
-                    editText.setTag(id, view.generatedLayout.childCount)
-                    view.generatedLayout.addView(createCardView(editText))
-                    components.add(ServerComponent(null, null, editText.text.toString(), view.generatedLayout.childCount - 1))
+        roundEditButton.setOnClickListener {
+            pagePreviewLayout.visibility = GONE
+            roundEditButton.visibility = GONE
+            roundGalleryButton.visibility = GONE
 
-                    compositeDisposable.add(RxTextView.afterTextChangeEvents(editText)
-                            .subscribe {
-                                components
-                                        .filter { c -> c.position == it.view().getTag(id) }
-                                        .forEach { c ->
-                                            c.text = it.view().text.toString()
-                                        }
-                            })
-                    pagePreviewLayout.visibility = GONE
-                })
+            val editText = createEditText()
+            editText.setTag(id, view.generatedLayout.childCount)
+            view.generatedLayout.addView(createCardView(editText))
+            components.add(ServerComponent(null, null, editText.text.toString(), view.generatedLayout.childCount - 1))
 
-        compositeDisposable.add(RxView.clicks(pagePreviewLayout)
-                .subscribe {
-                    roundEditButton.visibility = GONE
-                    roundGalleryButton.visibility = GONE
-                })
+            compositeDisposable.add(RxTextView.afterTextChangeEvents(editText)
+                    .subscribe {
+                        components
+                                .filter { c -> c.position == it.view().getTag(id) }
+                                .forEach { c ->
+                                    c.text = it.view().text.toString()
+                                }
+                    })
+            pagePreviewLayout.visibility = GONE
+        }
 
-        compositeDisposable.add(RxView.clicks(roundGalleryButton)
-                .subscribe {
-                    roundEditButton.visibility = GONE
-                    roundGalleryButton.visibility = GONE
-                    requestPermissions(arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            PERMISSION_REQUEST_EXTERNAL_STORAGE
-                    )
-                })
+        pagePreviewLayout.setOnClickListener {
+            roundEditButton.visibility = GONE
+            roundGalleryButton.visibility = GONE
+        }
 
-
+        roundGalleryButton.setOnClickListener {
+            roundEditButton.visibility = GONE
+            roundGalleryButton.visibility = GONE
+            requestPermissions(arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    PERMISSION_REQUEST_EXTERNAL_STORAGE
+            )
+        }
     }
 
     override fun onDestroy() {
