@@ -180,7 +180,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .subscribe {
                     context?.let { context ->
                         bottomSheetDialog = BottomSheetDialog(context)
-                        val sheetView = activity?.let { it.layoutInflater.inflate(R.layout.layout_bottom_sheet_select_picture, null) }
+                        val sheetView = activity?.layoutInflater?.inflate(R.layout.layout_bottom_sheet_select_picture, null)
                         sheetView?.let {
                             it.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList(), headerImageView)
                             val linearLayoutManager = LinearLayoutManager(this.context)
