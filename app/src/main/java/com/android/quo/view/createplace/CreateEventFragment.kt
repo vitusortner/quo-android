@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -14,8 +13,6 @@ import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -37,6 +34,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.dataclass.EventDates
+import com.android.quo.util.Constants
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
@@ -68,7 +68,9 @@ import kotlin.collections.ArrayList
  * Created by Jung on 27.11.17.
  */
 
-class CreateEventFragment : Fragment(), LocationListener {
+class CreateEventFragment : Fragment() {
+
+    private val TAG = javaClass.simpleName
 
     private val PERMISSION_REQUEST_GPS = 101
     private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
@@ -87,6 +89,8 @@ class CreateEventFragment : Fragment(), LocationListener {
     private var foundLocation = false
     private var startDate = EventDates("0000-00-00", "00:00:00")
     private var endDate = EventDates("0000-00-00", "00:00:00")
+
+    private lateinit var locationClient: FusedLocationProviderClient
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -345,10 +349,15 @@ class CreateEventFragment : Fragment(), LocationListener {
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         hideKeyboard(activity)
-        val locationManager = activity?.getSystemService(LOCATION_SERVICE) as LocationManager?
-        val locationListener = this
-        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
-        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
+
+        context?.let {
+            locationClient = LocationServices.getFusedLocationProviderClient(it)
+            locationClient.lastLocation.addOnSuccessListener {
+                it?.let {
+                    getAddressFromLocation(it)
+                }
+            }
+        }
     }
 
     /**
@@ -356,7 +365,7 @@ class CreateEventFragment : Fragment(), LocationListener {
      */
     private fun getAddressFromLocation(location: Location) {
         val addresses: List<Address>
-        val geocoder = Geocoder(this.context, Locale.getDefault())
+        val geocoder = Geocoder(context, Locale.getDefault())
 
         addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
@@ -382,7 +391,7 @@ class CreateEventFragment : Fragment(), LocationListener {
      * converts address in gps coordinates
      */
     private fun getLocationFromAddress(address: String) {
-        val geocoder = Geocoder(this.context)
+        val geocoder = Geocoder(context)
         val addresses = geocoder.getFromLocationName(address, 1)
         if (addresses.size > 0) {
             val location = Location("")
@@ -390,7 +399,7 @@ class CreateEventFragment : Fragment(), LocationListener {
             location.longitude = addresses[0].longitude
             getAddressFromLocation(location)
         } else {
-            Log.e("Error", "address not found")
+            Log.e(TAG, "address not found")
         }
     }
 
@@ -428,7 +437,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 }
             }
         } catch (e: Exception) {
-            Log.e("Error", e.message.toString())
+            Log.e(TAG, e.message.toString())
         }
     }
 
@@ -488,7 +497,7 @@ class CreateEventFragment : Fragment(), LocationListener {
             updateLabel(isStartDate, false)
         }
 
-        DatePickerDialog(this.context,
+        DatePickerDialog(context,
                 R.style.DatePickerDialogStyle,
                 date, calendar
                 .get(Calendar.YEAR),
@@ -539,7 +548,6 @@ class CreateEventFragment : Fragment(), LocationListener {
             }
         }
 
-
         /**
          * Save into DB-Object
          */
@@ -551,19 +559,6 @@ class CreateEventFragment : Fragment(), LocationListener {
         currentEditText.setText(sdf.format(calendar.time))
     }
 
-    /**
-     * below all location handler
-     */
-    override fun onLocationChanged(p0: Location?) {
-        if (p0 != null) {
-            if (!foundLocation) {
-                foundLocation = true
-                getAddressFromLocation(p0)
-            }
-
-        }
-    }
-
     private fun compressImage(file: File): File {
         return Compressor(this.context)
                 .setMaxWidth(640)
@@ -571,13 +566,7 @@ class CreateEventFragment : Fragment(), LocationListener {
                 .setQuality(75)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).absolutePath + "/Quo")
+                        Environment.DIRECTORY_PICTURES).absolutePath + Constants.IMAGE_DIR)
                 .compressToFile(file)
     }
-
-    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
-
-    override fun onProviderEnabled(p0: String?) {}
-
-    override fun onProviderDisabled(p0: String?) {}
 }
