@@ -326,7 +326,7 @@ class PlaceFragment : Fragment() {
             true
         }
 
-        this.context?.let {
+        context?.let {
             // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
             // set tab layout colors denpendent on how far scrolled
             var scrollRange = -1

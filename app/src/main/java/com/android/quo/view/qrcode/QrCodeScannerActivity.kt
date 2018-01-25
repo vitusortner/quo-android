@@ -229,6 +229,9 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
     private fun tryOpenPlace(qrCodeId: String) {
         viewModel.getPlace(qrCodeId).observe(this, Observer {
             it?.let { place ->
+                // TODO this is just a dirty fix, better not use live data in this case
+                viewModel.resetLiveData()
+
                 // TODO remove nullability of hasToValidateGps
                 place.hasToValidateGps?.let { hasToValidateGps ->
                     if (hasToValidateGps) {

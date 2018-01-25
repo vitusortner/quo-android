@@ -44,6 +44,10 @@ class QrCodeScannerViewModel(
         }
     }
 
+    fun resetLiveData() {
+        place = null
+    }
+
     override fun onCleared() {
         super.onCleared()
 
