@@ -156,9 +156,7 @@ class CreatePageFragment : Fragment() {
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        this.activity?.let { activity ->
-            activity.startActivityForResult(galleryIntent, RESULT_GALLERY)
-        }
+        activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -183,18 +181,16 @@ class CreatePageFragment : Fragment() {
     private fun getPath(uri: Uri): String {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = this.context?.let { context ->
-            context.contentResolver?.query(uri, mediaStoreData,
-                    null, null, null)
-        }
+        val cursor = context?.contentResolver?.query(uri, mediaStoreData, null,
+                null, null)
 
         cursor?.let { cursor ->
             if (cursor.moveToFirst()) {
                 val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
                 result = cursor.getString(columnIndex)
-                cursor.close()
             }
         }
+        cursor?.close()
 
         if (result == null) {
             result = getString(R.string.not_found)

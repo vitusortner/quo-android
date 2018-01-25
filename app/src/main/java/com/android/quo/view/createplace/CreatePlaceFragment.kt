@@ -64,7 +64,7 @@ class CreatePlaceFragment : Fragment() {
                 .of(this, CreatePlaceViewModelFactory(apiService, userRepository))
                 .get(CreatePlaceViewModel::class.java)
 
-        this.context?.let {
+        context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)

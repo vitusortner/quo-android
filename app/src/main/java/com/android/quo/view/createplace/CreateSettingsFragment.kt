@@ -16,7 +16,9 @@ import kotlinx.android.synthetic.main.fragment_create_settings.photosSwitch
  */
 
 class CreateSettingsFragment : Fragment() {
-    private var compositeDisposable = CompositeDisposable()
+
+    private val compositeDisposable = CompositeDisposable()
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
