@@ -11,7 +11,6 @@ import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
 import com.android.quo.service.SyncService
 import com.android.quo.service.UploadService
-import devliving.online.securedpreferencestore.DefaultRecoveryHandler
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
 
 /**
@@ -33,8 +32,6 @@ class Injection {
         lateinit var userRepository: UserRepository
 
         fun create(context: Context) {
-            SecuredPreferenceStore.init(context, DefaultRecoveryHandler())
-
             val securedPreferenceStore = SecuredPreferenceStore.getSharedInstance()
 
             val database = Room.databaseBuilder(context, Database::class.java, "qouDB").build()
