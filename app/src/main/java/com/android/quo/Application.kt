@@ -19,13 +19,13 @@ class Application : Application() {
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
+            // You should not instance your app in this process.
             return
         }
         LeakCanary.install(this)
 
         SecuredPreferenceStore.init(this, DefaultRecoveryHandler())
 
-        Injection.create(this)
+        Injection.instance(this)
     }
 }
