@@ -24,7 +24,6 @@ class Injection {
 
         lateinit var authService: AuthService
         lateinit var uploadService: UploadService
-        private lateinit var syncService: SyncService
 
         lateinit var componentRepository: ComponentRepository
         lateinit var pictureRepository: PictureRepository
@@ -52,7 +51,8 @@ class Injection {
                     securedPreferenceStore
             )
             uploadService = UploadService(apiClient)
-            syncService = SyncService(placeDao, componentDao, pictureDao)
+
+            val syncService = SyncService(placeDao, componentDao, pictureDao)
 
             componentRepository = ComponentRepository(componentDao, apiClient, syncService)
             pictureRepository = PictureRepository(pictureDao, apiClient, syncService)
