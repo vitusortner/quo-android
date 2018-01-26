@@ -5,12 +5,11 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.Application
 import com.android.quo.R
+import com.android.quo.di.Injection
 import com.android.quo.viewmodel.GalleryViewModel
 import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
@@ -23,8 +22,6 @@ class GalleryFragment : Fragment() {
 
     private var placeId: String? = null
 
-    private val pictureRepository = Application.pictureRepository
-
     private lateinit var viewModel: GalleryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +30,7 @@ class GalleryFragment : Fragment() {
         placeId = arguments?.getString("placeId")
 
         viewModel = ViewModelProviders
-                .of(this, GalleryViewModelFactory(pictureRepository))
+                .of(this, GalleryViewModelFactory(Injection.pictureRepository))
                 .get(GalleryViewModel::class.java)
     }
 

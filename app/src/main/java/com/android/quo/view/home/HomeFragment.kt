@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import com.android.quo.Application
 import com.android.quo.R
+import com.android.quo.di.Injection
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.viewmodel.HomeViewModel
@@ -26,10 +26,6 @@ import kotlinx.android.synthetic.main.fragment_home.toolbar
  */
 class HomeFragment : Fragment() {
 
-    private val placeRepository = Application.placeRepository
-    private val userRepository = Application.userRepository
-    private val authService = Application.authService
-
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +34,10 @@ class HomeFragment : Fragment() {
         activity?.bottomNavigationView?.visibility = VISIBLE
 
         viewModel = ViewModelProviders
-                .of(this, HomeViewModelFactory(placeRepository, userRepository, authService))
+                .of(this, HomeViewModelFactory(
+                        Injection.placeRepository,
+                        Injection.userRepository,
+                        Injection.authService))
                 .get(HomeViewModel::class.java)
     }
 

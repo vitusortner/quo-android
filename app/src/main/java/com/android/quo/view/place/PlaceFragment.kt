@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.di.Injection
 import com.android.quo.util.Constants
 import com.android.quo.util.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
@@ -72,10 +73,6 @@ class PlaceFragment : Fragment() {
         }
     }
 
-    private val pictureRepository = Application.pictureRepository
-    private val userRepository = Application.userRepository
-    private val uploadService = Application.uploadService
-
     private lateinit var viewModel: PlaceViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +84,10 @@ class PlaceFragment : Fragment() {
         }
 
         viewModel = ViewModelProviders
-                .of(this, PlaceViewModelFactory(uploadService, pictureRepository, userRepository))
+                .of(this, PlaceViewModelFactory(
+                        Injection.uploadService,
+                        Injection.pictureRepository,
+                        Injection.userRepository))
                 .get(PlaceViewModel::class.java)
 
         place = arguments?.getParcelable("place")

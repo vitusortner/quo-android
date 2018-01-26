@@ -1,6 +1,5 @@
 package com.android.quo.view.createplace
 
-
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -13,8 +12,8 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.Application
 import com.android.quo.R
+import com.android.quo.di.Injection
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerSettings
 import com.android.quo.viewmodel.CreatePlaceViewModel
@@ -46,10 +45,14 @@ class CreatePlaceFragment : Fragment() {
 
     lateinit var place: ServerPlace
 
-    private val apiService = Application.apiClient
-    private val userRepository = Application.userRepository
-
     private lateinit var viewModel: CreatePlaceViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders
+                .of(this, CreatePlaceViewModelFactory(Injection.apiClient, Injection.userRepository))
+                .get(CreatePlaceViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -60,15 +63,11 @@ class CreatePlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders
-                .of(this, CreatePlaceViewModelFactory(apiService, userRepository))
-                .get(CreatePlaceViewModel::class.java)
-
         context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }
         tabLayout.setupWithViewPager(createPlaceViewPager)
-        
+
         setupToolbar()
 
         requestPermissions(arrayOf(
@@ -186,23 +185,26 @@ class CreatePlaceFragment : Fragment() {
     private fun generateQrCodeObservable(): Observable<Bitmap> {
         return Observable.create {
             val timestamp = Timestamp(System.currentTimeMillis())
-            val userId = Application.database.userDao().getUser()
-            val qrCodeId = String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
-            val uri = "quo://" + String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
-            val width = 1024
-            val height = 1024
-            val multiFormatWriter = MultiFormatWriter()
-            val bm = multiFormatWriter.encode(uri, BarcodeFormat.QR_CODE, width, height)
-            val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            Injection.userRepository.getUser {
+                it?.id.let { userId ->
+                    val qrCodeId = String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
+                    val uri = "quo://" + qrCodeId
+                    val width = 1024
+                    val height = 1024
+                    val multiFormatWriter = MultiFormatWriter()
+                    val bm = multiFormatWriter.encode(uri, BarcodeFormat.QR_CODE, width, height)
+                    val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-            for (i in 0 until width) {
-                for (j in 0 until height) {
-                    imageBitmap.setPixel(i, j, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
+                    for (i in 0 until width) {
+                        for (j in 0 until height) {
+                            imageBitmap.setPixel(i, j, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
+                        }
+                    }
+
+                    CreatePlace.place.qrCodeId = qrCodeId
+                    CreatePlace.qrCodeImage = imageBitmap
                 }
             }
-
-            CreatePlace.place.qrCodeId = qrCodeId
-            CreatePlace.qrCodeImage = imageBitmap
         }
     }
 }

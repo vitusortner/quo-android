@@ -8,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.Application
 import com.android.quo.R
+import com.android.quo.di.Injection
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.viewmodel.MyPlacesViewModel
@@ -24,10 +24,14 @@ import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
  */
 class MyPlacesFragment : Fragment() {
 
-    private val placeRepository = Application.placeRepository
-    private val userRepository = Application.userRepository
-
     private lateinit var viewModel: MyPlacesViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders
+                .of(this, MyPlacesViewModelFactory(Injection.placeRepository, Injection.userRepository))
+                .get(MyPlacesViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -40,10 +44,6 @@ class MyPlacesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.bottomNavigationView?.visibility = View.VISIBLE
-
-        viewModel = ViewModelProviders
-                .of(this, MyPlacesViewModelFactory(placeRepository, userRepository))
-                .get(MyPlacesViewModel::class.java)
 
         observePlaces()
         setupSwipeRefresh()

@@ -8,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.Application
 import com.android.quo.R
+import com.android.quo.di.Injection
 import com.android.quo.viewmodel.PageViewModel
 import com.android.quo.viewmodel.factory.PageViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_page.recyclerView
@@ -20,11 +20,16 @@ import kotlinx.android.synthetic.main.fragment_place_page.swipeRefreshLayout
  */
 class PageFragment : Fragment() {
 
-    private val componentRepository = Application.componentRepository
-
     private lateinit var viewModel: PageViewModel
 
     private var placeId: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders
+                .of(this, PageViewModelFactory(Injection.componentRepository))
+                .get(PageViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -37,10 +42,6 @@ class PageFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders
-                .of(this, PageViewModelFactory(componentRepository))
-                .get(PageViewModel::class.java)
-
         observeComponents()
         setupSwipeRefresh()
     }

@@ -9,10 +9,10 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.android.quo.Application
+import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.MainActivity
+import com.android.quo.di.Injection
 import com.android.quo.viewmodel.LoginViewModel
 import com.android.quo.viewmodel.factory.LoginViewModelFactory
 import com.facebook.CallbackManager
@@ -45,9 +45,6 @@ import java.util.concurrent.TimeUnit
  */
 class LoginActivity : AppCompatActivity() {
 
-    private val authService = Application.authService
-    private val userRepository = Application.userRepository
-
     private lateinit var viewModel: LoginViewModel
 
     private lateinit var callbackManager: CallbackManager
@@ -60,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
 
         viewModel = ViewModelProviders
-                .of(this, LoginViewModelFactory(authService, userRepository))
+                .of(this, LoginViewModelFactory(Injection.authService, Injection.userRepository))
                 .get(LoginViewModel::class.java)
 
         handleFacebookLogin()

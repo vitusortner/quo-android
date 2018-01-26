@@ -11,6 +11,7 @@ import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.db.entity.Place
+import com.android.quo.di.Injection
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.myplaces.MyPlacesFragment
@@ -22,9 +23,6 @@ import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private val authService = Application.authService
-    private val userRepository = Application.userRepository
-
     private lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProviders
-                .of(this, LoginViewModelFactory(authService, userRepository))
+                .of(this, LoginViewModelFactory(Injection.authService, Injection.userRepository))
                 .get(LoginViewModel::class.java)
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)

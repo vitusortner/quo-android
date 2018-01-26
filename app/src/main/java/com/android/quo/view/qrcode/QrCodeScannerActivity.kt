@@ -23,11 +23,11 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
-import com.android.quo.Application
 import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.db.entity.Place
+import com.android.quo.di.Injection
 import com.android.quo.util.Constants
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
@@ -59,9 +59,6 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private lateinit var scannerView: ZXingScannerView
 
-    private val placeRepository = Application.placeRepository
-    private val userRepository = Application.userRepository
-
     private lateinit var viewModel: QrCodeScannerViewModel
 
     private lateinit var locationClient: FusedLocationProviderClient
@@ -71,7 +68,9 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         setContentView(R.layout.activity_qr_code_scanner)
 
         viewModel = ViewModelProviders
-                .of(this, QrCodeScannerViewModelFactory(placeRepository, userRepository))
+                .of(this, QrCodeScannerViewModelFactory(
+                        Injection.placeRepository,
+                        Injection.userRepository))
                 .get(QrCodeScannerViewModel::class.java)
 
         requestPermissions(arrayOf(

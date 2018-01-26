@@ -9,7 +9,6 @@ import com.android.quo.R
 /**
  * Created by Jung on 27.11.17.
  */
-
 class CreatePlacePagerAdapter(fragmentManager: FragmentManager, private val context: Context)
     : FragmentPagerAdapter(fragmentManager) {
 

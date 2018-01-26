@@ -10,7 +10,6 @@ import com.android.quo.db.entity.Picture
 import com.android.quo.util.extension.toPx
 import kotlinx.android.synthetic.main.activity_gallery_image_pager.viewPager
 
-
 /**
  * Created by vitusortner on 16.11.17.
  */
