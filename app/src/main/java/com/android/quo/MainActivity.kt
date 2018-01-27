@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             }
             actionHome -> {
                 supportFragmentManager.beginTransaction()
+//                        .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
                         .replace(R.id.content, HomeFragment())
                         .commit()
                 true

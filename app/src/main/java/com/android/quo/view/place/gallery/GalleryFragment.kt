@@ -22,12 +22,18 @@ class GalleryFragment : Fragment() {
 
     private var placeId: String? = null
 
+    private lateinit var adapter: GalleryAdapter
+
     private lateinit var viewModel: GalleryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         placeId = arguments?.getString("placeId")
+
+        activity?.let {
+            adapter = GalleryAdapter(it)
+        }
 
         viewModel = ViewModelProviders
                 .of(this, GalleryViewModelFactory(Injection.pictureRepository))
@@ -43,20 +49,20 @@ class GalleryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = GridLayoutManager(context, 3)
+
         observerPictures()
         setupSwipeRefresh()
     }
 
     private fun observerPictures() {
-        activity?.let { activity ->
-            placeId?.let { placeId ->
-                viewModel.getPictures(placeId).observe(this, Observer {
-                    it?.let {
-                        recyclerView.adapter = GalleryAdapter(activity, it)
-                        recyclerView.layoutManager = GridLayoutManager(this.context, 3)
-                    }
-                })
-            }
+        placeId?.let { placeId ->
+            viewModel.getPictures(placeId).observe(this, Observer {
+                it?.let {
+                    adapter.setItems(it)
+                }
+            })
         }
     }
 

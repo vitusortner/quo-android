@@ -31,7 +31,7 @@
         android:layout_alignBottom="@+id/flashButton"
         android:layout_marginBottom="@dimen/qr_code_scanner_text_margin_bottom"
         android:layout_marginStart="@dimen/qr_code_scanner_text_margin_start"
-        android:text="@string/qr_code_flash_on"
+        android:text="@string/qr_code_flash_off"
         android:textColor="@color/colorTextWhite" />
 
     <Button

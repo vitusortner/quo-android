@@ -26,12 +26,18 @@ import kotlinx.android.synthetic.main.fragment_home.toolbar
  */
 class HomeFragment : Fragment() {
 
+    private lateinit var adapter: PlacePreviewAdapter
+
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.bottomNavigationView?.visibility = VISIBLE
+        activity?.let {
+            it.bottomNavigationView?.visibility = VISIBLE
+
+            adapter = PlacePreviewAdapter(it.supportFragmentManager)
+        }
 
         viewModel = ViewModelProviders
                 .of(this, HomeViewModelFactory(
@@ -51,6 +57,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         setupToolbar()
         observePlaces()
@@ -89,11 +98,8 @@ class HomeFragment : Fragment() {
      */
     private fun observePlaces() {
         viewModel.getPlaces().observe(this, Observer {
-            it?.let { list ->
-                activity?.let { activity ->
-                    recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
-                    recyclerView.layoutManager = LinearLayoutManager(context)
-                }
+            it?.let { places ->
+                adapter.setItems(places)
             }
         })
     }

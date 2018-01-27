@@ -18,8 +18,6 @@ import devliving.online.securedpreferencestore.SecuredPreferenceStore
  */
 object Injection {
 
-    lateinit var apiClient: ApiClient
-
     lateinit var authService: AuthService
     lateinit var uploadService: UploadService
 
@@ -47,7 +45,7 @@ object Injection {
         val placeDao = database.placeDao()
         val userDao = database.userDao()
 
-        apiClient = ApiClient.instance(securedPreferenceStore)
+        val apiClient = ApiClient.instance(securedPreferenceStore)
 
         authService = AuthService(
                 apiClient,
@@ -58,7 +56,6 @@ object Injection {
                 securedPreferenceStore
         )
         uploadService = UploadService(apiClient)
-
         val syncService = SyncService(placeDao, componentDao, pictureDao)
 
         componentRepository = ComponentRepository(componentDao, apiClient, syncService)

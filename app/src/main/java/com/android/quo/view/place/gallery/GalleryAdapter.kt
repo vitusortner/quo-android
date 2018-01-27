@@ -17,8 +17,15 @@ import kotlinx.android.synthetic.main.gallery_image_thumbnail.imageView
 /**
  * Created by vitusortner on 14.11.17.
  */
-class GalleryAdapter(private val activity: Activity, private val list: List<Picture>) :
+class GalleryAdapter(private val activity: Activity) :
         RecyclerView.Adapter<GalleryAdapter.PlaceGalleryViewHolder>() {
+
+    private var list = emptyList<Picture>()
+
+    fun setItems(pictures: List<Picture>) {
+        list = pictures
+        notifyDataSetChanged()
+    }
 
     override fun getItemCount() = list.size
 

@@ -186,10 +186,15 @@ class CreateEventFragment : Fragment() {
                         bottomSheetDialog = BottomSheetDialog(context)
                         val sheetView = activity?.layoutInflater?.inflate(R.layout.layout_bottom_sheet_select_picture, null)
                         sheetView?.let {
-                            it.defaultImageListView.adapter = EventDefaultImagesAdapter(getDefaultImageList(), headerImageView)
-                            val linearLayoutManager = LinearLayoutManager(this.context)
-                            linearLayoutManager.orientation = LinearLayout.HORIZONTAL
-                            it.defaultImageListView?.layoutManager = linearLayoutManager
+                            val adapter = EventDefaultImagesAdapter(headerImageView)
+                            it.defaultImageListView.adapter = adapter
+                            val layoutManager = LinearLayoutManager(context)
+                            layoutManager.orientation = LinearLayout.HORIZONTAL
+                            it.defaultImageListView?.layoutManager = layoutManager
+
+                            val defaultImages = getDefaultImageList()
+                            adapter.setItems(defaultImages)
+
                             bottomSheetDialog.setContentView(sheetView)
                             bottomSheetDialog.show()
 

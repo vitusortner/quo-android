@@ -15,34 +15,33 @@ import kotlinx.android.synthetic.main.event_default_image.defaultImageView
  * Created by Jung on 02.12.17.
  */
 
-class EventDefaultImagesAdapter(private val list: List<Drawable>, private val headerImageView: ImageView) :
+class EventDefaultImagesAdapter(private val headerImageView: ImageView) :
         RecyclerView.Adapter<EventDefaultImagesAdapter.EventDefaultImagesViewHolder>() {
 
+    private var list = emptyList<Drawable>()
+
+    fun setItems(images: List<Drawable>) {
+        list = images
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: EventDefaultImagesViewHolder, position: Int) {
-        holder.bindItem(list, position)
+        RxView.clicks(holder.defaultImageView)
+                .subscribe {
+                    CreatePlace.place.titlePicture = "quo_default_${position + 1}.png"
+                    headerImageView.setImageDrawable(list[position])
+                }
+        holder.defaultImageView.setImageDrawable(list[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventDefaultImagesViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.event_default_image, parent, false)
-        return EventDefaultImagesViewHolder(itemView, headerImageView)
+        return EventDefaultImagesViewHolder(itemView)
     }
 
     override fun getItemCount(): Int = list.size
 
-    class EventDefaultImagesViewHolder(
-            override val containerView: View,
-            private val headerImageView: ImageView
-    ) :
-            RecyclerView.ViewHolder(containerView), LayoutContainer {
-
-        fun bindItem(list: List<Drawable>, position: Int) {
-            RxView.clicks(defaultImageView)
-                    .subscribe {
-                        CreatePlace.place.titlePicture = "quo_default_${adapterPosition + 1}.png"
-                        headerImageView.setImageDrawable(list[adapterPosition])
-                    }
-            defaultImageView.setImageDrawable(list[position])
-        }
-    }
+    class EventDefaultImagesViewHolder(override val containerView: View)
+        : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

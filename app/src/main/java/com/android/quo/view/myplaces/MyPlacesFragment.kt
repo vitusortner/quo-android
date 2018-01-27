@@ -24,10 +24,19 @@ import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
  */
 class MyPlacesFragment : Fragment() {
 
+    private lateinit var adapter: PlacePreviewAdapter
+
     private lateinit var viewModel: MyPlacesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        activity?.let {
+            it.bottomNavigationView?.visibility = View.VISIBLE
+
+            adapter = PlacePreviewAdapter(it.supportFragmentManager)
+        }
+
         viewModel = ViewModelProviders
                 .of(this, MyPlacesViewModelFactory(Injection.placeRepository, Injection.userRepository))
                 .get(MyPlacesViewModel::class.java)
@@ -43,7 +52,9 @@ class MyPlacesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.bottomNavigationView?.visibility = View.VISIBLE
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         observePlaces()
         setupSwipeRefresh()
@@ -55,11 +66,8 @@ class MyPlacesFragment : Fragment() {
      */
     private fun observePlaces() {
         viewModel.getPlaces().observe(this, Observer {
-            it?.let { list ->
-                activity?.let { activity ->
-                    recyclerView.adapter = PlacePreviewAdapter(list, activity.supportFragmentManager)
-                    recyclerView.layoutManager = LinearLayoutManager(context)
-                }
+            it?.let { places ->
+                adapter.setItems(places)
             }
         })
     }

@@ -88,7 +88,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         supportActionBar?.hide()
 
         cancelButton.setOnClickListener {
-            this.finish()
+            finish()
         }
 
         scannerView = qrCodeScannerView
