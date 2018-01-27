@@ -7,6 +7,7 @@ import com.android.quo.network.ApiClient
 import com.android.quo.util.NetworkBoundResource
 import com.android.quo.service.SyncService
 import com.android.quo.network.model.ServerPicture
+import com.android.quo.network.model.ServerUploadImage
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -36,13 +37,26 @@ class PictureRepository(
         }, BackpressureStrategy.BUFFER)
     }
 
-    fun addPicture(placeId: String, picture: ServerPicture) {
+    fun addPicture(placeId: String, picture: ServerPicture, completionHandler: ((ServerPicture?) -> Unit)? = null) {
         apiClient.addPicture(placeId, picture)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.i(TAG, "Picture added: $it")
+                    completionHandler?.invoke(it)
                 }, {
-                    Log.e(TAG, "Error while adding picture: $it")
+                    Log.e(TAG, "Error while adding picture", it)
+                    completionHandler?.invoke(null)
+                })
+    }
+
+    fun getDefaultPicture(titlePicture: String, completionHandler: ((ServerUploadImage?) -> Unit)? = null) {
+        apiClient.getDefaultPicture(titlePicture)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    completionHandler?.invoke(it)
+                }, {
+                    Log.e(TAG, "Error while getting default picture", it)
+                    completionHandler?.invoke(null)
                 })
     }
 }

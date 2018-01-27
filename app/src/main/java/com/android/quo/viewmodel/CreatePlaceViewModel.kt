@@ -4,57 +4,51 @@ import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
+import com.android.quo.repository.ComponentRepository
+import com.android.quo.repository.PictureRepository
+import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
-import com.android.quo.network.ApiClient
+import com.android.quo.service.UploadService
+import com.android.quo.util.Constants
 import com.android.quo.view.createplace.CreatePlace
-import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-
 /**
  * Created by Jung on 11.12.17.
  */
-
 class CreatePlaceViewModel(
-        private val apiClient: ApiClient,
-        private val userRepository: UserRepository
+        private val componentRepository: ComponentRepository,
+        private val pictureRepository: PictureRepository,
+        private val placeRepository: PlaceRepository,
+        private val userRepository: UserRepository,
+        private val uploadService: UploadService
 ) : ViewModel() {
-
-    private val TAG = javaClass.simpleName
 
     fun savePlace() {
         userRepository.getUser {
             it?.let {
                 CreatePlace.place.host = it.id
 
-                apiClient.addPlace(CreatePlace.place)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            Log.i(TAG, "Add place: $it")
-
-                            uploadQrCode(it)
-                            uploadImage(it)
-                        }, {
-                            Log.e(TAG, "Error while adding place: $it")
-                        })
+                placeRepository.addPlace(CreatePlace.place) {
+                    it?.let { place ->
+                        uploadQrCode(place)
+                        uploadImage(place)
+                    }
+                }
             }
         }
     }
 
-    private fun uploadImage(response: ServerPlace) {
+    private fun uploadImage(place: ServerPlace) {
         // create ServerPicture for title picture
-        val title = ServerPicture(
+        val picture = ServerPicture(
                 id = null,
-                ownerId = response.host,
-                placeId = response.id ?: "",
+                ownerId = place.host,
+                placeId = place.id ?: "",
                 src = "",
                 isVisible = true,
                 // TODO timestamp should be set by server make it nullable
@@ -62,147 +56,100 @@ class CreatePlaceViewModel(
         )
 
         //check if title picture is from user or default image
-        response.titlePicture?.let { titlePicture ->
+        place.titlePicture?.let { titlePicture ->
             if (!titlePicture.startsWith("quo_default_")) {
-                title.src = titlePicture
+                picture.src = titlePicture
 
-                val uri = Uri.parse(title.src)
-                val file = File(uri.path)
+                val uri = Uri.parse(picture.src)
+                val image = File(uri.path)
 
-                val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
+                uploadService.uploadImage(image) {
+                    it?.let { image ->
+                        place.titlePicture = image.path
 
-                // sync title picture to server and add the response answer to the created place
-                apiClient.uploadImage(imageFileBody)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            Log.i(TAG, "Titlepicture uploaded: $it")
-                            response.titlePicture = it.path
-
-                            apiClient.updatePlace(response.id ?: "", response)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe({
-                                        Log.i(TAG, "Place updated: $it")
-                                        uploadComponents(it)
-                                    }, {
-                                        Log.e(TAG, "Error while updating place: $it")
-                                    })
-
-                        }, {
-                            Log.e(TAG, "Error while uploading image: $it")
-                        })
-
+                        place.id?.let { placeId ->
+                            placeRepository.updatePlace(placeId, place) {
+                                it?.let {
+                                    uploadComponents(it)
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 // get default picture from server and set it as title picture source
-                apiClient.getDefaultPicture(titlePicture)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            Log.i(TAG, "Default picture: $it")
+                pictureRepository.getDefaultPicture(titlePicture) {
+                    it?.let {
+                        place.titlePicture = it.path
 
-                            response.titlePicture = it.path
-
-                            apiClient.updatePlace(response.id ?: "", response)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe({
-                                        Log.i(TAG, "Place updated: $it")
-
-                                        uploadComponents(it)
-                                    }, {
-                                        Log.e(TAG, "Error while saving place: $it")
-                                    })
-
-                        }, {
-                            Log.e(TAG, "Error while getting default image: $it")
-                        })
+                        place.id?.let { placeId ->
+                            placeRepository.updatePlace(placeId, place) {
+                                it?.let {
+                                    uploadComponents(it)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
 
-    private fun uploadComponents(response: ServerPlace) {
-        // sync all images from components and add the response to the right component
-        for (c in CreatePlace.components) {
-            if (c.picture != null) {
-                val uri = Uri.parse(c.picture)
-                val file = File(uri.path)
+    private fun uploadComponents(place: ServerPlace) {
+        // sync all images from components and add the place to the right component
+        for (component in CreatePlace.components) {
+            if (component.picture != null) {
+                val uri = Uri.parse(component.picture)
+                val image = File(uri.path)
 
-                val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
+                uploadService.uploadImage(image) {
+                    it?.let {
+                        val picture = ServerPicture(
+                                id = null,
+                                ownerId = place.host,
+                                placeId = place.id ?: "",
+                                src = it.path,
+                                isVisible = true,
+                                // TODO should get set by server
+                                timestamp = ""
+                        )
 
-                apiClient.uploadImage(imageFileBody)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            Log.i(TAG, "Picture uploaded: $it")
+                        place.id?.let { placeId ->
+                            pictureRepository.addPicture(placeId, picture) {
+                                it?.let { picture ->
+                                    component.picture = picture.src
 
-                            val picture = ServerPicture(
-                                    id = null,
-                                    ownerId = response.host,
-                                    placeId = response.id ?: "",
-                                    src = it.path,
-                                    isVisible = true,
-                                    // TODO should get set by server
-                                    timestamp = System.currentTimeMillis().toString()
-                            )
+                                    componentRepository.addComponent(picture.placeId, component)
+                                }
+                            }
 
-                            apiClient.addPicture(response.id ?: "", picture)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe({
-                                        Log.i(TAG, "Picture added: $it")
 
-                                        c.picture = it.src
-
-                                        //post component to server
-                                        apiClient.addComponent(it.placeId, c)
-                                                .subscribeOn(Schedulers.io())
-                                                .subscribe({
-                                                    Log.i(TAG, "Component uploaded: $it")
-                                                }, {
-                                                    Log.e(TAG, "Error while uploading component: $it")
-                                                })
-                                    }, {
-                                        Log.e(TAG, "Error while adding picture: $it")
-                                    })
-                        }, {
-                            Log.e(TAG, "Error while uploading picture: $it")
-                        })
-            } else if (c.text != null) {
+                        }
+                    }
+                }
+            } else if (component.text != null) {
                 //post component with text to server
-                apiClient.addComponent(response.id ?: "", c)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            Log.i(TAG, "Component added: $it")
-                        }, {
-                            Log.e(TAG, "Error while adding component: $it")
-                        })
+                place.id?.let { placeId ->
+                    componentRepository.addComponent(placeId, component)
+                }
             }
         }
     }
 
-    private fun uploadQrCode(response: ServerPlace) {
-        val uri = Uri.parse(saveQrCode(CreatePlace.qrCodeImage, response.qrCodeId))
-        val file = File(uri.path)
+    private fun uploadQrCode(place: ServerPlace) {
+        val uri = Uri.parse(saveQrCode(CreatePlace.qrCodeImage, place.qrCodeId))
+        val image = File(uri.path)
 
-        val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        val imageFileBody = MultipartBody.Part.createFormData("imgUpload", file.name, requestBody)
+        uploadService.uploadImage(image) {
+            it?.let {
+                place.qrCode = it.path
 
-        // sync title picture to server and add the response answer to the created place
-        apiClient.uploadImage(imageFileBody)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    Log.i(TAG, "Picture uploaded: $it")
-
-                    response.qrCode = it.path
-
-                    apiClient.updatePlace(response.id ?: "", response)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                Log.i(TAG, "Place updated: $it")
-                            }, {
-                                Log.e(TAG, "Error while updating place: $it")
-                            })
-                }, {
-                    Log.e(TAG, "Error while uploading picture: $it")
-                })
+                place.id?.let { placeId ->
+                    placeRepository.updatePlace(placeId, place)
+                }
+            }
+        }
     }
 
     private fun saveQrCode(bitmap: Bitmap, qrCodeId: String?): String {
@@ -210,7 +157,7 @@ class CreatePlaceViewModel(
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
 
         val path = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).absolutePath + "/Quo/")
+                Environment.DIRECTORY_PICTURES).absolutePath + Constants.IMAGE_DIR)
         val file = File(path, "$qrCodeId.jpg")
         path.mkdirs()
         file.createNewFile()

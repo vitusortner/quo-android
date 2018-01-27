@@ -50,7 +50,12 @@ class CreatePlaceFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders
-                .of(this, CreatePlaceViewModelFactory(Injection.apiClient, Injection.userRepository))
+                .of(this, CreatePlaceViewModelFactory(
+                        Injection.componentRepository,
+                        Injection.pictureRepository,
+                        Injection.placeRepository,
+                        Injection.userRepository,
+                        Injection.uploadService))
                 .get(CreatePlaceViewModel::class.java)
     }
 
