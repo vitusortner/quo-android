@@ -67,7 +67,7 @@
     <dimen name="checkbox_padding_top">10dp</dimen>>
 
     <dimen name="event_header_image_height">200dp</dimen>
-    <dimen name="event_layout_margin">20dp</dimen>
+    <dimen name="event_layout_padding_left_right">20dp</dimen>
     <dimen name="event_gallery_button_marginTop">170dp</dimen>
     <dimen name="event_gallery_button_elevation">15dp</dimen>
     <dimen name="event_gallery_button_padding">10dp</dimen>

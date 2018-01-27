@@ -20,8 +20,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/event_layout_margin"
-            android:layout_marginStart="@dimen/event_layout_margin"
+            android:clipToPadding="false"
+            android:paddingEnd="@dimen/event_layout_padding_left_right"
+            android:paddingStart="@dimen/event_layout_padding_left_right"
             android:scrollbars="vertical">
 
             <ImageButton
