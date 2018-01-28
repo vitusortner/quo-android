@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
+import com.android.quo.db.entity.User
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.repository.ComponentRepository
@@ -165,6 +166,10 @@ class CreatePlaceViewModel(
         fo.write(bytes.toByteArray())
         fo.close()
         return file.path
+    }
+
+    fun getUser(completionHandler: (User?) -> Unit) {
+        userRepository.getUser(completionHandler)
     }
 }
 

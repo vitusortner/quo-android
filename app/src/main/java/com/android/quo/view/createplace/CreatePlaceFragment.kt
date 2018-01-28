@@ -1,7 +1,6 @@
 package com.android.quo.view.createplace
 
 import android.Manifest
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,11 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.di.Injection
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerSettings
 import com.android.quo.viewmodel.CreatePlaceViewModel
-import com.android.quo.viewmodel.factory.CreatePlaceViewModelFactory
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
@@ -30,14 +27,15 @@ import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
+import org.koin.android.architecture.ext.getViewModel
 import java.sql.Timestamp
-
 
 /**
  * Created by Jung on 27.11.17.
  */
-
 class CreatePlaceFragment : Fragment() {
+
+    private lateinit var viewModel: CreatePlaceViewModel
 
     private val compositDisposable = CompositeDisposable()
 
@@ -45,18 +43,10 @@ class CreatePlaceFragment : Fragment() {
 
     lateinit var place: ServerPlace
 
-    private lateinit var viewModel: CreatePlaceViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders
-                .of(this, CreatePlaceViewModelFactory(
-                        Injection.componentRepository,
-                        Injection.pictureRepository,
-                        Injection.placeRepository,
-                        Injection.userRepository,
-                        Injection.uploadService))
-                .get(CreatePlaceViewModel::class.java)
+
+        viewModel = getViewModel()
     }
 
     override fun onCreateView(
@@ -190,8 +180,9 @@ class CreatePlaceFragment : Fragment() {
     private fun generateQrCodeObservable(): Observable<Bitmap> {
         return Observable.create {
             val timestamp = Timestamp(System.currentTimeMillis())
-            Injection.userRepository.getUser {
-                it?.id.let { userId ->
+
+            viewModel.getUser {
+                it?.let { userId ->
                     val qrCodeId = String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
                     val uri = "quo://" + qrCodeId
                     val width = 1024

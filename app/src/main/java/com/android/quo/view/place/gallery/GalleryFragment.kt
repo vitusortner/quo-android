@@ -1,7 +1,6 @@
 package com.android.quo.view.place.gallery
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
@@ -9,22 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.di.Injection
 import com.android.quo.viewmodel.GalleryViewModel
-import com.android.quo.viewmodel.factory.GalleryViewModelFactory
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
 import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
+import org.koin.android.architecture.ext.getViewModel
 
 /**
  * Created by vitusortner on 14.11.17.
  */
 class GalleryFragment : Fragment() {
 
+    private lateinit var viewModel: GalleryViewModel
+
     private var placeId: String? = null
 
     private lateinit var adapter: GalleryAdapter
-
-    private lateinit var viewModel: GalleryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +33,7 @@ class GalleryFragment : Fragment() {
             adapter = GalleryAdapter(it)
         }
 
-        viewModel = ViewModelProviders
-                .of(this, GalleryViewModelFactory(Injection.pictureRepository))
-                .get(GalleryViewModel::class.java)
+        viewModel = getViewModel()
     }
 
     override fun onCreateView(

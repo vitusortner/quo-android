@@ -116,10 +116,9 @@ interface ApiClient {
 
         fun instance(securedPreferenceStore: SecuredPreferenceStore): ApiClient {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                        ?: retrofit(securedPreferenceStore)
-                                .create(ApiClient::class.java)
-                                .also { INSTANCE = it }
+                INSTANCE ?: retrofit(securedPreferenceStore)
+                        .create(ApiClient::class.java)
+                        .also { INSTANCE = it }
             }
         }
 

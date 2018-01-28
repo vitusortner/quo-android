@@ -1,16 +1,23 @@
 package com.android.quo
 
 import android.app.Application
-import com.android.quo.di.Injection
+import com.android.quo.db.Database
+import com.android.quo.di.modules
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import devliving.online.securedpreferencestore.DefaultRecoveryHandler
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
+import org.koin.android.ext.android.startKoin
 
 /**
  * Created by FlorianSchlueter on 20.11.2017.
  */
 class Application : Application() {
+
+    companion object {
+
+        lateinit var database: Database
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -24,8 +31,10 @@ class Application : Application() {
         }
         LeakCanary.install(this)
 
+        database = Database.instance(this)
+
         SecuredPreferenceStore.init(this, DefaultRecoveryHandler())
 
-        Injection.instance(this)
+        startKoin(this, modules)
     }
 }

@@ -32,6 +32,7 @@ ext {
     rxbinding_version = '2.0.0'
     glide_version = '4.4.0'
     leakcanary_version = '1.5.4'
+    koin_version = '0.8.0'
 }
 
 dependencies {
@@ -57,7 +58,6 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
     implementation 'com.alexvasilkov:gesture-views:2.3.2'
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version"
-    implementation 'com.facebook.android:facebook-login:4.28.0'
     implementation "android.arch.persistence.room:runtime:$architecture_components_version"
     kapt "android.arch.persistence.room:compiler:$architecture_components_version"
     implementation "android.arch.persistence.room:rxjava2:$architecture_components_version"
@@ -65,6 +65,7 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'online.devliving:securedpreferencestore:0.5.0'
     implementation 'com.google.android.gms:play-services-location:11.8.0'
+    implementation "org.koin:koin-android-architecture:$koin_version"
 
     // Testing
     androidTestImplementation "android.arch.core:core-testing:$architecture_components_version"

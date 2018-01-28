@@ -1,6 +1,5 @@
 package com.android.quo.view.login
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -12,9 +11,7 @@ import android.view.View
 import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.di.Injection
 import com.android.quo.viewmodel.LoginViewModel
-import com.android.quo.viewmodel.factory.LoginViewModelFactory
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -37,8 +34,8 @@ import kotlinx.android.synthetic.main.layout_sign_up.view.agreementCheckbox
 import kotlinx.android.synthetic.main.layout_sign_up.view.emailSignUpEditText
 import kotlinx.android.synthetic.main.layout_sign_up.view.passwordSignUpEditText
 import kotlinx.android.synthetic.main.layout_sign_up.view.passwordWrapper
+import org.koin.android.architecture.ext.getViewModel
 import java.util.concurrent.TimeUnit
-
 
 /**
  * Created by Jung on 09.11.17.
@@ -56,9 +53,7 @@ class LoginActivity : AppCompatActivity() {
 
         callbackManager = CallbackManager.Factory.create()
 
-        viewModel = ViewModelProviders
-                .of(this, LoginViewModelFactory(Injection.authService, Injection.userRepository))
-                .get(LoginViewModel::class.java)
+        viewModel = getViewModel()
 
         handleFacebookLogin()
 

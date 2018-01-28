@@ -1,7 +1,6 @@
 package com.android.quo.view.myplaces
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -9,24 +8,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.di.Injection
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.viewmodel.MyPlacesViewModel
-import com.android.quo.viewmodel.factory.MyPlacesViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.recyclerView
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
+import org.koin.android.architecture.ext.getViewModel
 
 /**
  * Created by vitusortner on 05.11.17.
  */
 class MyPlacesFragment : Fragment() {
 
-    private lateinit var adapter: PlacePreviewAdapter
-
     private lateinit var viewModel: MyPlacesViewModel
+
+    private lateinit var adapter: PlacePreviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +35,7 @@ class MyPlacesFragment : Fragment() {
             adapter = PlacePreviewAdapter(it.supportFragmentManager)
         }
 
-        viewModel = ViewModelProviders
-                .of(this, MyPlacesViewModelFactory(Injection.placeRepository, Injection.userRepository))
-                .get(MyPlacesViewModel::class.java)
+        viewModel = getViewModel()
     }
 
     override fun onCreateView(

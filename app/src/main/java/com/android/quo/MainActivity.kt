@@ -1,6 +1,5 @@
 package com.android.quo
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -11,15 +10,14 @@ import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.db.entity.Place
-import com.android.quo.di.Injection
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.myplaces.MyPlacesFragment
 import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
 import com.android.quo.viewmodel.LoginViewModel
-import com.android.quo.viewmodel.factory.LoginViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
+import org.koin.android.architecture.ext.getViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,9 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders
-                .of(this, LoginViewModelFactory(Injection.authService, Injection.userRepository))
-                .get(LoginViewModel::class.java)
+        viewModel = getViewModel()
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome

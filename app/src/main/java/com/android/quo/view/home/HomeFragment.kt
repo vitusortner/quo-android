@@ -1,7 +1,6 @@
 package com.android.quo.view.home
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,24 +10,23 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.di.Injection
 import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.viewmodel.HomeViewModel
-import com.android.quo.viewmodel.factory.HomeViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_home.toolbar
+import org.koin.android.architecture.ext.getViewModel
 
 /**
  * Created by Jung on 01.11.17.
  */
 class HomeFragment : Fragment() {
 
-    private lateinit var adapter: PlacePreviewAdapter
-
     private lateinit var viewModel: HomeViewModel
+
+    private lateinit var adapter: PlacePreviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +37,7 @@ class HomeFragment : Fragment() {
             adapter = PlacePreviewAdapter(it.supportFragmentManager)
         }
 
-        viewModel = ViewModelProviders
-                .of(this, HomeViewModelFactory(
-                        Injection.placeRepository,
-                        Injection.userRepository,
-                        Injection.authService))
-                .get(HomeViewModel::class.java)
+        viewModel = getViewModel()
     }
 
     override fun onCreateView(

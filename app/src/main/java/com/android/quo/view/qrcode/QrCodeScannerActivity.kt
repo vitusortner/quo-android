@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -27,10 +26,8 @@ import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.db.entity.Place
-import com.android.quo.di.Injection
 import com.android.quo.util.Constants
 import com.android.quo.viewmodel.QrCodeScannerViewModel
-import com.android.quo.viewmodel.factory.QrCodeScannerViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.BinaryBitmap
@@ -44,14 +41,16 @@ import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashTextView
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.photosButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.qrCodeScannerView
 import me.dm7.barcodescanner.zxing.ZXingScannerView
+import org.koin.android.architecture.ext.getViewModel
 
 /**
  * Created by Jung on 30.10.17.
  */
-
 class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private val TAG = javaClass.simpleName
+
+    private lateinit var viewModel: QrCodeScannerViewModel
 
     private val PERMISSION_REQUEST_GPS = 101
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
@@ -59,19 +58,13 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private lateinit var scannerView: ZXingScannerView
 
-    private lateinit var viewModel: QrCodeScannerViewModel
-
     private lateinit var locationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_code_scanner)
 
-        viewModel = ViewModelProviders
-                .of(this, QrCodeScannerViewModelFactory(
-                        Injection.placeRepository,
-                        Injection.userRepository))
-                .get(QrCodeScannerViewModel::class.java)
+        viewModel = getViewModel()
 
         requestPermissions(arrayOf(
                 Manifest.permission.CAMERA,

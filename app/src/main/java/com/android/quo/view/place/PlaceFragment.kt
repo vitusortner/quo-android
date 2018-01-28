@@ -3,7 +3,6 @@ package com.android.quo.view.place
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -21,15 +20,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.quo.Application
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.di.Injection
 import com.android.quo.util.Constants
 import com.android.quo.util.extension.toPx
 import com.android.quo.view.place.info.InfoFragment
 import com.android.quo.viewmodel.PlaceViewModel
-import com.android.quo.viewmodel.factory.PlaceViewModelFactory
 import com.bumptech.glide.Glide
 import id.zelory.compressor.Compressor
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_place.imageView
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import kotlinx.android.synthetic.main.fragment_place.viewPager
+import org.koin.android.architecture.ext.getViewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,6 +50,8 @@ import java.util.*
 class PlaceFragment : Fragment() {
 
     private val TAG = javaClass.simpleName
+
+    private lateinit var viewModel: PlaceViewModel
 
     private val RESULT_GALLERY = 201
     private val RESULT_CAMERA = 202
@@ -73,8 +72,6 @@ class PlaceFragment : Fragment() {
         }
     }
 
-    private lateinit var viewModel: PlaceViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,12 +80,7 @@ class PlaceFragment : Fragment() {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
 
-        viewModel = ViewModelProviders
-                .of(this, PlaceViewModelFactory(
-                        Injection.uploadService,
-                        Injection.pictureRepository,
-                        Injection.userRepository))
-                .get(PlaceViewModel::class.java)
+        viewModel = getViewModel()
 
         place = arguments?.getParcelable("place")
     }
