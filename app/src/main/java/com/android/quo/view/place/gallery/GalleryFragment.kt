@@ -29,9 +29,7 @@ class GalleryFragment : Fragment() {
 
         placeId = arguments?.getString("placeId")
 
-        activity?.let {
-            adapter = GalleryAdapter(it)
-        }
+        adapter = GalleryAdapter()
 
         viewModel = getViewModel()
     }

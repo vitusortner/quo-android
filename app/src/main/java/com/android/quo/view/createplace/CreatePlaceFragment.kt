@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerSettings
+import com.android.quo.util.CreatePlace
+import com.android.quo.view.createplace.qrcode.QrCodeFragment
 import com.android.quo.viewmodel.CreatePlaceViewModel
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter

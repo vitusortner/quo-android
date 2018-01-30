@@ -33,9 +33,10 @@ abstract class Database : RoomDatabase() {
 
         fun instance(context: Context): com.android.quo.db.Database {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                        ?: Room.databaseBuilder(context, com.android.quo.db.Database::class.java, "qouDB").build()
-                                .also { INSTANCE = it }
+                INSTANCE ?: Room
+                        .databaseBuilder(context, com.android.quo.db.Database::class.java, "qouDB")
+                        .build()
+                        .also { INSTANCE = it }
             }
         }
     }

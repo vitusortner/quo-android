@@ -20,5 +20,5 @@ data class ServerPicture(
         @SerializedName("is_visible")
         var isVisible: Boolean,
 
-        var timestamp: String
+        var timestamp: String? = null
 )

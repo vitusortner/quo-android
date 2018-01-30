@@ -1,4 +1,4 @@
-package com.android.quo.view.createplace
+package com.android.quo.view.createplace.page
 
 import android.Manifest
 import android.app.Activity
@@ -30,7 +30,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.network.model.ServerComponent
-import com.android.quo.view.createplace.CreatePlace.components
+import com.android.quo.util.CreatePlace.components
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable

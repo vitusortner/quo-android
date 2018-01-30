@@ -82,9 +82,7 @@ class SyncService(
 
     fun savePictures(data: List<ServerPicture>, placeId: String) {
         if (data.isNotEmpty()) {
-            val pictures = data.map { serverPicture ->
-                mapToPicture(serverPicture)
-            }
+            val pictures = data.map(::mapToPicture)
             // delete pictures of given place before inserting updated pictures
             pictureDao.deletePicturesOfPlace(placeId)
             pictureDao.insertAllPictures(pictures)
@@ -138,7 +136,7 @@ class SyncService(
                 placeId = serverPicture.placeId,
                 src = serverPicture.src,
                 isVisible = serverPicture.isVisible,
-                timestamp = serverPicture.timestamp
+                timestamp = serverPicture.timestamp ?: ""
         )
     }
 }

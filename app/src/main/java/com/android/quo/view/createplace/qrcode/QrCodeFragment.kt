@@ -1,4 +1,4 @@
-package com.android.quo.view.createplace
+package com.android.quo.view.createplace.qrcode
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.util.CreatePlace
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import kotlinx.android.synthetic.main.fragment_qr_code_view.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_qr_code_view.qrCodeImageView

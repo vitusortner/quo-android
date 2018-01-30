@@ -1,4 +1,4 @@
-package com.android.quo.view.createplace
+package com.android.quo.view.createplace.settings
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.util.CreatePlace
 import kotlinx.android.synthetic.main.fragment_create_settings.gpsSwitch
 import kotlinx.android.synthetic.main.fragment_create_settings.photosSwitch
 

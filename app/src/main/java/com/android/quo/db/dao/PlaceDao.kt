@@ -11,18 +11,11 @@ import io.reactivex.Flowable
 /**
  * Created by FlorianSchlueter on 18.11.2017.
  */
-
 @Dao
 interface PlaceDao {
 
-    @Query("SELECT * FROM place")
-    fun getAllPlaces(): Flowable<List<Place>>
-
     @Query("SELECT * FROM place WHERE is_host =:isHost")
     fun getPlaces(isHost: Boolean): Flowable<List<Place>>
-
-    @Query("SELECT * FROM place WHERE id = :id")
-    fun getPlaceById(id: String): Flowable<Place>
 
     @Query("SELECT * FROM place WHERE qr_code_id = :qrCodeId")
     fun getPlaceByQrCodeId(qrCodeId: String): Flowable<Place>

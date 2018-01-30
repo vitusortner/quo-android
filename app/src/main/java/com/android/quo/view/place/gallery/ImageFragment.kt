@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import com.alexvasilkov.gestures.GestureController
 import com.android.quo.R
 import com.bumptech.glide.Glide
-import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_gallery_image.imageView
 import kotlinx.android.synthetic.main.fragment_gallery_image.toolbar
 
@@ -21,11 +19,6 @@ class ImageFragment : Fragment() {
 
     private var url: String? = null
 
-    private val compositDisposable = CompositeDisposable()
-
-    /**
-     * Retrieves string extra from bundle and inflates view
-     */
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -38,12 +31,9 @@ class ImageFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_gallery_image, container, false)
     }
 
-    /**
-     * Loads image from URL into image view
-     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         url?.let {
-            Glide.with(this.context)
+            Glide.with(context)
                     .load(it)
                     .into(imageView)
         }
@@ -52,14 +42,11 @@ class ImageFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
+        toolbar.setNavigationIcon(R.drawable.ic_back)
 
-        compositDisposable.add(
-                RxToolbar.navigationClicks(toolbar)
-                        .subscribe {
-                            activity?.onBackPressed()
-                        }
-        )
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
 
         // handle tap on image
         imageView.controller.setOnGesturesListener(object : GestureController.OnGestureListener {
@@ -101,11 +88,5 @@ class ImageFragment : Fragment() {
                 return true
             }
         })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        compositDisposable.dispose()
     }
 }

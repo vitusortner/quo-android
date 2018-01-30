@@ -26,10 +26,7 @@ class PlaceViewModel(
                                 ownerId = user.id,
                                 placeId = placeId,
                                 src = image.path,
-                                isVisible = true,
-                                // TODO server sets timestamp
-                                // make timestamp nullable
-                                timestamp = ""
+                                isVisible = true
                         )
 
                         pictureRepository.addPicture(placeId, picture)

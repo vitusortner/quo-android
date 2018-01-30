@@ -5,6 +5,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.android.quo.R
+import com.android.quo.view.createplace.event.CreateEventFragment
+import com.android.quo.view.createplace.page.CreatePageFragment
+import com.android.quo.view.createplace.settings.CreateSettingsFragment
 
 /**
  * Created by Jung on 27.11.17.

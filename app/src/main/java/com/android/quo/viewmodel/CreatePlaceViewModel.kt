@@ -13,7 +13,7 @@ import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
 import com.android.quo.util.Constants
-import com.android.quo.view.createplace.CreatePlace
+import com.android.quo.util.CreatePlace
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -51,9 +51,7 @@ class CreatePlaceViewModel(
                 ownerId = place.host,
                 placeId = place.id ?: "",
                 src = "",
-                isVisible = true,
-                // TODO timestamp should be set by server make it nullable
-                timestamp = ""
+                isVisible = true
         )
 
         //check if title picture is from user or default image
@@ -111,9 +109,7 @@ class CreatePlaceViewModel(
                                 ownerId = place.host,
                                 placeId = place.id ?: "",
                                 src = it.path,
-                                isVisible = true,
-                                // TODO should get set by server
-                                timestamp = ""
+                                isVisible = true
                         )
 
                         place.id?.let { placeId ->

@@ -1,4 +1,4 @@
-package com.android.quo.view.createplace
+package com.android.quo.view.createplace.event
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -35,6 +35,7 @@ import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.dataclass.EventDates
 import com.android.quo.util.Constants
+import com.android.quo.util.CreatePlace
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.rxbinding2.view.RxView

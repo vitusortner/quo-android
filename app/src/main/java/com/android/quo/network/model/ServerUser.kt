@@ -8,5 +8,6 @@ import com.google.gson.annotations.SerializedName
 data class ServerUser(
         @SerializedName("_id")
         val id: String,
+
         val email: String
 )

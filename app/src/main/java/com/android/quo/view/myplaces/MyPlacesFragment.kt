@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.view.PlacePreviewAdapter
+import com.android.quo.view.home.PlacePreviewAdapter
 import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.viewmodel.MyPlacesViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView

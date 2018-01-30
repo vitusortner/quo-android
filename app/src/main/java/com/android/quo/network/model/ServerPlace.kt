@@ -41,5 +41,4 @@ data class ServerPlace(
         var qrCode: String? = null,
 
         val timestamp: String
-
 )

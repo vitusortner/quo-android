@@ -1,23 +1,18 @@
 package com.android.quo.network
 
 import com.android.quo.network.ApiClient.Companion.Endpoints.AUTH
-import com.android.quo.network.ApiClient.Companion.Endpoints.COMPONENTS
 import com.android.quo.network.ApiClient.Companion.Endpoints.PLACES
 import com.android.quo.network.ApiClient.Companion.Endpoints.UPLOAD
 import com.android.quo.network.ApiClient.Companion.Endpoints.USERS
 import com.android.quo.network.model.ServerComponent
-import com.android.quo.network.model.ServerFacebookSignup
 import com.android.quo.network.model.ServerLogin
 import com.android.quo.network.model.ServerLoginResponse
-import com.android.quo.network.model.ServerPasswordChange
-import com.android.quo.network.model.ServerPasswordReset
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerPlaceResponse
 import com.android.quo.network.model.ServerSignup
 import com.android.quo.network.model.ServerSignupResponse
 import com.android.quo.network.model.ServerUploadImage
-import com.android.quo.network.model.ServerUser
 import com.android.quo.util.Constants
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import io.reactivex.Single
@@ -29,7 +24,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -47,18 +41,6 @@ interface ApiClient {
 
     @POST("$AUTH/register")
     fun signup(@Body data: ServerSignup): Single<ServerSignupResponse>
-
-    @POST("signupwithfacebook")
-    fun signupWithFacebook(@Body data: ServerFacebookSignup): Single<ServerUser>
-
-    @POST("user")
-    fun changePassword(@Body data: ServerPasswordChange): Single<ServerUser>
-
-    @POST("user")
-    fun resetPassword(@Body data: ServerPasswordReset)
-
-    @DELETE("users/{id}")
-    fun deleteUser(@Path("id") userId: String)
 
     @POST(PLACES)
     fun addPlace(@Body place: ServerPlace): Single<ServerPlace>
@@ -102,12 +84,6 @@ interface ApiClient {
 
     @GET("$PLACES/{id}/components")
     fun getComponents(@Path("id") placeId: String): Single<List<ServerComponent>>
-
-    @PUT("$COMPONENTS/{id}")
-    fun updateComponent(
-            @Path("id") componentId: String,
-            @Body data: ServerComponent
-    ): Single<ServerComponent>
 
     companion object {
 
@@ -165,7 +141,6 @@ interface ApiClient {
 
             const val AUTH = "auth"
             const val PLACES = "places"
-            const val COMPONENTS = "components"
             const val USERS = "users"
             const val UPLOAD = "upload"
 

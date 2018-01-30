@@ -1,4 +1,4 @@
-package com.android.quo.view
+package com.android.quo.view.home
 
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -64,5 +64,6 @@ class PlacePreviewAdapter(private val fragmentManager: FragmentManager)
 
     override fun getItemCount(): Int = list.size
 
-    class PlacePreviewViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
+    class PlacePreviewViewHolder(override val containerView: View)
+        : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

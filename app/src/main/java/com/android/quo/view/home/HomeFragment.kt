@@ -10,7 +10,6 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.view.PlacePreviewAdapter
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView

@@ -11,7 +11,6 @@ import kotlinx.android.parcel.Parcelize
 /**
  * Created by FlorianSchlueter on 17.11.2017.
  */
-
 @SuppressLint("ParcelCreator")
 @Parcelize
 @Entity(tableName = "place")

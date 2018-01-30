@@ -10,12 +10,8 @@ import kotlinx.android.parcel.Parcelize
 /**
  * Created by FlorianSchlueter on 17.11.2017.
  */
-
 @SuppressLint("ParcelCreator")
 @Parcelize
-// Disabled cascade delete otherwise cache doesn't work properly
-// When getching places from API, we delete all places and insert them again, which leads
-// to deletion of pictures (cascade delete)
 @Entity(tableName = "picture")
 data class Picture(
         @PrimaryKey

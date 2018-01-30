@@ -1,4 +1,4 @@
-package com.android.quo.view.createplace
+package com.android.quo.util
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -9,7 +9,6 @@ import com.android.quo.network.model.ServerSettings
 /**
  * Created by Jung on 05.12.17.
  */
-
 object CreatePlace {
 
     var place = ServerPlace(
