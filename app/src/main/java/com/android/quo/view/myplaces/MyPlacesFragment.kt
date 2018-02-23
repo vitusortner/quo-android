@@ -8,21 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.view.home.PlacePreviewAdapter
 import com.android.quo.view.createplace.CreatePlaceFragment
+import com.android.quo.view.home.PlacePreviewAdapter
 import com.android.quo.viewmodel.MyPlacesViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_my_places.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_my_places.recyclerView
 import kotlinx.android.synthetic.main.fragment_my_places.swipeRefreshLayout
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 
 /**
  * Created by vitusortner on 05.11.17.
  */
 class MyPlacesFragment : Fragment() {
 
-    private lateinit var viewModel: MyPlacesViewModel
+    private val viewModel by viewModel<MyPlacesViewModel>()
 
     private lateinit var adapter: PlacePreviewAdapter
 
@@ -34,14 +34,12 @@ class MyPlacesFragment : Fragment() {
 
             adapter = PlacePreviewAdapter(it.supportFragmentManager)
         }
-
-        viewModel = getViewModel()
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_my_places, container, false)
     }
@@ -80,10 +78,10 @@ class MyPlacesFragment : Fragment() {
     }
 
     private fun setupFloatingActionButton() =
-            floatingActionButton.setOnClickListener {
-                fragmentManager?.beginTransaction()
-                        ?.replace(R.id.content, CreatePlaceFragment())
-                        ?.addToBackStack(null)
-                        ?.commit()
-            }
+        floatingActionButton.setOnClickListener {
+            fragmentManager?.beginTransaction()
+                ?.replace(R.id.content, CreatePlaceFragment())
+                ?.addToBackStack(null)
+                ?.commit()
+        }
 }

@@ -39,7 +39,7 @@ import kotlinx.android.synthetic.main.fragment_place.imageView
 import kotlinx.android.synthetic.main.fragment_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import kotlinx.android.synthetic.main.fragment_place.viewPager
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,7 +51,7 @@ class PlaceFragment : Fragment() {
 
     private val TAG = javaClass.simpleName
 
-    private lateinit var viewModel: PlaceViewModel
+    private val viewModel by viewModel<PlaceViewModel>()
 
     private val RESULT_GALLERY = 201
     private val RESULT_CAMERA = 202
@@ -79,16 +79,13 @@ class PlaceFragment : Fragment() {
         if (activity?.bottomNavigationView?.visibility == View.GONE) {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
-
-        viewModel = getViewModel()
-
         place = arguments?.getParcelable("place")
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_place, container, false)
     }
@@ -123,27 +120,37 @@ class PlaceFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         when (requestCode) {
             PERMISSION_REQUEST_CAMERA -> {
                 context?.let {
-                    val cameraResult = ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA)
-                    val readResult = ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    val writeResult = ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    val cameraResult =
+                        ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA)
+                    val readResult = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                    val writeResult = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
 
                     if (cameraResult == PackageManager.PERMISSION_GRANTED &&
-                            readResult == PackageManager.PERMISSION_GRANTED &&
-                            writeResult == PackageManager.PERMISSION_GRANTED) {
+                        readResult == PackageManager.PERMISSION_GRANTED &&
+                        writeResult == PackageManager.PERMISSION_GRANTED) {
                         openCamera()
                     }
                 }
             }
             PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
                 context?.let {
-                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    val result = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
                     if (result == PackageManager.PERMISSION_GRANTED) {
                         openGallery()
                     }
@@ -155,30 +162,30 @@ class PlaceFragment : Fragment() {
     private fun setupBottomSheetButtons(view: View) {
         view.cameraButton.setOnClickListener {
             requestPermissions(
-                    arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA
-                    ),
-                    PERMISSION_REQUEST_CAMERA
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+                ),
+                PERMISSION_REQUEST_CAMERA
             )
         }
 
         view.galleryButton.setOnClickListener {
             requestPermissions(
-                    arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ),
-                    PERMISSION_REQUEST_EXTERNAL_STORAGE
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                PERMISSION_REQUEST_EXTERNAL_STORAGE
             )
         }
     }
 
     private fun openGallery() {
         val galleryIntent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
 
         activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
@@ -192,9 +199,9 @@ class PlaceFragment : Fragment() {
                 val image = createImageFile()
 
                 val imageUri = FileProvider.getUriForFile(
-                        context,
-                        "com.android.quo",
-                        image
+                    context,
+                    "com.android.quo",
+                    image
                 )
 
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
@@ -207,7 +214,7 @@ class PlaceFragment : Fragment() {
     @SuppressLint("SimpleDateFormat")
     private fun createImageFile(): File {
         val storageDir = Environment
-                .getExternalStoragePublicDirectory("${Environment.DIRECTORY_PICTURES}${Constants.IMAGE_DIR}")
+            .getExternalStoragePublicDirectory("${Environment.DIRECTORY_PICTURES}${Constants.IMAGE_DIR}")
 
         if (!storageDir.exists()) {
             storageDir.mkdirs()
@@ -224,19 +231,19 @@ class PlaceFragment : Fragment() {
 
     private fun compressImage(image: File, completionHandler: (File?) -> Unit) {
         Compressor(context)
-                .setMaxWidth(640)
-                .setMaxHeight(640)
-                .setQuality(75)
-                .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                .compressToFileAsFlowable(image)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    completionHandler(it)
-                }, {
-                    Log.e(TAG, "Error while compressing image: $it")
-                    completionHandler(null)
-                })
+            .setMaxWidth(640)
+            .setMaxHeight(640)
+            .setQuality(75)
+            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+            .compressToFileAsFlowable(image)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                completionHandler(it)
+            }, {
+                Log.e(TAG, "Error while compressing image: $it")
+                completionHandler(null)
+            })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -298,8 +305,8 @@ class PlaceFragment : Fragment() {
         val imageUrl = place?.titlePicture ?: ""
 
         Glide.with(this.context)
-                .load(imageUrl)
-                .into(imageView)
+            .load(imageUrl)
+            .into(imageView)
 
         toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
@@ -312,9 +319,9 @@ class PlaceFragment : Fragment() {
             fragment.arguments = bundle
 
             fragmentManager?.beginTransaction()
-                    ?.add(R.id.content, fragment)
-                    ?.addToBackStack(null)
-                    ?.commit()
+                ?.add(R.id.content, fragment)
+                ?.addToBackStack(null)
+                ?.commit()
             true
         }
 
@@ -332,12 +339,16 @@ class PlaceFragment : Fragment() {
                 }
                 if (scrollRange + verticalOffset <= 150) {
                     tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextBlack),
-                            resources.getColor(R.color.colorTextBlack))
+                    tabLayout.setTabTextColors(
+                        resources.getColor(R.color.colorTextBlack),
+                        resources.getColor(R.color.colorTextBlack)
+                    )
                 } else {
                     tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
-                    tabLayout.setTabTextColors(resources.getColor(R.color.colorTextWhite),
-                            resources.getColor(R.color.colorTextWhite))
+                    tabLayout.setTabTextColors(
+                        resources.getColor(R.color.colorTextWhite),
+                        resources.getColor(R.color.colorTextWhite)
+                    )
                 }
             }
         }
@@ -357,9 +368,9 @@ class PlaceFragment : Fragment() {
                 }
 
                 override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
                 ) {
                 }
 

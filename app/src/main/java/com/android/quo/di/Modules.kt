@@ -1,6 +1,6 @@
 package com.android.quo.di
 
-import com.android.quo.Application
+import com.android.quo.App
 import com.android.quo.network.ApiClient
 import com.android.quo.repository.ComponentRepository
 import com.android.quo.repository.PictureRepository
@@ -36,10 +36,11 @@ private val viewModelsModule = applicationContext {
 }
 
 private val daosModule = applicationContext {
-    provide { Application.database.componentDao() }
-    provide { Application.database.pictureDao() }
-    provide { Application.database.placeDao() }
-    provide { Application.database.userDao() }
+    val db = App.database
+    provide { db.componentDao() }
+    provide { db.pictureDao() }
+    provide { db.placeDao() }
+    provide { db.userDao() }
 }
 
 private val utilsModule = applicationContext {
@@ -60,4 +61,5 @@ private val repositoriesModule = applicationContext {
     provide { UserRepository(get()) }
 }
 
-val modules = listOf(viewModelsModule, daosModule, utilsModule, servicesModule, repositoriesModule)
+val modules =
+    listOf(viewModelsModule, daosModule, utilsModule, servicesModule, repositoriesModule)

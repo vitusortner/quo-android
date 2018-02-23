@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 import java.sql.Timestamp
 
 /**
@@ -37,7 +37,7 @@ import java.sql.Timestamp
  */
 class CreatePlaceFragment : Fragment() {
 
-    private lateinit var viewModel: CreatePlaceViewModel
+    private val viewModel by viewModel<CreatePlaceViewModel>()
 
     private val compositDisposable = CompositeDisposable()
 
@@ -45,16 +45,10 @@ class CreatePlaceFragment : Fragment() {
 
     lateinit var place: ServerPlace
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = getViewModel()
-    }
-
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_create_place, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,15 +61,18 @@ class CreatePlaceFragment : Fragment() {
 
         setupToolbar()
 
-        requestPermissions(arrayOf(
+        requestPermissions(
+            arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                PERMISSION_REQUEST_EXTERNAL_STORAGE)
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ),
+            PERMISSION_REQUEST_EXTERNAL_STORAGE
+        )
 
         generateQrCodeObservable()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
     /**
@@ -93,38 +90,45 @@ class CreatePlaceFragment : Fragment() {
         toolbar.setTitleTextColor(resources.getColor(R.color.colorTextWhite))
 
         compositDisposable.add(
-                RxToolbar.navigationClicks(toolbar)
-                        .subscribe {
-                            activity?.onBackPressed()
-                        }
+            RxToolbar.navigationClicks(toolbar)
+                .subscribe {
+                    activity?.onBackPressed()
+                }
         )
 
         compositDisposable.add(
-                RxToolbar.itemClicks(toolbar)
-                        .subscribe {
-                            if (!CreatePlace.place.titlePicture.isNullOrEmpty() && !CreatePlace.place.title.isNullOrEmpty()
-                                    && !CreatePlace.place.latitude.isNaN() && !CreatePlace.place.longitude.isNaN()
-                                    && !CreatePlace.place.description.isNullOrEmpty()) {
+            RxToolbar.itemClicks(toolbar)
+                .subscribe {
+                    if (!CreatePlace.place.titlePicture.isNullOrEmpty() && !CreatePlace.place.title.isNullOrEmpty()
+                        && !CreatePlace.place.latitude.isNaN() && !CreatePlace.place.longitude.isNaN()
+                        && !CreatePlace.place.description.isNullOrEmpty()) {
 
-                                viewModel.savePlace()
-                                fragmentManager?.beginTransaction()
-                                        ?.replace(R.id.content, QrCodeFragment())
-                                        ?.addToBackStack(null)
-                                        ?.commit()
+                        viewModel.savePlace()
+                        fragmentManager?.beginTransaction()
+                            ?.replace(R.id.content, QrCodeFragment())
+                            ?.addToBackStack(null)
+                            ?.commit()
 
-                            } else {
-                                //TODO add message please fill required boxes
-                            }
-                        }
+                    } else {
+                        //TODO add message please fill required boxes
+                    }
+                }
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
                 this.context?.let {
-                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    val result = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
                     if (result == PackageManager.PERMISSION_DENIED) {
                         fragmentManager?.popBackStack()
                     }
@@ -152,10 +156,12 @@ class CreatePlaceFragment : Fragment() {
         activity?.window?.let { window ->
             this.context?.let { context ->
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                    window.statusBarColor =
+                            ContextCompat.getColor(context, R.color.colorPrimaryDark)
                     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 } else {
-                    window.statusBarColor = ContextCompat.getColor(context, R.color.colorStatusBarSdkPre23)
+                    window.statusBarColor =
+                            ContextCompat.getColor(context, R.color.colorStatusBarSdkPre23)
                 }
             }
         }
@@ -166,15 +172,15 @@ class CreatePlaceFragment : Fragment() {
         super.onDestroy()
         //set place to default
         CreatePlace.place = ServerPlace(
-                host = "",
-                title = "",
-                startDate = "",
-                latitude = -1.0,
-                longitude = -1.0,
-                settings = ServerSettings(false, false),
-                titlePicture = "quo_default_1.png",
-                qrCodeId = "",
-                timestamp = ""
+            host = "",
+            title = "",
+            startDate = "",
+            latitude = -1.0,
+            longitude = -1.0,
+            settings = ServerSettings(false, false),
+            titlePicture = "quo_default_1.png",
+            qrCodeId = "",
+            timestamp = ""
         )
         compositDisposable.dispose()
     }
@@ -185,7 +191,8 @@ class CreatePlaceFragment : Fragment() {
 
             viewModel.getUser {
                 it?.let { userId ->
-                    val qrCodeId = String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
+                    val qrCodeId =
+                        String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
                     val uri = "quo://" + qrCodeId
                     val width = 1024
                     val height = 1024
@@ -195,7 +202,11 @@ class CreatePlaceFragment : Fragment() {
 
                     for (i in 0 until width) {
                         for (j in 0 until height) {
-                            imageBitmap.setPixel(i, j, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
+                            imageBitmap.setPixel(
+                                i,
+                                j,
+                                if (bm.get(i, j)) Color.BLACK else Color.WHITE
+                            )
                         }
                     }
 

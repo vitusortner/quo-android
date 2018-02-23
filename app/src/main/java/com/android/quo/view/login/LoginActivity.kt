@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.layout_sign_up.view.agreementCheckbox
 import kotlinx.android.synthetic.main.layout_sign_up.view.emailSignUpEditText
 import kotlinx.android.synthetic.main.layout_sign_up.view.passwordSignUpEditText
 import kotlinx.android.synthetic.main.layout_sign_up.view.passwordWrapper
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 import java.util.concurrent.TimeUnit
 
 /**
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
  */
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: LoginViewModel
+    private val viewModel by viewModel<LoginViewModel>()
 
     private lateinit var callbackManager: CallbackManager
     private var compositeDisposable = CompositeDisposable()
@@ -52,8 +52,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         callbackManager = CallbackManager.Factory.create()
-
-        viewModel = getViewModel()
 
         handleFacebookLogin()
 
@@ -70,79 +68,86 @@ class LoginActivity : AppCompatActivity() {
 
     private fun registerForgotPasswordButton() {
         compositeDisposable.add(RxView.clicks(clickableForgotPasswordTextView)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ openDialogForgotPassword() }))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ openDialogForgotPassword() })
+        )
     }
 
     private fun registerLoginButton() {
         compositeDisposable.add(RxView.clicks(loginButton)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
-                        val email = emailEditText.text.toString()
-                        val password = passwordEditText.text.toString()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
+                    val email = emailEditText.text.toString()
+                    val password = passwordEditText.text.toString()
 
-                        login(email, password)
-                    }
-                })
+                    login(email, password)
+                }
+            })
     }
 
     private fun registerSignupButton() {
         compositeDisposable.add(RxView.clicks(signUpButton)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { openDialogSignUp() })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { openDialogSignUp() })
     }
 
     private fun validateLoginPassword() {
         compositeDisposable.add(RxTextView.afterTextChangeEvents(passwordEditText)
-                .skipInitialValue()
-                .map {
-                    passwordWrapper.error = null
-                    it.view().text.toString()
-                }
-                .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(viewModel.lengthGreaterThanSix)
-                .compose(viewModel.retryWhenError {
-                    passwordWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(emailEditText, ColorStateList
-                            .valueOf(checkEditTextTintColor(it.message)))
-                })
-                .subscribe())
+            .skipInitialValue()
+            .map {
+                passwordWrapper.error = null
+                it.view().text.toString()
+            }
+            .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+            .compose(viewModel.lengthGreaterThanSix)
+            .compose(viewModel.retryWhenError {
+                passwordWrapper.error = it.message
+                ViewCompat.setBackgroundTintList(
+                    emailEditText, ColorStateList
+                        .valueOf(checkEditTextTintColor(it.message))
+                )
+            })
+            .subscribe()
+        )
     }
 
     private fun validateLoginEmail() {
         compositeDisposable.add(RxTextView.afterTextChangeEvents(emailEditText)
-                .skipInitialValue()
-                .map {
-                    emailWrapper.error = null
-                    it.view().text.toString()
-                }
-                .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(viewModel.verifyEmailPattern)
-                .compose(viewModel.retryWhenError {
-                    emailWrapper.error = it.message
+            .skipInitialValue()
+            .map {
+                emailWrapper.error = null
+                it.view().text.toString()
+            }
+            .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+            .compose(viewModel.verifyEmailPattern)
+            .compose(viewModel.retryWhenError {
+                emailWrapper.error = it.message
 
-                    ViewCompat.setBackgroundTintList(emailEditText, ColorStateList
-                            .valueOf(checkEditTextTintColor(it.message)))
-                })
-                .subscribe())
+                ViewCompat.setBackgroundTintList(
+                    emailEditText, ColorStateList
+                        .valueOf(checkEditTextTintColor(it.message))
+                )
+            })
+            .subscribe()
+        )
     }
 
     private fun handleFacebookLogin() {
         LoginManager.getInstance().registerCallback(callbackManager,
-                object : FacebookCallback<LoginResult> {
-                    override fun onSuccess(loginResult: LoginResult) {
-                        // App code
-                    }
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    // App code
+                }
 
-                    override fun onCancel() {
-                        // App code
-                    }
+                override fun onCancel() {
+                    // App code
+                }
 
-                    override fun onError(exception: FacebookException) {
-                        // App code
-                    }
-                })
+                override fun onError(exception: FacebookException) {
+                    // App code
+                }
+            })
     }
 
     /**
@@ -178,34 +183,44 @@ class LoginActivity : AppCompatActivity() {
         dialog.setView(dialogView)
 
         compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.emailEditText)
-                .skipInitialValue()
-                .map {
-                    dialogView.emailWrapper.error = null
-                    it.view().text.toString()
-                }
-                .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(viewModel.verifyEmailPattern)
-                .compose(viewModel.retryWhenError {
-                    dialogView.emailWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(dialogView.emailEditText, ColorStateList
-                            .valueOf(checkEditTextTintColor(it.message)))
-                })
-                .subscribe())
+            .skipInitialValue()
+            .map {
+                dialogView.emailWrapper.error = null
+                it.view().text.toString()
+            }
+            .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+            .compose(viewModel.verifyEmailPattern)
+            .compose(viewModel.retryWhenError {
+                dialogView.emailWrapper.error = it.message
+                ViewCompat.setBackgroundTintList(
+                    dialogView.emailEditText, ColorStateList
+                        .valueOf(checkEditTextTintColor(it.message))
+                )
+            })
+            .subscribe()
+        )
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             compositeDisposable.add(RxView.clicks(buttonNext)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (dialogView.emailWrapper.error.isNullOrEmpty()) {
-                            dialog.dismiss()
-                            openDialogPasswordResetFinished()
-                        }
-                    }))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (dialogView.emailWrapper.error.isNullOrEmpty()) {
+                        dialog.dismiss()
+                        openDialogPasswordResetFinished()
+                    }
+                })
+            )
         })
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.next), { _, _ -> })
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.cancel), { _, _ -> })
+        dialog.setButton(
+            AlertDialog.BUTTON_POSITIVE,
+            resources.getString(R.string.next),
+            { _, _ -> })
+        dialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            resources.getString(R.string.cancel),
+            { _, _ -> })
         dialog.show()
     }
 
@@ -216,7 +231,10 @@ class LoginActivity : AppCompatActivity() {
         val dialog = AlertDialog.Builder(this, R.style.AlertDialogTheme).create()
         dialog.setTitle(resources.getString(R.string.send_reset_email_title))
         dialog.setMessage(resources.getString(R.string.send_reset_email_message))
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.okay), { _, _ -> })
+        dialog.setButton(
+            AlertDialog.BUTTON_POSITIVE,
+            resources.getString(R.string.okay),
+            { _, _ -> })
         dialog.show()
     }
 
@@ -238,57 +256,69 @@ class LoginActivity : AppCompatActivity() {
 
         //check if email is validate
         compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.emailSignUpEditText)
-                .skipInitialValue()
-                .map {
-                    dialogView.emailWrapper.error = null
-                    it.view().text.toString()
-                }
-                .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(viewModel.verifyEmailPattern)
-                .compose(viewModel.retryWhenError {
-                    dialogView.emailWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(dialogView.emailSignUpEditText, ColorStateList
-                            .valueOf(checkEditTextTintColor(it.message)))
-                })
-                .subscribe())
+            .skipInitialValue()
+            .map {
+                dialogView.emailWrapper.error = null
+                it.view().text.toString()
+            }
+            .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+            .compose(viewModel.verifyEmailPattern)
+            .compose(viewModel.retryWhenError {
+                dialogView.emailWrapper.error = it.message
+                ViewCompat.setBackgroundTintList(
+                    dialogView.emailSignUpEditText, ColorStateList
+                        .valueOf(checkEditTextTintColor(it.message))
+                )
+            })
+            .subscribe()
+        )
 
         //check if password is validate
         compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.passwordSignUpEditText)
-                .skipInitialValue()
-                .map {
-                    dialogView.passwordWrapper.error = null
-                    it.view().text.toString()
-                }
-                .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .compose(viewModel.lengthGreaterThanSix)
-                .compose(viewModel.retryWhenError {
-                    dialogView.passwordWrapper.error = it.message
-                    ViewCompat.setBackgroundTintList(dialogView.passwordSignUpEditText, ColorStateList
-                            .valueOf(checkEditTextTintColor(it.message)))
-                })
-                .subscribe())
+            .skipInitialValue()
+            .map {
+                dialogView.passwordWrapper.error = null
+                it.view().text.toString()
+            }
+            .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+            .compose(viewModel.lengthGreaterThanSix)
+            .compose(viewModel.retryWhenError {
+                dialogView.passwordWrapper.error = it.message
+                ViewCompat.setBackgroundTintList(
+                    dialogView.passwordSignUpEditText, ColorStateList
+                        .valueOf(checkEditTextTintColor(it.message))
+                )
+            })
+            .subscribe()
+        )
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             compositeDisposable.add(RxView.clicks(buttonNext)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (dialogView.agreementCheckbox.isChecked) {
-                            dialog.dismiss()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (dialogView.agreementCheckbox.isChecked) {
+                        dialog.dismiss()
 
-                            val email = dialogView.emailSignUpEditText.text.toString()
-                            val password = dialogView.passwordSignUpEditText.text.toString()
+                        val email = dialogView.emailSignUpEditText.text.toString()
+                        val password = dialogView.passwordSignUpEditText.text.toString()
 
-                            signup(email, password)
-                        } else {
-                            dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
-                        }
-                    })
+                        signup(email, password)
+                    } else {
+                        dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
+                    }
+                })
         })
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.next), { _, _ -> })
+        dialog.setButton(
+            AlertDialog.BUTTON_POSITIVE,
+            resources.getString(R.string.next),
+            { _, _ -> })
 
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.cancel), { _, _ -> })
+        dialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            resources.getString(R.string.cancel),
+            { _, _ -> })
         dialog.show()
     }
 

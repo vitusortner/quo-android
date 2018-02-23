@@ -16,7 +16,10 @@ import com.android.quo.db.entity.User
 /**
  * Created by FlorianSchlueter on 20.11.2017.
  */
-@Database(entities = [(User::class), (Place::class), (Picture::class), (Component::class)], version = 2)
+@Database(
+    entities = [(User::class), (Place::class), (Picture::class), (Component::class)],
+    version = 2
+)
 abstract class Database : RoomDatabase() {
 
     abstract fun componentDao(): ComponentDao
@@ -34,9 +37,9 @@ abstract class Database : RoomDatabase() {
         fun instance(context: Context): com.android.quo.db.Database {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room
-                        .databaseBuilder(context, com.android.quo.db.Database::class.java, "qouDB")
-                        .build()
-                        .also { INSTANCE = it }
+                    .databaseBuilder(context, com.android.quo.db.Database::class.java, "qouDB")
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

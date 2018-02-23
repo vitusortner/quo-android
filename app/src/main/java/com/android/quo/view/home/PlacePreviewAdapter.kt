@@ -20,8 +20,8 @@ import kotlinx.android.synthetic.main.place_preview_cardview.placePreviewTitleTe
 /**
  * Created by vitusortner on 27.10.17.
  */
-class PlacePreviewAdapter(private val fragmentManager: FragmentManager)
-    : RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
+class PlacePreviewAdapter(private val fragmentManager: FragmentManager) :
+    RecyclerView.Adapter<PlacePreviewAdapter.PlacePreviewViewHolder>() {
 
     private var list = emptyList<Place>()
 
@@ -31,6 +31,7 @@ class PlacePreviewAdapter(private val fragmentManager: FragmentManager)
     }
 
     override fun onBindViewHolder(holder: PlacePreviewViewHolder, position: Int) {
+        // TODO move to fragment
         holder.pagePreviewCardView.setOnClickListener {
             val bundle = Bundle()
             bundle.putParcelable("place", list[position])
@@ -38,19 +39,19 @@ class PlacePreviewAdapter(private val fragmentManager: FragmentManager)
             fragment.arguments = bundle
 
             fragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
-                    .add(R.id.content, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
+                .add(R.id.content, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         val imageUrl = list[position].titlePicture
 
         Glide.with(holder.containerView.context)
-                .load(imageUrl)
-                .apply(centerCropTransform())
-                .into(holder.placePreviewImageView)
+            .load(imageUrl)
+            .apply(centerCropTransform())
+            .into(holder.placePreviewImageView)
 
         holder.placePreviewTitleTextView.text = list[position].title
         holder.placePreviewDescriptionTextView.text = list[position].description
@@ -58,12 +59,12 @@ class PlacePreviewAdapter(private val fragmentManager: FragmentManager)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacePreviewViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.place_preview_cardview, parent, false)
+            .inflate(R.layout.place_preview_cardview, parent, false)
         return PlacePreviewViewHolder(itemView)
     }
 
     override fun getItemCount(): Int = list.size
 
-    class PlacePreviewViewHolder(override val containerView: View)
-        : RecyclerView.ViewHolder(containerView), LayoutContainer
+    class PlacePreviewViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 }

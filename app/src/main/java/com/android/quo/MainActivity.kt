@@ -17,17 +17,15 @@ import com.android.quo.view.place.PlaceFragment
 import com.android.quo.view.qrcode.QrCodeScannerActivity
 import com.android.quo.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: LoginViewModel
+    private val viewModel by viewModel<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        viewModel = getViewModel()
 
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigationView.selectedItemId = actionHome
@@ -69,35 +67,36 @@ class MainActivity : AppCompatActivity() {
             fragment.arguments = bundle
 
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.content, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                .replace(R.id.content, fragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            actionQrCode -> {
-                startActivity(Intent(this, QrCodeScannerActivity::class.java))
-                false // because qr code scanner uses separate activity
-                // TODO https://app.clickup.com/751518/751948/t/vtmj
-            }
-            actionHome -> {
-                supportFragmentManager.beginTransaction()
+    private val onNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                actionQrCode -> {
+                    startActivity(Intent(this, QrCodeScannerActivity::class.java))
+                    false // because qr code scanner uses separate activity
+                    // TODO https://app.clickup.com/751518/751948/t/vtmj
+                }
+                actionHome -> {
+                    supportFragmentManager.beginTransaction()
 //                        .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
                         .replace(R.id.content, HomeFragment())
                         .commit()
-                true
-            }
-            actionPlaces -> {
-                supportFragmentManager.beginTransaction()
+                    true
+                }
+                actionPlaces -> {
+                    supportFragmentManager.beginTransaction()
                         .replace(R.id.content, MyPlacesFragment())
                         .commit()
-                true
+                    true
+                }
+                else -> false
             }
-            else -> false
         }
-    }
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount == 0) {

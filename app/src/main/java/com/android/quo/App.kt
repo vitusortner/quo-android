@@ -12,10 +12,9 @@ import org.koin.android.ext.android.startKoin
 /**
  * Created by FlorianSchlueter on 20.11.2017.
  */
-class Application : Application() {
+class App : Application() {
 
     companion object {
-
         lateinit var database: Database
     }
 

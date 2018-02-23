@@ -11,14 +11,14 @@ import com.android.quo.R
 import com.android.quo.viewmodel.GalleryViewModel
 import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
 import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 
 /**
  * Created by vitusortner on 14.11.17.
  */
 class GalleryFragment : Fragment() {
 
-    private lateinit var viewModel: GalleryViewModel
+    private val viewModel by viewModel<GalleryViewModel>()
 
     private var placeId: String? = null
 
@@ -30,14 +30,12 @@ class GalleryFragment : Fragment() {
         placeId = arguments?.getString("placeId")
 
         adapter = GalleryAdapter()
-
-        viewModel = getViewModel()
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_place_gallery, container, false)
     }

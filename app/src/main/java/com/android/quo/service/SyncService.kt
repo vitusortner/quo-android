@@ -28,15 +28,11 @@ class SyncService(
     private val TAG = javaClass.simpleName
 
     fun saveHostedPlaces(data: List<ServerPlace>) {
-        savePlaces(data, true) {
-            mapToPlace(it, true)
-        }
+        savePlaces(data, true) { toPlace(it, true) }
     }
 
     fun saveVisitedPlaces(data: List<ServerPlaceResponse>) {
-        savePlaces(data, false) {
-            mapToPlace(it.place, false, it.timestamp)
-        }
+        savePlaces(data, false) { toPlace(it.place, false, it.timestamp) }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -45,16 +41,16 @@ class SyncService(
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         val date = dateFormat.format(Date())
 
-        val place = mapToPlace(data, userId == data.host, date)
+        val place = toPlace(data, userId == data.host, date)
         placeDao.deletePlace(place)
         placeDao.insertPlace(place)
 
         Log.i(TAG, "Place sync success!")
     }
 
-    private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapToPlace: (T) -> Place) {
+    private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapper: (T) -> Place) {
         if (data.isNotEmpty()) {
-            val places = data.map(mapToPlace)
+            val places = data.map(mapper)
             // delete places before inserting updated places
             placeDao.deletePlaces(isHost)
             placeDao.insertAllPlaces(places)
@@ -68,7 +64,7 @@ class SyncService(
     fun saveComponents(data: List<ServerComponent>, placeId: String) {
         if (data.isNotEmpty()) {
             val components = data.map { component ->
-                mapToComponent(component, placeId)
+                toComponent(component, placeId)
             }
             // delete components of place before inserting updated comonents
             componentDao.deleteComponentsOfPlace(placeId)
@@ -82,7 +78,7 @@ class SyncService(
 
     fun savePictures(data: List<ServerPicture>, placeId: String) {
         if (data.isNotEmpty()) {
-            val pictures = data.map(::mapToPicture)
+            val pictures = data.map(::toPicture)
             // delete pictures of given place before inserting updated pictures
             pictureDao.deletePicturesOfPlace(placeId)
             pictureDao.insertAllPictures(pictures)
@@ -93,7 +89,7 @@ class SyncService(
         }
     }
 
-    private fun mapToPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
+    private fun toPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
         return Place(
                 id = serverPlace.id ?: "",
                 isHost = isHost,
@@ -120,7 +116,7 @@ class SyncService(
         )
     }
 
-    private fun mapToComponent(serverComponent: ServerComponent, placeId: String): Component {
+    private fun toComponent(serverComponent: ServerComponent, placeId: String): Component {
         return Component(
                 id = serverComponent.id ?: "",
                 picture = serverComponent.picture,
@@ -129,7 +125,7 @@ class SyncService(
         )
     }
 
-    private fun mapToPicture(serverPicture: ServerPicture): Picture {
+    private fun toPicture(serverPicture: ServerPicture): Picture {
         return Picture(
                 id = serverPicture.id ?: "",
                 ownerId = serverPicture.ownerId,

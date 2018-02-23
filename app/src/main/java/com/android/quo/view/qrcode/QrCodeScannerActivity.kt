@@ -41,7 +41,7 @@ import kotlinx.android.synthetic.main.activity_qr_code_scanner.flashTextView
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.photosButton
 import kotlinx.android.synthetic.main.activity_qr_code_scanner.qrCodeScannerView
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 
 /**
  * Created by Jung on 30.10.17.
@@ -50,7 +50,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private val TAG = javaClass.simpleName
 
-    private lateinit var viewModel: QrCodeScannerViewModel
+    private val viewModel by viewModel<QrCodeScannerViewModel>()
 
     private val PERMISSION_REQUEST_GPS = 101
     private val ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1
@@ -64,19 +64,21 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_code_scanner)
 
-        viewModel = getViewModel()
-
-        requestPermissions(arrayOf(
+        requestPermissions(
+            arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION),
-                ASK_MULTIPLE_PERMISSION_REQUEST_CODE
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            ASK_MULTIPLE_PERMISSION_REQUEST_CODE
         )
 
         // set statusbar transparent
-        window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+        )
 
         supportActionBar?.hide()
 
@@ -96,12 +98,16 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED) {
             photosButton.background = getLastImageFromGallery()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
@@ -115,7 +121,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         val resultCoarseLocation = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
 
         if (resultFineLocation == PackageManager.PERMISSION_GRANTED
-                && resultCoarseLocation == PackageManager.PERMISSION_GRANTED) {
+            && resultCoarseLocation == PackageManager.PERMISSION_GRANTED) {
             locationClient = LocationServices.getFusedLocationProviderClient(this)
         }
     }
@@ -145,8 +151,9 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private fun openPhoneGallery() {
         val galleryIntent = Intent(
-                Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
 
         startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
@@ -168,11 +175,13 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
             uriString.startsWith("quo://") -> {
                 val qrCodeId = uriString.split("/").last()
 
-                val resultFineLocation = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                val resultCoarseLocation = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                val resultFineLocation =
+                    checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                val resultCoarseLocation =
+                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
 
                 if (resultFineLocation == PackageManager.PERMISSION_GRANTED
-                        && resultCoarseLocation == PackageManager.PERMISSION_GRANTED) {
+                    && resultCoarseLocation == PackageManager.PERMISSION_GRANTED) {
                     tryOpenPlace(qrCodeId)
                 } else {
                     openLocationOffAlert()
@@ -180,16 +189,18 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
             }
             uriString.startsWith("http") -> {
                 val dialog = QrCodeScannerDialog(
-                        getString(R.string.qr_code_found_third_party_title),
-                        getString(R.string.qr_code_found_third_party_message),
-                        uriString)
+                    getString(R.string.qr_code_found_third_party_title),
+                    getString(R.string.qr_code_found_third_party_message),
+                    uriString
+                )
                 openUrlDialogFromQRCode(dialog)
             }
             else -> {
                 val dialog = QrCodeScannerDialog(
-                        getString(R.string.qr_code_not_found_third_party_title),
-                        getString(R.string.qr_code_not_found_third_party_message),
-                        uriString)
+                    getString(R.string.qr_code_not_found_third_party_title),
+                    getString(R.string.qr_code_not_found_third_party_message),
+                    uriString
+                )
                 openUrlDialogFromQRCode(dialog)
             }
         }
@@ -202,17 +213,19 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         alert.setMessage(getString(R.string.qr_code_location_off_message))
 
         alert.setButton(AlertDialog.BUTTON_POSITIVE,
-                getString(R.string.qr_code_location_off_turn_on), { _, _ ->
-            requestPermissions(arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION),
+            getString(R.string.qr_code_location_off_turn_on), { _, _ ->
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ),
                     PERMISSION_REQUEST_GPS
-            )
-        })
+                )
+            })
         alert.setButton(AlertDialog.BUTTON_NEGATIVE,
-                getString(R.string.qr_code_location_off_no), { _, _ ->
-            this.onResume()
-        })
+            getString(R.string.qr_code_location_off_no), { _, _ ->
+                this.onResume()
+            })
 
         alert.show()
     }
@@ -235,7 +248,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                                 placeLocation.longitude = place.longitude
 
                                 if (placeLocation.distanceTo(it) <= Constants.LOCATION_DISTANCE
-                                        || place.isHost) {
+                                    || place.isHost) {
                                     startPlaceIntent(place)
                                 } else {
                                     openWrongLocationAlert()
@@ -258,9 +271,12 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         alert.setTitle(getString(R.string.qr_core_location_error_title))
         alert.setMessage(getString(R.string.qr_code_location_error_message))
 
-        alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.qr_code_location_error_ok), { _, _ ->
-            this.onResume()
-        })
+        alert.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            getString(R.string.qr_code_location_error_ok),
+            { _, _ ->
+                this.onResume()
+            })
 
         alert.show()
     }
@@ -272,9 +288,12 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         alert.setTitle(getString(R.string.qr_code_wrong_location_title))
         alert.setMessage(getString(R.string.qr_code_wrong_location_message))
 
-        alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.qr_code_wrong_location_ok), { _, _ ->
-            this.onResume()
-        })
+        alert.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            getString(R.string.qr_code_wrong_location_ok),
+            { _, _ ->
+                this.onResume()
+            })
 
         alert.show()
     }
@@ -313,7 +332,10 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         dialog.setTitle(resources.getString(R.string.qr_code_error_title))
         dialog.setMessage(resources.getString(R.string.qr_code_error_message))
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.qr_code_done), { _, _ -> })
+        dialog.setButton(
+            AlertDialog.BUTTON_POSITIVE,
+            resources.getString(R.string.qr_code_done),
+            { _, _ -> })
         dialog.show()
     }
 
@@ -323,14 +345,20 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
         urlAlert.setTitle(result.title)
         urlAlert.setMessage("${result.message} ${result.url}")
 
-        urlAlert.setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.fb_open), { _, _ ->
-            val builder = CustomTabsIntent.Builder()
-            val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(this, Uri.parse(result.url))
-        })
-        urlAlert.setButton(AlertDialog.BUTTON_NEGATIVE, resources.getString(R.string.fb_close), { _, _ ->
-            this.onResume()
-        })
+        urlAlert.setButton(
+            AlertDialog.BUTTON_POSITIVE,
+            resources.getString(R.string.fb_open),
+            { _, _ ->
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(this, Uri.parse(result.url))
+            })
+        urlAlert.setButton(
+            AlertDialog.BUTTON_NEGATIVE,
+            resources.getString(R.string.fb_close),
+            { _, _ ->
+                this.onResume()
+            })
 
         urlAlert.show()
     }
@@ -358,19 +386,23 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private fun getLastImageFromGallery(): RoundedBitmapDrawable {
         val projection = arrayOf(
-                MediaStore.Images.ImageColumns._ID,
-                MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.ImageColumns.DATE_TAKEN,
-                MediaStore.Images.ImageColumns.MIME_TYPE)
+            MediaStore.Images.ImageColumns._ID,
+            MediaStore.Images.ImageColumns.DATA,
+            MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.ImageColumns.DATE_TAKEN,
+            MediaStore.Images.ImageColumns.MIME_TYPE
+        )
 
         val cursor = this.contentResolver
-                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
-                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
+            .query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC"
+            )
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                val imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
+                val imagePath =
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
                 if (imagePath.isNotEmpty()) {
                     val bitmap = BitmapFactory.decodeFile(imagePath)
                     return setRoundCornerToBitmap(bitmap)

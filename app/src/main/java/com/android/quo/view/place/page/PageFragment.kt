@@ -11,27 +11,21 @@ import com.android.quo.R
 import com.android.quo.viewmodel.PageViewModel
 import kotlinx.android.synthetic.main.fragment_place_page.recyclerView
 import kotlinx.android.synthetic.main.fragment_place_page.swipeRefreshLayout
-import org.koin.android.architecture.ext.getViewModel
+import org.koin.android.architecture.ext.viewModel
 
 /**
  * Created by vitusortner on 12.11.17.
  */
 class PageFragment : Fragment() {
 
-    private lateinit var viewModel: PageViewModel
+    private val viewModel by viewModel<PageViewModel>()
 
     private var placeId: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = getViewModel()
-    }
-
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         placeId = arguments?.getString("placeId")
 
@@ -46,9 +40,9 @@ class PageFragment : Fragment() {
     private fun observeComponents() {
         placeId?.let { placeId ->
             viewModel.getComponents(placeId).observe(this, Observer { components ->
-                components?.let { components ->
+                components?.let {
                     recyclerView.adapter = PageAdapter(components)
-                    recyclerView.layoutManager = LinearLayoutManager(this.context)
+                    recyclerView.layoutManager = LinearLayoutManager(context)
                 }
             })
         }
