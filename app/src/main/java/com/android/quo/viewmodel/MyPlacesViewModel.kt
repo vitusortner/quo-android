@@ -2,8 +2,6 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.android.quo.db.entity.Place
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
@@ -15,9 +13,8 @@ import com.android.quo.util.extension.toDate
 class MyPlacesViewModel(
     private val placeRepository: PlaceRepository,
     private val userRepository: UserRepository
-) : ViewModel() {
-
-    private val TAG = javaClass.simpleName
+) :
+    BaseViewModel() {
 
     private var places = MutableLiveData<List<Place>>()
 
@@ -36,7 +33,7 @@ class MyPlacesViewModel(
                             places.value = it.sortedByDescending { it.timestamp.toDate() }
                         }
                     }, {
-                        Log.e(TAG, "Error while getting hosted places", it)
+                        log.e("Error while getting hosted places", it)
                     })
             }
         }

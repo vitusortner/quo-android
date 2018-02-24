@@ -1,6 +1,5 @@
 package com.android.quo.viewmodel
 
-import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
@@ -22,12 +21,13 @@ import java.io.FileOutputStream
  * Created by Jung on 11.12.17.
  */
 class CreatePlaceViewModel(
-        private val componentRepository: ComponentRepository,
-        private val pictureRepository: PictureRepository,
-        private val placeRepository: PlaceRepository,
-        private val userRepository: UserRepository,
-        private val uploadService: UploadService
-) : ViewModel() {
+    private val componentRepository: ComponentRepository,
+    private val pictureRepository: PictureRepository,
+    private val placeRepository: PlaceRepository,
+    private val userRepository: UserRepository,
+    private val uploadService: UploadService
+) :
+    BaseViewModel() {
 
     fun savePlace() {
         userRepository.getUser {
@@ -47,11 +47,11 @@ class CreatePlaceViewModel(
     private fun uploadImage(place: ServerPlace) {
         // create ServerPicture for title picture
         val picture = ServerPicture(
-                id = null,
-                ownerId = place.host,
-                placeId = place.id ?: "",
-                src = "",
-                isVisible = true
+            id = null,
+            ownerId = place.host,
+            placeId = place.id ?: "",
+            src = "",
+            isVisible = true
         )
 
         //check if title picture is from user or default image
@@ -105,11 +105,11 @@ class CreatePlaceViewModel(
                 uploadService.uploadImage(image) {
                     it?.let {
                         val picture = ServerPicture(
-                                id = null,
-                                ownerId = place.host,
-                                placeId = place.id ?: "",
-                                src = it.path,
-                                isVisible = true
+                            id = null,
+                            ownerId = place.host,
+                            placeId = place.id ?: "",
+                            src = it.path,
+                            isVisible = true
                         )
 
                         place.id?.let { placeId ->
@@ -153,8 +153,11 @@ class CreatePlaceViewModel(
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
 
-        val path = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).absolutePath + Constants.IMAGE_DIR)
+        val path = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES
+            ).absolutePath + Constants.IMAGE_DIR
+        )
         val file = File(path, "$qrCodeId.jpg")
         path.mkdirs()
         file.createNewFile()

@@ -1,6 +1,5 @@
 package com.android.quo.viewmodel
 
-import android.arch.lifecycle.ViewModel
 import android.util.Patterns
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
@@ -12,11 +11,10 @@ import io.reactivex.Single
  * Created by Jung on 09.11.17.
  */
 class LoginViewModel(
-        private val authService: AuthService,
-        private val userRepository: UserRepository
-) : ViewModel() {
-
-    private val TAG = javaClass.simpleName
+    private val authService: AuthService,
+    private val userRepository: UserRepository
+) :
+    BaseViewModel() {
 
     fun sendEmailToUser(email: String): Boolean {
         //TODO check if email exist
@@ -28,45 +26,46 @@ class LoginViewModel(
     val lengthGreaterThanSix = ObservableTransformer<String, String> { observable ->
         observable.flatMap {
             Observable.just(it).map { it.trim() } // - abcdefg - |
-                    .filter { it.length > 6 }
-                    .singleOrError()
-                    .onErrorResumeNext {
-                        if (it is NoSuchElementException) {
-                            Single.error(Exception("Length should be greater than 6"))
-                        } else {
-                            Single.error(it)
-                        }
+                .filter { it.length > 6 }
+                .singleOrError()
+                .onErrorResumeNext {
+                    if (it is NoSuchElementException) {
+                        Single.error(Exception("Length should be greater than 6"))
+                    } else {
+                        Single.error(it)
                     }
-                    .toObservable()
+                }
+                .toObservable()
         }
     }
 
     val verifyEmailPattern = ObservableTransformer<String, String> { observable ->
         observable.flatMap {
             Observable.just(it).map { it.trim() }
-                    .filter {
-                        Patterns.EMAIL_ADDRESS.matcher(it).matches()
+                .filter {
+                    Patterns.EMAIL_ADDRESS.matcher(it).matches()
+                }
+                .singleOrError()
+                .onErrorResumeNext {
+                    if (it is NoSuchElementException) {
+                        Single.error(Exception("Email not valid"))
+                    } else {
+                        Single.error(it)
                     }
-                    .singleOrError()
-                    .onErrorResumeNext {
-                        if (it is NoSuchElementException) {
-                            Single.error(Exception("Email not valid"))
-                        } else {
-                            Single.error(it)
-                        }
-                    }
-                    .toObservable()
+                }
+                .toObservable()
         }
     }
 
-    inline fun retryWhenError(crossinline onError: (ex: Throwable) -> Unit): ObservableTransformer<String, String> = ObservableTransformer { observable ->
-        observable.retryWhen { errors ->
-            errors.flatMap {
-                onError(it)
-                Observable.just("")
+    inline fun retryWhenError(crossinline onError: (ex: Throwable) -> Unit): ObservableTransformer<String, String> =
+        ObservableTransformer { observable ->
+            observable.retryWhen { errors ->
+                errors.flatMap {
+                    onError(it)
+                    Observable.just("")
+                }
             }
         }
-    }
 
     fun login(email: String, password: String, callback: (Boolean) -> Unit) {
         authService.login(email, password) { successful ->

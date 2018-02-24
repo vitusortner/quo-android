@@ -1,6 +1,5 @@
 package com.android.quo.viewmodel
 
-import android.arch.lifecycle.ViewModel
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.repository.PictureRepository
 import com.android.quo.repository.UserRepository
@@ -11,10 +10,11 @@ import java.io.File
  * Created by vitusortner on 08.01.18.
  */
 class PlaceViewModel(
-        private val uploadService: UploadService,
-        private val pictureRepository: PictureRepository,
-        private val userRepository: UserRepository
-) : ViewModel() {
+    private val uploadService: UploadService,
+    private val pictureRepository: PictureRepository,
+    private val userRepository: UserRepository
+) :
+    BaseViewModel() {
 
     fun uploadImage(image: File, placeId: String) {
         uploadService.uploadImage(image) {
@@ -22,10 +22,10 @@ class PlaceViewModel(
                 userRepository.getUser { user ->
                     user?.let {
                         val picture = ServerPicture(
-                                ownerId = user.id,
-                                placeId = placeId,
-                                src = image.path,
-                                isVisible = true
+                            ownerId = user.id,
+                            placeId = placeId,
+                            src = image.path,
+                            isVisible = true
                         )
                         pictureRepository.addPicture(placeId, picture)
                     }

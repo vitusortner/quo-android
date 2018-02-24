@@ -2,17 +2,15 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.android.quo.db.entity.Picture
-import com.android.quo.util.extension.toDate
 import com.android.quo.repository.PictureRepository
+import com.android.quo.util.extension.toDate
 import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by vitusortner on 09.12.17.
  */
-class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewModel() {
+class GalleryViewModel(private val pictureRepository: PictureRepository) : BaseViewModel() {
 
     private val compositDisposabel = CompositeDisposable()
 
@@ -28,15 +26,15 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : ViewM
 
     private fun loadPictures(placeId: String) {
         compositDisposabel.add(
-                pictureRepository.getPictures(placeId)
-                        .distinctUntilChanged()
-                        .subscribe({
-                            if (it.isNotEmpty()) {
-                                pictures?.value = it.sortedByDescending { it.timestamp.toDate() }
-                            }
-                        }, {
-                            Log.e("sync", "$it")
-                        })
+            pictureRepository.getPictures(placeId)
+                .distinctUntilChanged()
+                .subscribe({
+                    if (it.isNotEmpty()) {
+                        pictures?.value = it.sortedByDescending { it.timestamp.toDate() }
+                    }
+                }, {
+                    log.e("Error while loading pictures", it)
+                })
         )
     }
 

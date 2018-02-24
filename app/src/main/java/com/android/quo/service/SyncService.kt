@@ -1,7 +1,6 @@
 package com.android.quo.service
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.android.quo.db.dao.ComponentDao
 import com.android.quo.db.dao.PictureDao
 import com.android.quo.db.dao.PlaceDao
@@ -23,9 +22,8 @@ class SyncService(
     private val placeDao: PlaceDao,
     private val componentDao: ComponentDao,
     private val pictureDao: PictureDao
-) {
-
-    private val TAG = javaClass.simpleName
+) :
+    BaseService() {
 
     fun saveHostedPlaces(data: List<ServerPlace>) =
         savePlaces(data, true) { toPlace(it, true) }
@@ -43,7 +41,7 @@ class SyncService(
         placeDao.deletePlace(place)
         placeDao.insertPlace(place)
 
-        Log.i(TAG, "Place sync success!")
+        log.i("Place sync success!")
     }
 
     private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapper: (T) -> Place) {
@@ -53,9 +51,9 @@ class SyncService(
             placeDao.deletePlaces(isHost)
             placeDao.insertAllPlaces(places)
 
-            Log.i(TAG, "Place sync success! ${places.size} places")
+            log.i("Place sync success! ${places.size} places")
         } else {
-            Log.i(TAG, "No places to sync!")
+            log.i("No places to sync!")
         }
     }
 
@@ -68,9 +66,9 @@ class SyncService(
             componentDao.deleteComponentsOfPlace(placeId)
             componentDao.insertAllComponents(components)
 
-            Log.i(TAG, "Component sync success! ${components.size} components")
+            log.i("Component sync success! ${components.size} components")
         } else {
-            Log.i(TAG, "No components to sync!")
+            log.i("No components to sync!")
         }
     }
 
@@ -81,9 +79,9 @@ class SyncService(
             pictureDao.deletePicturesOfPlace(placeId)
             pictureDao.insertAllPictures(pictures)
 
-            Log.i(TAG, "Picture sync success! ${pictures.size} pictures")
+            log.i("Picture sync success! ${pictures.size} pictures")
         } else {
-            Log.i(TAG, "No pictures to sync!")
+            log.i("No pictures to sync!")
         }
     }
 

@@ -7,7 +7,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by vitusortner on 10.01.18.
  */
-class UserRepository(private val userDao: UserDao) {
+class UserRepository(private val userDao: UserDao) : BaseRepository() {
 
     fun getUser(completionHandler: (User?) -> Unit) {
         userDao.getUser()

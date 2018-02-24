@@ -13,44 +13,39 @@ import io.reactivex.disposables.CompositeDisposable
  * Created by vitusortner on 11.12.17.
  */
 class QrCodeScannerViewModel(
-        private val placeRepository: PlaceRepository,
-        private val userRepository: UserRepository
-) : ViewModel() {
-
-    private val TAG = javaClass.simpleName
+    private val placeRepository: PlaceRepository,
+    private val userRepository: UserRepository
+) :
+    BaseViewModel() {
 
     private val compositDisposabel = CompositeDisposable()
 
-    private var place: MutableLiveData<Place>? = null
+    private var place = MutableLiveData<Place>()
 
     fun getPlace(qrCodeId: String): LiveData<Place> {
-        if (place == null) {
-            place = MutableLiveData()
-            loadPlace(qrCodeId)
-        }
-        return place as MutableLiveData<Place>
+        loadPlace(qrCodeId)
+        return place
     }
 
     private fun loadPlace(qrCodeId: String) {
         userRepository.getUser {
             it?.let { user ->
                 placeRepository.getPlace(qrCodeId, user.id)
-                        .subscribe({
-                            place?.value = it
-                        }, {
-                            Log.e(TAG, "Error while getting place: $it")
-                        })
+                    .subscribe({
+                        place.value = it
+                    }, {
+                        log.e("Error while getting place: $it")
+                    })
             }
         }
     }
 
     fun resetLiveData() {
-        place = null
+        place.value = null
     }
 
     override fun onCleared() {
         super.onCleared()
-
         compositDisposabel.dispose()
     }
 }

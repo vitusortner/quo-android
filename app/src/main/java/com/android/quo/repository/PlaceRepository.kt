@@ -1,13 +1,12 @@
 package com.android.quo.repository
 
-import android.util.Log
 import com.android.quo.db.dao.PlaceDao
 import com.android.quo.db.entity.Place
 import com.android.quo.network.ApiClient
-import com.android.quo.util.NetworkBoundResource
-import com.android.quo.service.SyncService
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerPlaceResponse
+import com.android.quo.service.SyncService
+import com.android.quo.util.NetworkBoundResource
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -20,9 +19,8 @@ class PlaceRepository(
     private val placeDao: PlaceDao,
     private val apiClient: ApiClient,
     private val syncService: SyncService
-) {
-
-    private val TAG = javaClass.simpleName
+) :
+    BaseRepository() {
 
     fun getHostedPlaces(userId: String): Flowable<List<Place>> {
         return Flowable.create({ emitter ->
@@ -70,10 +68,10 @@ class PlaceRepository(
         apiClient.addPlace(place)
             .subscribeOn(Schedulers.io())
             .subscribe({
-                Log.i(TAG, "Place added: $place")
+                log.i("Place added: $place")
                 completionHandler?.invoke(it)
             }, {
-                Log.e(TAG, "Error while adding place", it)
+                log.e("Error while adding place", it)
                 completionHandler?.invoke(null)
             })
     }
@@ -86,10 +84,10 @@ class PlaceRepository(
         apiClient.updatePlace(placeId, place)
             .subscribeOn(Schedulers.io())
             .subscribe({
-                Log.i(TAG, "Place updated: $it")
+                log.i("Place updated: $it")
                 completionHandler?.invoke(it)
             }, {
-                Log.e(TAG, "Error while updating place", it)
+                log.e("Error while updating place", it)
                 completionHandler?.invoke(null)
             })
     }
