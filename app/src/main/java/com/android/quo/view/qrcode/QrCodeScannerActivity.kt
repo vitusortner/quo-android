@@ -20,7 +20,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.WindowManager
 import com.android.quo.MainActivity
 import com.android.quo.R
@@ -28,6 +27,7 @@ import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Extra
+import com.android.quo.util.Logger
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -49,7 +49,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
-    private val TAG = javaClass.simpleName
+    private val log = Logger(javaClass)
 
     private val viewModel by viewModel<QrCodeScannerViewModel>()
 
@@ -170,7 +170,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
      * Opens place fragment, if supplied URI string starts with "quo://", else opens dialog
      */
     private fun handleQrCodeUri(uriString: String) {
-        Log.i(TAG, "URI String: $uriString")
+        log.i("URI String: $uriString")
 
         when {
             uriString.startsWith("quo://") -> {
@@ -320,7 +320,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                 }
             }
         } catch (exception: Exception) {
-            Log.e(TAG, "$exception")
+            log.e( "Error while getting image from gallery.", exception)
             openNoQrCodeFoundDialog()
         }
     }

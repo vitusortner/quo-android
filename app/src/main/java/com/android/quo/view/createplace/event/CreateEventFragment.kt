@@ -18,17 +18,13 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -36,6 +32,7 @@ import com.android.quo.R
 import com.android.quo.dataclass.EventDates
 import com.android.quo.util.Constants
 import com.android.quo.util.CreatePlace
+import com.android.quo.view.BaseFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.rxbinding2.view.RxView
@@ -64,14 +61,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 /**
  * Created by Jung on 27.11.17.
  */
 
-class CreateEventFragment : Fragment() {
-
-    private val TAG = javaClass.simpleName
+class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
 
     private val PERMISSION_REQUEST_GPS = 101
     private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
@@ -93,12 +87,6 @@ class CreateEventFragment : Fragment() {
 
     private lateinit var locationClient: FusedLocationProviderClient
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_create_event, container, false)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         calendar = Calendar.getInstance()
@@ -111,138 +99,151 @@ class CreateEventFragment : Fragment() {
          * focusChanges on EventName Edit Text
          */
         compositeDisposable.add(RxTextView.afterTextChangeEvents(eventNameEditText)
-                .subscribe {
-                    /**
-                     * Save into DB-Object
-                     */
-                    CreatePlace.place.title = eventNameEditText.text.toString()
-                })
+            .subscribe {
+                /**
+                 * Save into DB-Object
+                 */
+                CreatePlace.place.title = eventNameEditText.text.toString()
+            })
 
 
         /**
          * will show the calendar view
          */
         compositeDisposable.add(RxView.clicks(fromDateEditText)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    currentEditText = fromDateEditText
-                    showCalendarView(true)
-                })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                currentEditText = fromDateEditText
+                showCalendarView(true)
+            })
 
         /**
          * will show the calendar view
          */
         compositeDisposable.add(RxView.clicks(toDateEditText)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    currentEditText = toDateEditText
-                    showCalendarView(false)
-                })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                currentEditText = toDateEditText
+                showCalendarView(false)
+            })
 
         /**
          * will show the time view
          */
         compositeDisposable.add(RxView.clicks(fromTimeEditText)
-                .observeOn((AndroidSchedulers.mainThread()))
-                .subscribe {
-                    currentEditText = fromTimeEditText
-                    showTimeView(true)
-                })
+            .observeOn((AndroidSchedulers.mainThread()))
+            .subscribe {
+                currentEditText = fromTimeEditText
+                showTimeView(true)
+            })
 
         /**
          * will show the time view
          */
         compositeDisposable.add(RxView.clicks(toTimeEditText)
-                .observeOn((AndroidSchedulers.mainThread()))
-                .subscribe {
-                    currentEditText = toTimeEditText
-                    showTimeView(false)
-                })
+            .observeOn((AndroidSchedulers.mainThread()))
+            .subscribe {
+                currentEditText = toTimeEditText
+                showTimeView(false)
+            })
 
         /**
          * enable or disable the expire edit boxen for date and time via checkbox
          */
         compositeDisposable.add(RxView.clicks(expirationCheckBox as View)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (expirationCheckBox.isChecked) {
-                        toDateEditText.isEnabled = false
-                        toTimeEditText.isEnabled = false
-                        CreatePlace.place.endDate = null
-                    } else {
-                        toDateEditText.isEnabled = true
-                        toTimeEditText.isEnabled = true
-                        CreatePlace.place.endDate =
-                                Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
-                    }
-                })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (expirationCheckBox.isChecked) {
+                    toDateEditText.isEnabled = false
+                    toTimeEditText.isEnabled = false
+                    CreatePlace.place.endDate = null
+                } else {
+                    toDateEditText.isEnabled = true
+                    toTimeEditText.isEnabled = true
+                    CreatePlace.place.endDate =
+                            Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
+                }
+            })
 
         /**
          * handle to open the gallery for the header image
          */
         compositeDisposable.add(RxView.clicks(galleryButton)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    context?.let { context ->
-                        bottomSheetDialog = BottomSheetDialog(context)
-                        val sheetView = activity?.layoutInflater?.inflate(R.layout.layout_bottom_sheet_select_picture, null)
-                        sheetView?.let {
-                            val adapter = EventDefaultImagesAdapter(headerImageView)
-                            it.defaultImageListView.adapter = adapter
-                            val layoutManager = LinearLayoutManager(context)
-                            layoutManager.orientation = LinearLayout.HORIZONTAL
-                            it.defaultImageListView?.layoutManager = layoutManager
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                context?.let { context ->
+                    bottomSheetDialog = BottomSheetDialog(context)
+                    val sheetView = activity?.layoutInflater?.inflate(
+                        R.layout.layout_bottom_sheet_select_picture,
+                        null
+                    )
+                    sheetView?.let {
+                        val adapter = EventDefaultImagesAdapter(headerImageView)
+                        it.defaultImageListView.adapter = adapter
+                        val layoutManager = LinearLayoutManager(context)
+                        layoutManager.orientation = LinearLayout.HORIZONTAL
+                        it.defaultImageListView?.layoutManager = layoutManager
 
-                            val defaultImages = getDefaultImageList()
-                            adapter.setItems(defaultImages)
+                        val defaultImages = getDefaultImageList()
+                        adapter.setItems(defaultImages)
 
-                            bottomSheetDialog.setContentView(sheetView)
-                            bottomSheetDialog.show()
+                        bottomSheetDialog.setContentView(sheetView)
+                        bottomSheetDialog.show()
 
-                            compositeDisposable.add(RxView.clicks(it.photosLayout)
-                                    .subscribe {
-                                        requestPermissions(arrayOf(
-                                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                                PERMISSION_REQUEST_EXTERNAL_STORAGE)
-                                    })
+                        compositeDisposable.add(RxView.clicks(it.photosLayout)
+                            .subscribe {
+                                requestPermissions(
+                                    arrayOf(
+                                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                    ),
+                                    PERMISSION_REQUEST_EXTERNAL_STORAGE
+                                )
+                            })
 
-                            compositeDisposable.add(RxView.clicks(it.cameraLayout)
-                                    .subscribe {
-                                        requestPermissions(arrayOf(
-                                                Manifest.permission.CAMERA),
-                                                PERMISSION_REQUEST_CAMERA)
-                                    })
-                        }
-
+                        compositeDisposable.add(RxView.clicks(it.cameraLayout)
+                            .subscribe {
+                                requestPermissions(
+                                    arrayOf(
+                                        Manifest.permission.CAMERA
+                                    ),
+                                    PERMISSION_REQUEST_CAMERA
+                                )
+                            })
                     }
-                })
+
+                }
+            })
 
 
         /**
          * handle click on location icon on the right side of the edit box
          */
-        compositeDisposable.add(RxView.touches(locationEditText, { motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_UP) {
-                if (motionEvent.rawX >= (locationEditText.right - locationEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
-                    requestPermissions(arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION),
+        compositeDisposable.add(
+            RxView.touches(locationEditText, { motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    if (motionEvent.rawX >= (locationEditText.right - locationEditText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
+                        requestPermissions(
+                            arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            ),
                             PERMISSION_REQUEST_GPS
-                    )
+                        )
+                    }
                 }
-            }
-            false
-        })
-                .subscribe())
+                false
+            })
+                .subscribe()
+        )
 
         compositeDisposable.add(RxView.focusChanges(locationEditText)
-                .subscribe {
-                    if (locationEditText.text.toString() != "") {
-                        getLocationFromAddress(locationEditText.text.toString())
-                    }
+            .subscribe {
+                if (locationEditText.text.toString() != "") {
+                    getLocationFromAddress(locationEditText.text.toString())
+                }
 
-                })
+            })
 
         /**
          * disable main scroller if user will scroll in description box
@@ -258,18 +259,28 @@ class CreateEventFragment : Fragment() {
          * event called if description text changes
          */
         compositeDisposable.add(RxTextView.afterTextChangeEvents(descriptionEditText)
-                .subscribe {
-                    CreatePlace.place.description = it.view().text.toString()
-                })
+            .subscribe {
+                CreatePlace.place.description = it.view().text.toString()
+            })
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_REQUEST_GPS -> {
                 this.context?.let {
-                    val resultFineLocation = ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
-                    val resultCoarseLocation = ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    val resultFineLocation = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                    val resultCoarseLocation = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
                     if (resultFineLocation == PackageManager.PERMISSION_GRANTED && resultCoarseLocation == PackageManager.PERMISSION_GRANTED) {
                         locationProgressBar.visibility = VISIBLE
                         locationEditText.clearFocus()
@@ -280,7 +291,10 @@ class CreateEventFragment : Fragment() {
             }
             PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
                 this.context?.let {
-                    val result = ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    val result = ContextCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
                     if (result == PackageManager.PERMISSION_GRANTED) {
                         openPhoneGallery()
                     }
@@ -325,15 +339,24 @@ class CreateEventFragment : Fragment() {
     private fun getDefaultImageList(): ArrayList<Drawable> {
         val list = ArrayList<Drawable>()
         context?.let { context ->
-            ContextCompat.getDrawable(context, R.drawable.default_event_image1)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image2)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image3)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image4)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image5)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image6)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image7)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image8)?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image9)?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image1)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image2)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image3)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image4)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image5)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image6)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image7)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image8)
+                ?.let { list.add(it) }
+            ContextCompat.getDrawable(context, R.drawable.default_event_image9)
+                ?.let { list.add(it) }
         }
         CreatePlace.list = list
         return list
@@ -386,7 +409,8 @@ class CreateEventFragment : Fragment() {
          * Save into DB-Object
          */
         CreatePlace.place.address?.city = city
-        CreatePlace.place.address?.street = "${addresses[0].thoroughfare}  ${addresses[0].subThoroughfare}"
+        CreatePlace.place.address?.street =
+                "${addresses[0].thoroughfare}  ${addresses[0].subThoroughfare}"
         CreatePlace.place.address?.zipCode = postalCode.toInt()
 
         CreatePlace.place.latitude = location.latitude
@@ -405,7 +429,7 @@ class CreateEventFragment : Fragment() {
             location.longitude = addresses[0].longitude
             getAddressFromLocation(location)
         } else {
-            Log.e(TAG, "address not found")
+            log.e("address not found")
         }
     }
 
@@ -414,8 +438,9 @@ class CreateEventFragment : Fragment() {
      */
     private fun openPhoneGallery() {
         val galleryIntent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
 
         this.activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
@@ -443,7 +468,7 @@ class CreateEventFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, e.message.toString())
+            log.e("Error while selecting image.", e)
         }
     }
 
@@ -451,8 +476,10 @@ class CreateEventFragment : Fragment() {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
         val cursor = this.context?.let { context ->
-            context.contentResolver?.query(uri, mediaStoreData,
-                    null, null, null)
+            context.contentResolver?.query(
+                uri, mediaStoreData,
+                null, null, null
+            )
         }
 
         cursor?.let { cursor ->
@@ -503,13 +530,15 @@ class CreateEventFragment : Fragment() {
             updateLabel(isStartDate, false)
         }
 
-        DatePickerDialog(context,
-                R.style.DatePickerDialogStyle,
-                date, calendar
+        DatePickerDialog(
+            context,
+            R.style.DatePickerDialogStyle,
+            date, calendar
                 .get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH))
-                .show()
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+            .show()
     }
 
     private fun showTimeView(isStartDate: Boolean) {
@@ -519,13 +548,15 @@ class CreateEventFragment : Fragment() {
             updateLabel(isStartDate, true)
         }
 
-        TimePickerDialog(this.context,
-                R.style.TimePickerDialogStyle,
-                time,
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                false)
-                .show()
+        TimePickerDialog(
+            this.context,
+            R.style.TimePickerDialogStyle,
+            time,
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            false
+        )
+            .show()
     }
 
 
@@ -558,21 +589,26 @@ class CreateEventFragment : Fragment() {
          * Save into DB-Object
          */
         if (isStartDate) {
-            CreatePlace.place.startDate = Timestamp.valueOf("${startDate.date} ${startDate.time}").time.toString()
+            CreatePlace.place.startDate =
+                    Timestamp.valueOf("${startDate.date} ${startDate.time}").time.toString()
         } else {
-            CreatePlace.place.endDate = Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
+            CreatePlace.place.endDate =
+                    Timestamp.valueOf("${endDate.date} ${endDate.time}").time.toString()
         }
         currentEditText.setText(sdf.format(calendar.time))
     }
 
     private fun compressImage(file: File): File {
         return Compressor(this.context)
-                .setMaxWidth(640)
-                .setMaxHeight(480)
-                .setQuality(75)
-                .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).absolutePath + Constants.IMAGE_DIR)
-                .compressToFile(file)
+            .setMaxWidth(640)
+            .setMaxHeight(480)
+            .setQuality(75)
+            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+            .setDestinationDirectoryPath(
+                Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES
+                ).absolutePath + Constants.IMAGE_DIR
+            )
+            .compressToFile(file)
     }
 }

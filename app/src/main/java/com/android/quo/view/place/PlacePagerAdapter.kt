@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.android.quo.R
+import com.android.quo.util.Constants.Extra
 import com.android.quo.view.place.gallery.GalleryFragment
 import com.android.quo.view.place.page.PageFragment
 
@@ -13,14 +14,14 @@ import com.android.quo.view.place.page.PageFragment
  * Created by vitusortner on 12.11.17.
  */
 class PlacePagerAdapter(
-        fragmentManager: FragmentManager,
-        private val context: Context,
-        private val placeId: String?
+    fragmentManager: FragmentManager,
+    private val context: Context,
+    private val placeId: String?
 ) : FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment? {
         val bundle = Bundle()
-        bundle.putString("placeId", placeId)
+        bundle.putString(Extra.PLACE_ID_EXTRA, placeId)
 
         return when (position) {
             0 -> {

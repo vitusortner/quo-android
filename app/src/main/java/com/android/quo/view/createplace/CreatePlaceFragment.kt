@@ -6,15 +6,13 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerSettings
 import com.android.quo.util.CreatePlace
+import com.android.quo.view.BaseFragment
 import com.android.quo.view.createplace.qrcode.QrCodeFragment
 import com.android.quo.viewmodel.CreatePlaceViewModel
 import com.google.zxing.BarcodeFormat
@@ -35,7 +33,7 @@ import java.sql.Timestamp
 /**
  * Created by Jung on 27.11.17.
  */
-class CreatePlaceFragment : Fragment() {
+class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
     private val viewModel by viewModel<CreatePlaceViewModel>()
 
@@ -44,12 +42,6 @@ class CreatePlaceFragment : Fragment() {
     private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
 
     lateinit var place: ServerPlace
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_create_place, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

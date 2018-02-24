@@ -21,7 +21,14 @@ private enum class ViewType(val value: Int) {
     TEXT(2)
 }
 
-class PageAdapter(private val list: List<Component>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var list = emptyList<Component>()
+
+    fun setItems(components: List<Component>) {
+        list = components
+        notifyDataSetChanged()
+    }
 
     override fun getItemViewType(position: Int): Int {
         return when {
@@ -39,8 +46,8 @@ class PageAdapter(private val list: List<Component>) : RecyclerView.Adapter<Recy
                 val imageUrl = list[position].picture
 
                 Glide.with(holder.containerView.context)
-                        .load(imageUrl)
-                        .into(holder.imageView)
+                    .load(imageUrl)
+                    .into(holder.imageView)
             }
             is TextViewHolder -> {
                 holder.textView.text = list[position].text
@@ -52,14 +59,14 @@ class PageAdapter(private val list: List<Component>) : RecyclerView.Adapter<Recy
         return when (viewType) {
             PICTURE.value -> {
                 val itemView = LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.component_image, parent, false)
+                    .from(parent.context)
+                    .inflate(R.layout.component_image, parent, false)
                 ImageViewHolder(itemView)
             }
             TEXT.value -> {
                 val itemView = LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.component_text, parent, false)
+                    .from(parent.context)
+                    .inflate(R.layout.component_text, parent, false)
                 TextViewHolder(itemView)
             }
             else -> null
@@ -67,8 +74,8 @@ class PageAdapter(private val list: List<Component>) : RecyclerView.Adapter<Recy
     }
 
     class TextViewHolder(override val containerView: View) :
-            RecyclerView.ViewHolder(containerView), LayoutContainer
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 
     class ImageViewHolder(override val containerView: View) :
-            RecyclerView.ViewHolder(containerView), LayoutContainer
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 }

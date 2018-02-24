@@ -1,43 +1,33 @@
 package com.android.quo.view.place.gallery
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import com.alexvasilkov.gestures.GestureController
 import com.android.quo.R
-import com.bumptech.glide.Glide
+import com.android.quo.util.Constants.Extra
+import com.android.quo.view.BaseFragment
 import kotlinx.android.synthetic.main.fragment_gallery_image.imageView
 import kotlinx.android.synthetic.main.fragment_gallery_image.toolbar
 
 /**
  * Created by vitusortner on 16.11.17.
  */
-class ImageFragment : Fragment() {
+class ImageFragment : BaseFragment(R.layout.fragment_gallery_image) {
 
     private var url: String? = null
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View {
-        arguments?.let {
-            url = it.getString("url")
-        }
-
-        return inflater.inflate(R.layout.fragment_gallery_image, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let { url = it.getString(Extra.PICTURE_URL_EXTRA) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         url?.let {
-            Glide.with(context)
-                    .load(it)
-                    .into(imageView)
+            imageLoader
+                .load(it)
+                .into(imageView)
         }
-
         setupToolbar()
     }
 

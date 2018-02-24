@@ -67,9 +67,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun registerForgotPasswordButton() {
-        compositeDisposable.add(RxView.clicks(clickableForgotPasswordTextView)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ openDialogForgotPassword() })
+        compositeDisposable.add(
+            RxView.clicks(clickableForgotPasswordTextView)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ openDialogForgotPassword() })
         )
     }
 
@@ -202,14 +203,15 @@ class LoginActivity : AppCompatActivity() {
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            compositeDisposable.add(RxView.clicks(buttonNext)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (dialogView.emailWrapper.error.isNullOrEmpty()) {
-                        dialog.dismiss()
-                        openDialogPasswordResetFinished()
-                    }
-                })
+            compositeDisposable.add(
+                RxView.clicks(buttonNext)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (dialogView.emailWrapper.error.isNullOrEmpty()) {
+                            dialog.dismiss()
+                            openDialogPasswordResetFinished()
+                        }
+                    })
             )
         })
 

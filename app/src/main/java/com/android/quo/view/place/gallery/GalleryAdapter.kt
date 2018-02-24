@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Picture
+import com.android.quo.util.Constants.Extra
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import kotlinx.android.extensions.LayoutContainer
@@ -28,7 +29,7 @@ class GalleryAdapter : RecyclerView.Adapter<GalleryAdapter.PlaceGalleryViewHolde
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceGalleryViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.gallery_image_thumbnail, parent, false)
+            .inflate(R.layout.gallery_image_thumbnail, parent, false)
         return PlaceGalleryViewHolder(itemView)
     }
 
@@ -36,18 +37,18 @@ class GalleryAdapter : RecyclerView.Adapter<GalleryAdapter.PlaceGalleryViewHolde
         val imageUrl = list[position].src
 
         Glide.with(holder.containerView.context)
-                .load(imageUrl)
-                .apply(centerCropTransform())
-                .into(holder.imageView)
+            .load(imageUrl)
+            .apply(centerCropTransform())
+            .into(holder.imageView)
 
         holder.imageView.setOnClickListener {
             val intent = Intent(holder.containerView.context, ImagePagerActivity::class.java)
-            intent.putParcelableArrayListExtra("list", ArrayList(list))
-            intent.putExtra("position", position)
+            intent.putParcelableArrayListExtra(Extra.PICTURE_LIST_EXTRA, ArrayList(list))
+            intent.putExtra(Extra.PICTURE_POSITION_EXTRA, position)
             holder.containerView.context.startActivity(intent)
         }
     }
 
     class PlaceGalleryViewHolder(override val containerView: View) :
-            RecyclerView.ViewHolder(containerView), LayoutContainer
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 }

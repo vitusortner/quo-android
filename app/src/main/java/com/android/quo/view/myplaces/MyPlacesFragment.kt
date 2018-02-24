@@ -2,14 +2,12 @@ package com.android.quo.view.myplaces
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.util.Constants.FragmentTag
 import com.android.quo.util.extension.createAndReplaceFragment
+import com.android.quo.view.BaseFragment
 import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.home.PlacePreviewAdapter
@@ -23,7 +21,7 @@ import org.koin.android.architecture.ext.viewModel
 /**
  * Created by vitusortner on 05.11.17.
  */
-class MyPlacesFragment : Fragment() {
+class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
 
     private val viewModel by viewModel<MyPlacesViewModel>(false)
 
@@ -35,13 +33,6 @@ class MyPlacesFragment : Fragment() {
 
         adapter = PlacePreviewAdapter { HomeFragment.onClick(it, fragmentManager) }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        inflater.inflate(R.layout.fragment_my_places, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

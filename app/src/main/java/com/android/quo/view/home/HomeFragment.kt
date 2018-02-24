@@ -3,17 +3,15 @@ package com.android.quo.view.home
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
 import com.android.quo.util.extension.addFragment
+import com.android.quo.view.BaseFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.place.PlaceFragment
 import com.android.quo.viewmodel.HomeViewModel
@@ -26,7 +24,7 @@ import org.koin.android.architecture.ext.viewModel
 /**
  * Created by Jung on 01.11.17.
  */
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private val viewModel by viewModel<HomeViewModel>(false)
 
@@ -55,17 +53,7 @@ class HomeFragment : Fragment() {
         adapter = PlacePreviewAdapter { onClick(it, fragmentManager) }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -103,9 +91,11 @@ class HomeFragment : Fragment() {
      * Observe place preview list and set adapter for place preview recycler view
      */
     private fun observePlaces() =
-        viewModel.getPlaces().observe(
-            this,
-            Observer { it?.let { places -> adapter.setItems(places) } })
+        viewModel.getPlaces()
+            .observe(
+                this,
+                Observer { it?.let { adapter.setItems(it) } }
+            )
 
     /**
      * Update place preview list and stop refreshing animation

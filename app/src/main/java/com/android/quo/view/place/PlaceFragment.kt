@@ -15,7 +15,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.View
 import com.android.quo.R
 import com.android.quo.db.entity.Place
@@ -224,7 +223,7 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
             .subscribe({
                 completionHandler(it)
             }, {
-                Log.e(TAG, "Error while compressing image: $it")
+                log.e("Error while compressing image: $it")
                 completionHandler(null)
             })
     }
