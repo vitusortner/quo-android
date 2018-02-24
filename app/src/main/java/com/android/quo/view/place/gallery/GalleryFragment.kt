@@ -18,7 +18,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class GalleryFragment : Fragment() {
 
-    private val viewModel by viewModel<GalleryViewModel>()
+    private val viewModel by viewModel<GalleryViewModel>(false)
 
     private var placeId: String? = null
 

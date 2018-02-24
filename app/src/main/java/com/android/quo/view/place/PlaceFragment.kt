@@ -11,19 +11,19 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
+import com.android.quo.util.Constants.Extra
+import com.android.quo.util.extension.addFragment
 import com.android.quo.util.extension.toPx
+import com.android.quo.view.BaseFragment
 import com.android.quo.view.place.info.InfoFragment
 import com.android.quo.viewmodel.PlaceViewModel
 import com.bumptech.glide.Glide
@@ -47,11 +47,9 @@ import java.util.*
 /**
  * Created by vitusortner on 12.11.17.
  */
-class PlaceFragment : Fragment() {
+class PlaceFragment : BaseFragment(R.layout.fragment_place) {
 
-    private val TAG = javaClass.simpleName
-
-    private val viewModel by viewModel<PlaceViewModel>()
+    private val viewModel by viewModel<PlaceViewModel>(false)
 
     private val RESULT_GALLERY = 201
     private val RESULT_CAMERA = 202
@@ -64,30 +62,17 @@ class PlaceFragment : Fragment() {
 
     private val isPhotoUploadAllowed: Boolean by lazy {
         place?.let { place ->
-            place.isPhotoUploadAllowed?.let {
-                it || place.isHost
-            }
-        } ?: run {
-            false
-        }
+            place.isPhotoUploadAllowed?.let { it || place.isHost }
+        } ?: false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Show bottom navigation bar when coming from fragment with hidden bottom nav bar
         if (activity?.bottomNavigationView?.visibility == View.GONE) {
             activity?.bottomNavigationView?.visibility = View.VISIBLE
         }
-        place = arguments?.getParcelable("place")
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_place, container, false)
+        place = arguments?.getParcelable(Extra.PLACE_EXTRA)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,7 +94,7 @@ class PlaceFragment : Fragment() {
         }
     }
 
-    private fun setupBottomSheetDialog() {
+    private fun setupBottomSheetDialog() =
         context?.let { context ->
             bottomSheetDialog = BottomSheetDialog(context)
             val view = layoutInflater.inflate(R.layout.bottom_sheet_add_image, null)
@@ -117,7 +102,6 @@ class PlaceFragment : Fragment() {
             setupBottomSheetButtons(view)
             bottomSheetDialog?.setContentView(view)
         }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -187,7 +171,6 @@ class PlaceFragment : Fragment() {
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
-
         activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
     }
 
@@ -286,10 +269,10 @@ class PlaceFragment : Fragment() {
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
         val cursor = context?.contentResolver?.query(uri, mediaStoreData, null, null, null)
 
-        cursor?.let { cursor ->
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
-                result = cursor.getString(columnIndex)
+        cursor?.apply {
+            if (moveToFirst()) {
+                val columnIndex = getColumnIndexOrThrow(mediaStoreData[0])
+                result = getString(columnIndex)
             }
         }
         cursor?.close()
@@ -314,14 +297,11 @@ class PlaceFragment : Fragment() {
 
         toolbar.setOnMenuItemClickListener {
             val bundle = Bundle()
-            bundle.putParcelable("place", place)
+            bundle.putParcelable(Extra.PLACE_EXTRA, place)
             val fragment = InfoFragment()
             fragment.arguments = bundle
 
-            fragmentManager?.beginTransaction()
-                ?.add(R.id.content, fragment)
-                ?.addToBackStack(null)
-                ?.commit()
+            fragmentManager?.addFragment(fragment, true)
             true
         }
 
@@ -355,7 +335,7 @@ class PlaceFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        this.context?.let { context ->
+        context?.let { context ->
             place?.id?.let { placeId ->
                 viewPager.adapter = PlacePagerAdapter(childFragmentManager, context, placeId)
             }

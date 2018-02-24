@@ -27,6 +27,7 @@ import com.android.quo.R
 import com.android.quo.dataclass.QrCodeScannerDialog
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
+import com.android.quo.util.Constants.Extra
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -253,9 +254,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
                                 } else {
                                     openWrongLocationAlert()
                                 }
-                            } ?: run {
-                                openLocationErrorAlert()
-                            }
+                            } ?: openLocationErrorAlert()
                         }
                     } else {
                         startPlaceIntent(place)
@@ -300,7 +299,7 @@ class QrCodeScannerActivity : AppCompatActivity(), ZXingScannerView.ResultHandle
 
     private fun startPlaceIntent(place: Place) {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("place", place)
+        intent.putExtra(Extra.PLACE_EXTRA, place)
         startActivity(intent)
     }
 

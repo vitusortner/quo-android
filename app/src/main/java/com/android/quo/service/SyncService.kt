@@ -20,20 +20,18 @@ import java.util.*
  * Created by vitusortner on 30.11.17.
  */
 class SyncService(
-        private val placeDao: PlaceDao,
-        private val componentDao: ComponentDao,
-        private val pictureDao: PictureDao
+    private val placeDao: PlaceDao,
+    private val componentDao: ComponentDao,
+    private val pictureDao: PictureDao
 ) {
 
     private val TAG = javaClass.simpleName
 
-    fun saveHostedPlaces(data: List<ServerPlace>) {
+    fun saveHostedPlaces(data: List<ServerPlace>) =
         savePlaces(data, true) { toPlace(it, true) }
-    }
 
-    fun saveVisitedPlaces(data: List<ServerPlaceResponse>) {
+    fun saveVisitedPlaces(data: List<ServerPlaceResponse>) =
         savePlaces(data, false) { toPlace(it.place, false, it.timestamp) }
-    }
 
     @SuppressLint("SimpleDateFormat")
     fun savePlace(data: ServerPlace, userId: String) {
@@ -91,48 +89,49 @@ class SyncService(
 
     private fun toPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
         return Place(
-                id = serverPlace.id ?: "",
-                isHost = isHost,
-                description = serverPlace.description ?: "",
-                title = serverPlace.title,
-                startDate = serverPlace.startDate,
-                endDate = serverPlace.endDate,
-                latitude = serverPlace.latitude,
-                longitude = serverPlace.longitude,
-                address = serverPlace.address?.let { address ->
-                    Address(
-                            street = address.street,
-                            city = address.city,
-                            zipCode = address.zipCode,
-                            name = address.name)
-                },
-                isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
-                hasToValidateGps = serverPlace.settings?.hasToValidateGps,
-                titlePicture = serverPlace.titlePicture ?: "",
-                qrCodeId = serverPlace.qrCodeId ?: "",
-                qrCode = serverPlace.qrCode ?: "",
-                timestamp = serverPlace.timestamp,
-                lastScanned = date
+            id = serverPlace.id ?: "",
+            isHost = isHost,
+            description = serverPlace.description ?: "",
+            title = serverPlace.title,
+            startDate = serverPlace.startDate,
+            endDate = serverPlace.endDate,
+            latitude = serverPlace.latitude,
+            longitude = serverPlace.longitude,
+            address = serverPlace.address?.let { address ->
+                Address(
+                    street = address.street,
+                    city = address.city,
+                    zipCode = address.zipCode,
+                    name = address.name
+                )
+            },
+            isPhotoUploadAllowed = serverPlace.settings?.isPhotoUploadAllowed,
+            hasToValidateGps = serverPlace.settings?.hasToValidateGps,
+            titlePicture = serverPlace.titlePicture ?: "",
+            qrCodeId = serverPlace.qrCodeId ?: "",
+            qrCode = serverPlace.qrCode ?: "",
+            timestamp = serverPlace.timestamp,
+            lastScanned = date
         )
     }
 
     private fun toComponent(serverComponent: ServerComponent, placeId: String): Component {
         return Component(
-                id = serverComponent.id ?: "",
-                picture = serverComponent.picture,
-                text = serverComponent.text,
-                placeId = placeId
+            id = serverComponent.id ?: "",
+            picture = serverComponent.picture,
+            text = serverComponent.text,
+            placeId = placeId
         )
     }
 
     private fun toPicture(serverPicture: ServerPicture): Picture {
         return Picture(
-                id = serverPicture.id ?: "",
-                ownerId = serverPicture.ownerId,
-                placeId = serverPicture.placeId,
-                src = serverPicture.src,
-                isVisible = serverPicture.isVisible,
-                timestamp = serverPicture.timestamp ?: ""
+            id = serverPicture.id ?: "",
+            ownerId = serverPicture.ownerId,
+            placeId = serverPicture.placeId,
+            src = serverPicture.src,
+            isVisible = serverPicture.isVisible,
+            timestamp = serverPicture.timestamp ?: ""
         )
     }
 }

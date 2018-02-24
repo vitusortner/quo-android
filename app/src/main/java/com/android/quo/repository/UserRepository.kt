@@ -11,11 +11,7 @@ class UserRepository(private val userDao: UserDao) {
 
     fun getUser(completionHandler: (User?) -> Unit) {
         userDao.getUser()
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    completionHandler(it)
-                }, {
-                    completionHandler(null)
-                })
+            .subscribeOn(Schedulers.io())
+            .subscribe({ completionHandler(it) }, { completionHandler(null) })
     }
 }

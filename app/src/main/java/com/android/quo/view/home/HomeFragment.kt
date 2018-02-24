@@ -4,13 +4,18 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.db.entity.Place
+import com.android.quo.util.Constants
+import com.android.quo.util.extension.addFragment
 import com.android.quo.view.login.LoginActivity
+import com.android.quo.view.place.PlaceFragment
 import com.android.quo.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
@@ -23,18 +28,31 @@ import org.koin.android.architecture.ext.viewModel
  */
 class HomeFragment : Fragment() {
 
-    private val viewModel by viewModel<HomeViewModel>()
+    private val viewModel by viewModel<HomeViewModel>(false)
 
     private lateinit var adapter: PlacePreviewAdapter
 
+    companion object {
+
+        fun onClick(place: Place, fragmentManager: FragmentManager?) {
+            val bundle = Bundle()
+            bundle.putParcelable(Constants.Extra.PLACE_EXTRA, place)
+            val fragment = PlaceFragment()
+            fragment.arguments = bundle
+
+            fragmentManager?.addFragment(
+                fragment,
+                true,
+                R.anim.slide_in to R.anim.slide_out
+            )
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.bottomNavigationView?.visibility = VISIBLE
 
-        activity?.let {
-            it.bottomNavigationView?.visibility = VISIBLE
-
-            adapter = PlacePreviewAdapter(it.supportFragmentManager)
-        }
+        adapter = PlacePreviewAdapter { onClick(it, fragmentManager) }
     }
 
     override fun onCreateView(
@@ -58,7 +76,6 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         viewModel.updatePlaces()
     }
 
@@ -74,7 +91,6 @@ class HomeFragment : Fragment() {
                 }
                 resources.getString(R.string.menu_logout) -> {
                     viewModel.logout()
-
                     val intent = Intent(this.context, LoginActivity::class.java)
                     startActivity(intent)
                 }
@@ -86,13 +102,10 @@ class HomeFragment : Fragment() {
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlaces() {
-        viewModel.getPlaces().observe(this, Observer {
-            it?.let { places ->
-                adapter.setItems(places)
-            }
-        })
-    }
+    private fun observePlaces() =
+        viewModel.getPlaces().observe(
+            this,
+            Observer { it?.let { places -> adapter.setItems(places) } })
 
     /**
      * Update place preview list and stop refreshing animation

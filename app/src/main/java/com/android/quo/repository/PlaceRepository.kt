@@ -17,9 +17,9 @@ import io.reactivex.schedulers.Schedulers
  * Created by vitusortner on 24.11.17.
  */
 class PlaceRepository(
-        private val placeDao: PlaceDao,
-        private val apiClient: ApiClient,
-        private val syncService: SyncService
+    private val placeDao: PlaceDao,
+    private val apiClient: ApiClient,
+    private val syncService: SyncService
 ) {
 
     private val TAG = javaClass.simpleName
@@ -28,13 +28,12 @@ class PlaceRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Place>, List<ServerPlace>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlace>> = apiClient.getHostedPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlace>> =
+                    apiClient.getHostedPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(true)
 
-                override fun sync(data: List<ServerPlace>) {
-                    syncService.saveHostedPlaces(data)
-                }
+                override fun sync(data: List<ServerPlace>) = syncService.saveHostedPlaces(data)
             }
         }, BackpressureStrategy.BUFFER)
     }
@@ -43,13 +42,13 @@ class PlaceRepository(
         return Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Place>, List<ServerPlaceResponse>>(emitter) {
 
-                override fun getRemote(): Single<List<ServerPlaceResponse>> = apiClient.getVisitedPlaces(userId)
+                override fun getRemote(): Single<List<ServerPlaceResponse>> =
+                    apiClient.getVisitedPlaces(userId)
 
                 override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(false)
 
-                override fun sync(data: List<ServerPlaceResponse>) {
+                override fun sync(data: List<ServerPlaceResponse>) =
                     syncService.saveVisitedPlaces(data)
-                }
             }
         }, BackpressureStrategy.BUFFER)
     }
@@ -69,25 +68,29 @@ class PlaceRepository(
 
     fun addPlace(place: ServerPlace, completionHandler: ((ServerPlace?) -> Unit)? = null) {
         apiClient.addPlace(place)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    Log.i(TAG, "Place added: $place")
-                    completionHandler?.invoke(it)
-                }, {
-                    Log.e(TAG, "Error while adding place", it)
-                    completionHandler?.invoke(null)
-                })
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                Log.i(TAG, "Place added: $place")
+                completionHandler?.invoke(it)
+            }, {
+                Log.e(TAG, "Error while adding place", it)
+                completionHandler?.invoke(null)
+            })
     }
 
-    fun updatePlace(placeId: String, place: ServerPlace, completionHandler: ((ServerPlace?) -> Unit)? = null) {
+    fun updatePlace(
+        placeId: String,
+        place: ServerPlace,
+        completionHandler: ((ServerPlace?) -> Unit)? = null
+    ) {
         apiClient.updatePlace(placeId, place)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    Log.i(TAG, "Place updated: $it")
-                    completionHandler?.invoke(it)
-                }, {
-                    Log.e(TAG, "Error while updating place", it)
-                    completionHandler?.invoke(null)
-                })
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                Log.i(TAG, "Place updated: $it")
+                completionHandler?.invoke(it)
+            }, {
+                Log.e(TAG, "Error while updating place", it)
+                completionHandler?.invoke(null)
+            })
     }
 }

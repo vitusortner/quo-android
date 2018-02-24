@@ -10,6 +10,9 @@ import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.db.entity.Place
+import com.android.quo.util.Constants.Extra
+import com.android.quo.util.Constants.FragmentTag
+import com.android.quo.util.extension.createAndReplaceFragment
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.myplaces.MyPlacesFragment
@@ -57,12 +60,9 @@ class MainActivity : AppCompatActivity() {
      * start place fragment
      */
     override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-
-        if (intent.getParcelableExtra<Place>("place") !== null) {
-            val place = intent.getParcelableExtra<Place>("place")
+        intent.getParcelableExtra<Place>(Extra.PLACE_EXTRA)?.let { place ->
             val bundle = Bundle()
-            bundle.putParcelable("place", place)
+            bundle.putParcelable(Extra.PLACE_EXTRA, place)
             val fragment = PlaceFragment()
             fragment.arguments = bundle
 
@@ -82,16 +82,17 @@ class MainActivity : AppCompatActivity() {
                     // TODO https://app.clickup.com/751518/751948/t/vtmj
                 }
                 actionHome -> {
-                    supportFragmentManager.beginTransaction()
-//                        .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
-                        .replace(R.id.content, HomeFragment())
-                        .commit()
+                    supportFragmentManager.createAndReplaceFragment(
+                        FragmentTag.HOME_FRAGMENT,
+                        HomeFragment::class.java
+                    )
                     true
                 }
                 actionPlaces -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.content, MyPlacesFragment())
-                        .commit()
+                    supportFragmentManager.createAndReplaceFragment(
+                        FragmentTag.MY_PLACES_FRAGMENT,
+                        MyPlacesFragment::class.java
+                    )
                     true
                 }
                 else -> false

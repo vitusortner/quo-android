@@ -16,7 +16,6 @@ class PlaceViewModel(
         private val userRepository: UserRepository
 ) : ViewModel() {
 
-
     fun uploadImage(image: File, placeId: String) {
         uploadService.uploadImage(image) {
             it?.let { image ->
@@ -28,7 +27,6 @@ class PlaceViewModel(
                                 src = image.path,
                                 isVisible = true
                         )
-
                         pictureRepository.addPicture(placeId, picture)
                     }
                 }

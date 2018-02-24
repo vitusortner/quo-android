@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.util.Constants.Extra
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.widget.RxToolbar
 import kotlinx.android.synthetic.main.fragment_info.imageView
@@ -24,13 +25,13 @@ class InfoFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        place = arguments?.getParcelable("place")
+        place = arguments?.getParcelable(Extra.PLACE_EXTRA)
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_info, container, false)
     }
@@ -42,8 +43,8 @@ class InfoFragment : Fragment() {
         val imageUrl = place?.titlePicture ?: ""
 
         Glide.with(this.context)
-                .load(imageUrl)
-                .into(imageView)
+            .load(imageUrl)
+            .into(imageView)
 
         place?.let {
             recyclerView.adapter = InfoAdapter(it)
@@ -56,8 +57,8 @@ class InfoFragment : Fragment() {
         toolbar.title = place?.title ?: ""
 
         RxToolbar.navigationClicks(toolbar)
-                .subscribe {
-                    activity?.onBackPressed()
-                }
+            .subscribe {
+                activity?.onBackPressed()
+            }
     }
 }

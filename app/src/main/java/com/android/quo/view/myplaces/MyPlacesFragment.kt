@@ -8,7 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
+import com.android.quo.util.Constants.FragmentTag
+import com.android.quo.util.extension.createAndReplaceFragment
 import com.android.quo.view.createplace.CreatePlaceFragment
+import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.home.PlacePreviewAdapter
 import com.android.quo.viewmodel.MyPlacesViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
@@ -22,27 +25,23 @@ import org.koin.android.architecture.ext.viewModel
  */
 class MyPlacesFragment : Fragment() {
 
-    private val viewModel by viewModel<MyPlacesViewModel>()
+    private val viewModel by viewModel<MyPlacesViewModel>(false)
 
     private lateinit var adapter: PlacePreviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.bottomNavigationView?.visibility = View.VISIBLE
 
-        activity?.let {
-            it.bottomNavigationView?.visibility = View.VISIBLE
-
-            adapter = PlacePreviewAdapter(it.supportFragmentManager)
-        }
+        adapter = PlacePreviewAdapter { HomeFragment.onClick(it, fragmentManager) }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_my_places, container, false)
-    }
+    ): View =
+        inflater.inflate(R.layout.fragment_my_places, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,13 +57,9 @@ class MyPlacesFragment : Fragment() {
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlaces() {
-        viewModel.getPlaces().observe(this, Observer {
-            it?.let { places ->
-                adapter.setItems(places)
-            }
-        })
-    }
+    private fun observePlaces() =
+        viewModel.getPlaces()
+            .observe(this, Observer { it?.let { places -> adapter.setItems(places) } })
 
     /**
      * Update place preview list and stop refreshing animation
@@ -79,9 +74,10 @@ class MyPlacesFragment : Fragment() {
 
     private fun setupFloatingActionButton() =
         floatingActionButton.setOnClickListener {
-            fragmentManager?.beginTransaction()
-                ?.replace(R.id.content, CreatePlaceFragment())
-                ?.addToBackStack(null)
-                ?.commit()
+            fragmentManager?.createAndReplaceFragment(
+                FragmentTag.CREATE_PLACE_FRAGMENT,
+                CreatePlaceFragment::class.java,
+                addToBackStack = true
+            )
         }
 }

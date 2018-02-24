@@ -18,7 +18,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class PageFragment : Fragment() {
 
-    private val viewModel by viewModel<PageViewModel>()
+    private val viewModel by viewModel<PageViewModel>(false)
 
     private var placeId: String? = null
 
