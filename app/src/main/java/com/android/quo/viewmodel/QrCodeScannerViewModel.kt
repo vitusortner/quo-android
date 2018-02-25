@@ -2,12 +2,13 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.android.quo.db.entity.Place
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
-import io.reactivex.disposables.CompositeDisposable
+import com.android.quo.util.extension.addTo
+import com.android.quo.util.extension.flatMapFlowable
+import com.android.quo.util.extension.observeOnUi
+import com.android.quo.util.extension.subscribeOnIo
 
 /**
  * Created by vitusortner on 11.12.17.
@@ -18,8 +19,6 @@ class QrCodeScannerViewModel(
 ) :
     BaseViewModel() {
 
-    private val compositDisposabel = CompositeDisposable()
-
     private var place = MutableLiveData<Place>()
 
     fun getPlace(qrCodeId: String): LiveData<Place> {
@@ -27,25 +26,18 @@ class QrCodeScannerViewModel(
         return place
     }
 
-    private fun loadPlace(qrCodeId: String) {
-        userRepository.getUser {
-            it?.let { user ->
-                placeRepository.getPlace(qrCodeId, user.id)
-                    .subscribe({
-                        place.value = it
-                    }, {
-                        log.e("Error while getting place: $it")
-                    })
-            }
-        }
-    }
+    private fun loadPlace(qrCodeId: String) =
+        userRepository.getUserSingle()
+            .subscribeOnIo()
+            .flatMapFlowable { placeRepository.getPlace(qrCodeId, it.id) }
+            .observeOnUi()
+            .subscribe(
+                { place.value = it },
+                { log.e("Error while getting place: $it") }
+            )
+            .addTo(compositeDisposable)
 
     fun resetLiveData() {
         place.value = null
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        compositDisposabel.dispose()
     }
 }

@@ -1,8 +1,12 @@
 package com.android.quo.viewmodel
 
+import android.os.AsyncTask
 import android.util.Patterns
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
+import com.android.quo.util.extension.addTo
+import com.android.quo.util.extension.observeOnUi
+import com.android.quo.util.extension.subscribeOnIo
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
@@ -68,22 +72,37 @@ class LoginViewModel(
         }
 
     fun login(email: String, password: String, callback: (Boolean) -> Unit) {
-        authService.login(email, password) { successful ->
-            callback(successful)
-        }
+        authService.login(email, password)
+            .subscribeOnIo()
+            .observeOnUi()
+            .subscribe(
+                { callback(true) },
+                {
+                    log.e("Error while login", it)
+                    callback(false)
+                }
+            )
+            .addTo(compositeDisposable)
     }
 
     fun signup(email: String, password: String, callback: (Boolean) -> Unit) {
-        authService.signup(email, password) { successful ->
-            callback(successful)
-        }
+        authService.signup(email, password)
+            .subscribeOnIo()
+            .observeOnUi()
+            .subscribe(
+                { callback(true) },
+                {
+                    log.e("Error while signup", it)
+                    callback(false)
+                }
+            )
+            .addTo(compositeDisposable)
     }
 
-    fun validateLoginState(openLogin: () -> Unit) {
-        userRepository.getUser {
-            if (it == null) {
+    fun validateLoginState(openLogin: () -> Unit) =
+        AsyncTask.execute {
+            if (userRepository.getUser() == null) {
                 openLogin()
             }
         }
-    }
 }

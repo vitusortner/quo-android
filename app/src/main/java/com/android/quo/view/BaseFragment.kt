@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
  */
 abstract class BaseFragment(@LayoutRes private val layout: Int) : Fragment() {
 
-    val log by lazy { Logger(javaClass) }
+    val log = Logger(javaClass)
 
     val imageLoader by lazy { Glide.with(context) }
 

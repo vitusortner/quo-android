@@ -253,7 +253,7 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
                                 viewModel.uploadImage(it, placeId)
                                 // TODO refresh gallery
                                 // https://app.clickup.com/751518/751948/t/xazx
-                                // maybe add completionHandler to uploadImage function and update gallery then
+                                // maybe composit completionHandler to uploadImage function and update gallery then
                                 bottomSheetDialog?.hide()
                             }
                         }

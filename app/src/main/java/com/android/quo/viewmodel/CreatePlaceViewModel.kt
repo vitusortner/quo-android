@@ -3,7 +3,7 @@ package com.android.quo.viewmodel
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
-import com.android.quo.db.entity.User
+import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.repository.ComponentRepository
@@ -13,10 +13,14 @@ import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
 import com.android.quo.util.Constants
 import com.android.quo.util.CreatePlace
+import com.android.quo.util.extension.addTo
+import com.android.quo.util.extension.subscribeOnIo
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
+// TODO ??
+@Suppress("IMPLICIT_CAST_TO_ANY")
 /**
  * Created by Jung on 11.12.17.
  */
@@ -29,125 +33,145 @@ class CreatePlaceViewModel(
 ) :
     BaseViewModel() {
 
-    fun savePlace() {
-        userRepository.getUser {
-            it?.let {
+    fun savePlace() =
+        userRepository.getUserSingle()
+            .subscribeOnIo()
+            .flatMap {
                 CreatePlace.place.host = it.id
+                placeRepository.addPlace(CreatePlace.place)
+            }
+            .subscribe(
+                {
+                    addQrCode(it)
+                    addTitlePicture(it)
+                },
+                { log.e("Error while saving place", it) }
+            )
 
-                placeRepository.addPlace(CreatePlace.place) {
-                    it?.let { place ->
-                        uploadQrCode(place)
-                        uploadImage(place)
-                    }
+    private fun addTitlePicture(place: ServerPlace) =
+        place.titlePicture?.let { titlePicture ->
+            place.id?.let { placeId ->
+
+                val picture = ServerPicture(
+                    id = null,
+                    ownerId = place.host,
+                    placeId = place.id ?: "",
+                    src = "",
+                    isVisible = true
+                )
+
+                if (!titlePicture.startsWith("quo_default_")) {
+                    picture.src = titlePicture
+
+                    val uri = Uri.parse(picture.src)
+                    val image = File(uri.path)
+
+                    uploadCustomTitlePicture(placeId, image, place)
+                } else {
+                    uploadDefaultTitlePicture(placeId, titlePicture, place)
                 }
             }
         }
-    }
 
-    private fun uploadImage(place: ServerPlace) {
-        // create ServerPicture for title picture
-        val picture = ServerPicture(
+    private fun uploadCustomTitlePicture(placeId: String, image: File, place: ServerPlace) =
+        uploadService.uploadImage(image)
+            .subscribeOnIo()
+            .flatMap {
+                place.titlePicture = it.path
+                placeRepository.updatePlace(placeId, place)
+            }
+            .subscribe(
+                { addComponents(it) },
+                { log.e("Error", it) }
+            )
+            .addTo(compositeDisposable)
+
+    private fun uploadDefaultTitlePicture(
+        placeId: String,
+        titlePicture: String,
+        place: ServerPlace
+    ) =
+        pictureRepository.getDefaultPicture(titlePicture)
+            .subscribeOnIo()
+            .flatMap {
+                place.titlePicture = it.path
+                placeRepository.updatePlace(placeId, place)
+            }
+            .subscribe(
+                { addComponents(it) },
+                { log.e("Error while adding default picture", it) }
+            )
+            .addTo(compositeDisposable)
+
+    private fun addComponents(place: ServerPlace) =
+        place.id?.let { placeId ->
+            CreatePlace.components.forEach { component ->
+                if (component.picture != null) {
+                    val uri = Uri.parse(component.picture)
+                    val image = File(uri.path)
+
+                    uploadImageComponent(placeId, image, place, component)
+                } else if (component.text != null) {
+                    uploadTextComponent(placeId, component)
+                }
+            }
+        }
+
+    private fun uploadImageComponent(
+        placeId: String,
+        image: File,
+        place: ServerPlace,
+        component: ServerComponent
+    ) =
+        uploadService.uploadImage(image)
+            .subscribeOnIo()
+            .map { createServerPicture(place, it.path) }
+            .flatMap { serverPicture -> pictureRepository.addPicture(placeId, serverPicture) }
+            .flatMap { serverPicture ->
+                component.picture = serverPicture.src
+                componentRepository.addComponent(serverPicture.placeId, component)
+            }
+            .subscribe(
+                { log.i("Success uploading image component $it") },
+                { log.e("Error uploading image component", it) }
+            )
+            .addTo(compositeDisposable)
+
+    private fun uploadTextComponent(placeId: String, component: ServerComponent) =
+        componentRepository.addComponent(placeId, component)
+            .subscribeOnIo()
+            .subscribe(
+                { log.i("Success uploading text component $it") },
+                { log.e("Error uploading text component", it) }
+            )
+            .addTo(compositeDisposable)
+
+    private fun createServerPicture(place: ServerPlace, imagePath: String) =
+        ServerPicture(
             id = null,
             ownerId = place.host,
             placeId = place.id ?: "",
-            src = "",
+            src = imagePath,
             isVisible = true
         )
 
-        //check if title picture is from user or default image
-        place.titlePicture?.let { titlePicture ->
-            if (!titlePicture.startsWith("quo_default_")) {
-                picture.src = titlePicture
+    private fun addQrCode(place: ServerPlace) =
+        place.id?.let { placeId ->
+            val uri = Uri.parse(saveQrCode(CreatePlace.qrCodeImage, place.qrCodeId))
+            val image = File(uri.path)
 
-                val uri = Uri.parse(picture.src)
-                val image = File(uri.path)
-
-                uploadService.uploadImage(image) {
-                    it?.let { image ->
-                        place.titlePicture = image.path
-
-                        place.id?.let { placeId ->
-                            placeRepository.updatePlace(placeId, place) {
-                                it?.let {
-                                    uploadComponents(it)
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                // get default picture from server and set it as title picture source
-                pictureRepository.getDefaultPicture(titlePicture) {
-                    it?.let {
-                        place.titlePicture = it.path
-
-                        place.id?.let { placeId ->
-                            placeRepository.updatePlace(placeId, place) {
-                                it?.let {
-                                    uploadComponents(it)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    private fun uploadComponents(place: ServerPlace) {
-        // sync all images from components and add the place to the right component
-        for (component in CreatePlace.components) {
-            if (component.picture != null) {
-                val uri = Uri.parse(component.picture)
-                val image = File(uri.path)
-
-                uploadService.uploadImage(image) {
-                    it?.let {
-                        val picture = ServerPicture(
-                            id = null,
-                            ownerId = place.host,
-                            placeId = place.id ?: "",
-                            src = it.path,
-                            isVisible = true
-                        )
-
-                        place.id?.let { placeId ->
-                            pictureRepository.addPicture(placeId, picture) {
-                                it?.let { picture ->
-                                    component.picture = picture.src
-
-                                    componentRepository.addComponent(picture.placeId, component)
-                                }
-                            }
-
-
-                        }
-                    }
-                }
-            } else if (component.text != null) {
-                //post component with text to server
-                place.id?.let { placeId ->
-                    componentRepository.addComponent(placeId, component)
-                }
-            }
-        }
-    }
-
-    private fun uploadQrCode(place: ServerPlace) {
-        val uri = Uri.parse(saveQrCode(CreatePlace.qrCodeImage, place.qrCodeId))
-        val image = File(uri.path)
-
-        uploadService.uploadImage(image) {
-            it?.let {
-                place.qrCode = it.path
-
-                place.id?.let { placeId ->
+            uploadService.uploadImage(image)
+                .subscribeOnIo()
+                .flatMap {
+                    place.qrCode = it.path
                     placeRepository.updatePlace(placeId, place)
                 }
-            }
+                .subscribe(
+                    { log.i("QR Code uploaded and added to place $it") },
+                    { log.e("Error while uploading and adding QR Code to place", it) }
+                )
+                .addTo(compositeDisposable)
         }
-    }
 
     private fun saveQrCode(bitmap: Bitmap, qrCodeId: String?): String {
         val bytes = ByteArrayOutputStream()
@@ -167,8 +191,6 @@ class CreatePlaceViewModel(
         return file.path
     }
 
-    fun getUser(completionHandler: (User?) -> Unit) {
-        userRepository.getUser(completionHandler)
-    }
+    fun getUser() = userRepository.getUser()
 }
 

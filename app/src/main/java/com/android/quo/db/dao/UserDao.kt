@@ -13,9 +13,12 @@ import io.reactivex.Single
 @Dao
 interface UserDao {
 
+    @Query("SELECT * FROM user LIMIT 1")
+    fun getUser(): User?
+
     // Returns error when no user is found
     @Query("SELECT * FROM user LIMIT 1")
-    fun getUser(): Single<User>
+    fun getUserSingle(): Single<User>
 
     @Insert(onConflict = REPLACE)
     fun insertUser(user: User)

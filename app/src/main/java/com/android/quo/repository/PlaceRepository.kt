@@ -10,7 +10,6 @@ import com.android.quo.util.NetworkBoundResource
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by vitusortner on 24.11.17.
@@ -19,11 +18,10 @@ class PlaceRepository(
     private val placeDao: PlaceDao,
     private val apiClient: ApiClient,
     private val syncService: SyncService
-) :
-    BaseRepository() {
+) {
 
-    fun getHostedPlaces(userId: String): Flowable<List<Place>> {
-        return Flowable.create({ emitter ->
+    fun getHostedPlaces(userId: String): Flowable<List<Place>> =
+        Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Place>, List<ServerPlace>>(emitter) {
 
                 override fun getRemote(): Single<List<ServerPlace>> =
@@ -34,10 +32,9 @@ class PlaceRepository(
                 override fun sync(data: List<ServerPlace>) = syncService.saveHostedPlaces(data)
             }
         }, BackpressureStrategy.BUFFER)
-    }
 
-    fun getVisitedPlaces(userId: String): Flowable<List<Place>> {
-        return Flowable.create({ emitter ->
+    fun getVisitedPlaces(userId: String): Flowable<List<Place>> =
+        Flowable.create({ emitter ->
             object : NetworkBoundResource<List<Place>, List<ServerPlaceResponse>>(emitter) {
 
                 override fun getRemote(): Single<List<ServerPlaceResponse>> =
@@ -49,10 +46,9 @@ class PlaceRepository(
                     syncService.saveVisitedPlaces(data)
             }
         }, BackpressureStrategy.BUFFER)
-    }
 
-    fun getPlace(qrCodeId: String, userId: String): Flowable<Place> {
-        return Flowable.create({ emitter ->
+    fun getPlace(qrCodeId: String, userId: String): Flowable<Place> =
+        Flowable.create({ emitter ->
             object : NetworkBoundResource<Place, ServerPlace>(emitter) {
 
                 override fun getRemote(): Single<ServerPlace> = apiClient.getPlace(qrCodeId, userId)
@@ -62,33 +58,8 @@ class PlaceRepository(
                 override fun sync(data: ServerPlace) = syncService.savePlace(data, userId)
             }
         }, BackpressureStrategy.BUFFER)
-    }
 
-    fun addPlace(place: ServerPlace, completionHandler: ((ServerPlace?) -> Unit)? = null) {
-        apiClient.addPlace(place)
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                log.i("Place added: $place")
-                completionHandler?.invoke(it)
-            }, {
-                log.e("Error while adding place", it)
-                completionHandler?.invoke(null)
-            })
-    }
+    fun addPlace(place: ServerPlace) = apiClient.addPlace(place)
 
-    fun updatePlace(
-        placeId: String,
-        place: ServerPlace,
-        completionHandler: ((ServerPlace?) -> Unit)? = null
-    ) {
-        apiClient.updatePlace(placeId, place)
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                log.i("Place updated: $it")
-                completionHandler?.invoke(it)
-            }, {
-                log.e("Error while updating place", it)
-                completionHandler?.invoke(null)
-            })
-    }
+    fun updatePlace(placeId: String, place: ServerPlace) = apiClient.updatePlace(placeId, place)
 }

@@ -12,6 +12,7 @@ import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerPlaceResponse
+import com.android.quo.util.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,8 +23,9 @@ class SyncService(
     private val placeDao: PlaceDao,
     private val componentDao: ComponentDao,
     private val pictureDao: PictureDao
-) :
-    BaseService() {
+) {
+
+    private val log = Logger(javaClass)
 
     fun saveHostedPlaces(data: List<ServerPlace>) =
         savePlaces(data, true) { toPlace(it, true) }

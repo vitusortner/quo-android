@@ -61,6 +61,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
             PERMISSION_REQUEST_EXTERNAL_STORAGE
         )
 
+        // TODO nicer plz
         generateQrCodeObservable()
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
@@ -102,7 +103,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
                             ?.commit()
 
                     } else {
-                        //TODO add message please fill required boxes
+                        //TODO composit message please fill required boxes
                     }
                 }
         )
@@ -181,30 +182,24 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
         return Observable.create {
             val timestamp = Timestamp(System.currentTimeMillis())
 
-            viewModel.getUser {
-                it?.let { userId ->
-                    val qrCodeId =
-                        String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + userId)))
-                    val uri = "quo://" + qrCodeId
-                    val width = 1024
-                    val height = 1024
-                    val multiFormatWriter = MultiFormatWriter()
-                    val bm = multiFormatWriter.encode(uri, BarcodeFormat.QR_CODE, width, height)
-                    val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            viewModel.getUser()?.let {
+                val qrCodeId =
+                    String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + it.id)))
+                val uri = "quo://" + qrCodeId
+                val width = 1024
+                val height = 1024
+                val multiFormatWriter = MultiFormatWriter()
+                val bm = multiFormatWriter.encode(uri, BarcodeFormat.QR_CODE, width, height)
+                val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-                    for (i in 0 until width) {
-                        for (j in 0 until height) {
-                            imageBitmap.setPixel(
-                                i,
-                                j,
-                                if (bm.get(i, j)) Color.BLACK else Color.WHITE
-                            )
-                        }
+                for (x in 0 until width) {
+                    for (y in 0 until height) {
+                        imageBitmap.setPixel(x, y, if (bm.get(x, y)) Color.BLACK else Color.WHITE)
                     }
-
-                    CreatePlace.place.qrCodeId = qrCodeId
-                    CreatePlace.qrCodeImage = imageBitmap
                 }
+
+                CreatePlace.place.qrCodeId = qrCodeId
+                CreatePlace.qrCodeImage = imageBitmap
             }
         }
     }
