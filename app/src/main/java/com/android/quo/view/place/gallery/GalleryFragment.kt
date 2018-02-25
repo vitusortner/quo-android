@@ -1,10 +1,12 @@
 package com.android.quo.view.place.gallery
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.android.quo.R
+import com.android.quo.db.entity.Picture
 import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Extra
 import com.android.quo.view.BaseFragment
@@ -27,7 +29,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         placeId = arguments?.getString(Extra.PLACE_ID_EXTRA)
-        adapter = GalleryAdapter()
+        adapter = GalleryAdapter(imageLoader) { list, position -> onClick(list, position) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,5 +56,12 @@ class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
             placeId?.let { viewModel.updatePictures(it) }
             swipeRefreshLayout.isRefreshing = false
         }
+    }
+
+    private fun onClick(list: List<Picture>, position: Int) {
+        val intent = Intent(context, ImagePagerActivity::class.java)
+        intent.putParcelableArrayListExtra(Extra.PICTURE_LIST_EXTRA, ArrayList(list))
+        intent.putExtra(Extra.PICTURE_POSITION_EXTRA, position)
+        context?.startActivity(intent)
     }
 }

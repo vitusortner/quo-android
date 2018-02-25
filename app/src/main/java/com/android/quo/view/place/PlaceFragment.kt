@@ -286,7 +286,7 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
         // TODO else show placeholder https://app.clickup.com/751518/751948/t/w5hm
         val imageUrl = place?.titlePicture ?: ""
 
-        Glide.with(this.context)
+        imageLoader
             .load(imageUrl)
             .into(imageView)
 

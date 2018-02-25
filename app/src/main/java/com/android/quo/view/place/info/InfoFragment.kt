@@ -32,7 +32,7 @@ class InfoFragment : BaseFragment(R.layout.fragment_info) {
             .into(imageView)
 
         place?.let {
-            recyclerView.adapter = InfoAdapter(it)
+            recyclerView.adapter = InfoAdapter(imageLoader, it)
             recyclerView.layoutManager = LinearLayoutManager(context)
         }
     }

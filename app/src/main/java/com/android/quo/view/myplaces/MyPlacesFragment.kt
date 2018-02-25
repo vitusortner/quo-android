@@ -31,7 +31,7 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
         super.onCreate(savedInstanceState)
         activity?.bottomNavigationView?.visibility = View.VISIBLE
 
-        adapter = PlacePreviewAdapter { HomeFragment.onClick(it, fragmentManager) }
+        adapter = PlacePreviewAdapter(imageLoader) { HomeFragment.onClick(it, fragmentManager) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

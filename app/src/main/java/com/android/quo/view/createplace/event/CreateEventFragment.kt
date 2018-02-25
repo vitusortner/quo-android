@@ -106,7 +106,6 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
                 CreatePlace.place.title = eventNameEditText.text.toString()
             })
 
-
         /**
          * will show the calendar view
          */
@@ -178,7 +177,9 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
                         null
                     )
                     sheetView?.let {
-                        val adapter = EventDefaultImagesAdapter(headerImageView)
+                        val adapter = EventDefaultImagesAdapter { drawable, position ->
+                            onClick(drawable, position)
+                        }
                         it.defaultImageListView.adapter = adapter
                         val layoutManager = LinearLayoutManager(context)
                         layoutManager.orientation = LinearLayout.HORIZONTAL
@@ -610,5 +611,10 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
                 ).absolutePath + Constants.IMAGE_DIR
             )
             .compressToFile(file)
+    }
+
+    private fun onClick(drawable: Drawable, position: Int) {
+        CreatePlace.place.titlePicture = "quo_default_${position + 1}.png"
+        headerImageView.setImageDrawable(drawable)
     }
 }

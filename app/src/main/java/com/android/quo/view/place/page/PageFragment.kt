@@ -25,7 +25,7 @@ class PageFragment : BaseFragment(R.layout.fragment_place_page) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = PageAdapter()
+        adapter = PageAdapter(imageLoader)
         placeId = arguments?.getString(Extra.PLACE_ID_EXTRA)
     }
 

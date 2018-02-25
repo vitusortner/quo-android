@@ -30,27 +30,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     private lateinit var adapter: PlacePreviewAdapter
 
-    companion object {
-
-        fun onClick(place: Place, fragmentManager: FragmentManager?) {
-            val bundle = Bundle()
-            bundle.putParcelable(Constants.Extra.PLACE_EXTRA, place)
-            val fragment = PlaceFragment()
-            fragment.arguments = bundle
-
-            fragmentManager?.addFragment(
-                fragment,
-                true,
-                R.anim.slide_in to R.anim.slide_out
-            )
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.bottomNavigationView?.visibility = VISIBLE
 
-        adapter = PlacePreviewAdapter { onClick(it, fragmentManager) }
+        adapter = PlacePreviewAdapter(imageLoader) { onClick(it, fragmentManager) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,16 +54,16 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     private fun setupToolbar() {
         toolbar.inflateMenu(R.menu.home_menu)
         toolbar.setOnMenuItemClickListener { item ->
-            when (item.title) {
-                resources.getString(R.string.menu_settings) -> {
+            when (item.itemId) {
+                R.id.settings -> {
                 }
-                resources.getString(R.string.menu_help) -> {
+                R.id.help -> {
                 }
-                resources.getString(R.string.menu_info) -> {
+                R.id.info -> {
                 }
-                resources.getString(R.string.menu_logout) -> {
+                R.id.logout -> {
                     viewModel.logout()
-                    val intent = Intent(this.context, LoginActivity::class.java)
+                    val intent = Intent(context, LoginActivity::class.java)
                     startActivity(intent)
                 }
             }
@@ -105,6 +89,22 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.updatePlaces()
             swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    companion object {
+
+        fun onClick(place: Place, fragmentManager: FragmentManager?) {
+            val bundle = Bundle()
+            bundle.putParcelable(Constants.Extra.PLACE_EXTRA, place)
+            val fragment = PlaceFragment()
+            fragment.arguments = bundle
+
+            fragmentManager?.addFragment(
+                fragment,
+                true,
+                R.anim.slide_in to R.anim.slide_out
+            )
         }
     }
 }
