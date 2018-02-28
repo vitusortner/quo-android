@@ -21,7 +21,7 @@ class LoginViewModel(
     BaseViewModel() {
 
     fun sendEmailToUser(email: String): Boolean {
-        //TODO check if email exist
+        //TODO permissionGranted if email exist
         //TODO send email to user
         //TODO return true or false after email send
         return true
@@ -99,10 +99,8 @@ class LoginViewModel(
             .addTo(compositeDisposable)
     }
 
-    fun validateLoginState(openLogin: () -> Unit) =
+    fun validateLoginState(onSuccess: () -> Unit, onError: () -> Unit) =
         AsyncTask.execute {
-            if (userRepository.getUser() == null) {
-                openLogin()
-            }
+            if (userRepository.getUser() == null) onError() else onSuccess()
         }
 }

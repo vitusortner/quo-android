@@ -6,21 +6,20 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
+import com.android.quo.util.extension.addTo
+import com.android.quo.view.BaseActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
 import kotlinx.android.synthetic.main.activity_login.emailEditText
 import kotlinx.android.synthetic.main.activity_login.emailWrapper
@@ -40,12 +39,11 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Jung on 09.11.17.
  */
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private val viewModel by viewModel<LoginViewModel>()
 
     private lateinit var callbackManager: CallbackManager
-    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,47 +52,29 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
 
         handleFacebookLogin()
-
         validateLoginEmail()
-
         validateLoginPassword()
 
-        registerSignupButton()
-
-        registerLoginButton()
-
-        registerForgotPasswordButton()
+        setupButtons()
     }
 
-    private fun registerForgotPasswordButton() {
-        compositeDisposable.add(
-            RxView.clicks(clickableForgotPasswordTextView)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ openDialogForgotPassword() })
-        )
+    private fun setupButtons() {
+        clickableForgotPasswordTextView.setOnClickListener { openDialogForgotPassword() }
+
+        loginButton.setOnClickListener {
+            if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
+                val email = emailEditText.text.toString()
+                val password = passwordEditText.text.toString()
+                login(email, password)
+            }
+        }
+
+        signUpButton.setOnClickListener { openDialogSignUp() }
     }
 
-    private fun registerLoginButton() {
-        compositeDisposable.add(RxView.clicks(loginButton)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                if (emailWrapper.error.isNullOrEmpty() && passwordWrapper.error.isNullOrEmpty()) {
-                    val email = emailEditText.text.toString()
-                    val password = passwordEditText.text.toString()
 
-                    login(email, password)
-                }
-            })
-    }
-
-    private fun registerSignupButton() {
-        compositeDisposable.add(RxView.clicks(signUpButton)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { openDialogSignUp() })
-    }
-
-    private fun validateLoginPassword() {
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(passwordEditText)
+    private fun validateLoginPassword() =
+        RxTextView.afterTextChangeEvents(passwordEditText)
             .skipInitialValue()
             .map {
                 passwordWrapper.error = null
@@ -110,11 +90,11 @@ class LoginActivity : AppCompatActivity() {
                 )
             })
             .subscribe()
-        )
-    }
+            .addTo(compositeDisposable)
 
-    private fun validateLoginEmail() {
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(emailEditText)
+
+    private fun validateLoginEmail() =
+        RxTextView.afterTextChangeEvents(emailEditText)
             .skipInitialValue()
             .map {
                 emailWrapper.error = null
@@ -131,8 +111,7 @@ class LoginActivity : AppCompatActivity() {
                 )
             })
             .subscribe()
-        )
-    }
+            .addTo(compositeDisposable)
 
     private fun handleFacebookLogin() {
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -169,11 +148,6 @@ class LoginActivity : AppCompatActivity() {
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
-    }
-
     /**
      * dialog forgot password
      */
@@ -183,7 +157,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.setTitle(resources.getString(R.string.forgot_password))
         dialog.setView(dialogView)
 
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.emailEditText)
+        RxTextView.afterTextChangeEvents(dialogView.emailEditText)
             .skipInitialValue()
             .map {
                 dialogView.emailWrapper.error = null
@@ -199,20 +173,17 @@ class LoginActivity : AppCompatActivity() {
                 )
             })
             .subscribe()
-        )
+            .addTo(compositeDisposable)
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            compositeDisposable.add(
-                RxView.clicks(buttonNext)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (dialogView.emailWrapper.error.isNullOrEmpty()) {
-                            dialog.dismiss()
-                            openDialogPasswordResetFinished()
-                        }
-                    })
-            )
+
+            buttonNext.setOnClickListener {
+                if (dialogView.emailWrapper.error.isNullOrEmpty()) {
+                    dialog.dismiss()
+                    openDialogPasswordResetFinished()
+                }
+            }
         })
 
         dialog.setButton(
@@ -256,8 +227,8 @@ class LoginActivity : AppCompatActivity() {
             dialogView.passwordSignUpEditText.text = passwordEditText.text
         }
 
-        //check if email is validate
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.emailSignUpEditText)
+        //permissionGranted if email is valid
+        RxTextView.afterTextChangeEvents(dialogView.emailSignUpEditText)
             .skipInitialValue()
             .map {
                 dialogView.emailWrapper.error = null
@@ -273,10 +244,10 @@ class LoginActivity : AppCompatActivity() {
                 )
             })
             .subscribe()
-        )
+            .addTo(compositeDisposable)
 
-        //check if password is validate
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(dialogView.passwordSignUpEditText)
+        //permissionGranted if password is valid
+        RxTextView.afterTextChangeEvents(dialogView.passwordSignUpEditText)
             .skipInitialValue()
             .map {
                 dialogView.passwordWrapper.error = null
@@ -292,24 +263,21 @@ class LoginActivity : AppCompatActivity() {
                 )
             })
             .subscribe()
-        )
+            .addTo(compositeDisposable)
 
         dialog.setOnShowListener({ dialog ->
             val buttonNext = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            compositeDisposable.add(RxView.clicks(buttonNext)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (dialogView.agreementCheckbox.isChecked) {
-                        dialog.dismiss()
 
-                        val email = dialogView.emailSignUpEditText.text.toString()
-                        val password = dialogView.passwordSignUpEditText.text.toString()
-
-                        signup(email, password)
-                    } else {
-                        dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
-                    }
-                })
+            buttonNext.setOnClickListener {
+                if (dialogView.agreementCheckbox.isChecked) {
+                    dialog.dismiss()
+                    val email = dialogView.emailSignUpEditText.text.toString()
+                    val password = dialogView.passwordSignUpEditText.text.toString()
+                    signup(email, password)
+                } else {
+                    dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
+                }
+            }
         })
 
         dialog.setButton(
@@ -348,7 +316,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -359,7 +326,11 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 }

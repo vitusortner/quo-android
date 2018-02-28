@@ -2,26 +2,28 @@ package com.android.quo.view.createplace
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.android.quo.R
+import com.android.quo.db.entity.User
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerSettings
+import com.android.quo.util.Constants
+import com.android.quo.util.Constants.QR_CODE_DIM
+import com.android.quo.util.Constants.QR_CODE_URI
+import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
 import com.android.quo.util.CreatePlace
+import com.android.quo.util.extension.createAndReplaceFragment
+import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.view.BaseFragment
 import com.android.quo.view.createplace.qrcode.QrCodeFragment
 import com.android.quo.viewmodel.CreatePlaceViewModel
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
-import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_place.createPlaceViewPager
 import kotlinx.android.synthetic.main.fragment_create_place.tabLayout
 import kotlinx.android.synthetic.main.fragment_place.toolbar
@@ -35,13 +37,7 @@ import java.sql.Timestamp
  */
 class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
-    private val viewModel by viewModel<CreatePlaceViewModel>()
-
-    private val compositDisposable = CompositeDisposable()
-
-    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 102
-
-    lateinit var place: ServerPlace
+    private val viewModel by viewModel<CreatePlaceViewModel>(false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,52 +57,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
             PERMISSION_REQUEST_EXTERNAL_STORAGE
         )
 
-        // TODO nicer plz
-        generateQrCodeObservable()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
-    }
-
-    /**
-     * change status bar and status bar text color
-     */
-    private fun setupStatusBar() {
-        activity?.window?.decorView?.systemUiVisibility = 0
-        activity?.window?.statusBarColor = resources.getColor(R.color.colorSysBarCreatePlace)
-    }
-
-    private fun setupToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_back)
-        toolbar.inflateMenu(R.menu.create_place_menu)
-        toolbar.title = getString(R.string.new_place)
-        toolbar.setTitleTextColor(resources.getColor(R.color.colorTextWhite))
-
-        compositDisposable.add(
-            RxToolbar.navigationClicks(toolbar)
-                .subscribe {
-                    activity?.onBackPressed()
-                }
-        )
-
-        compositDisposable.add(
-            RxToolbar.itemClicks(toolbar)
-                .subscribe {
-                    if (!CreatePlace.place.titlePicture.isNullOrEmpty() && !CreatePlace.place.title.isNullOrEmpty()
-                        && !CreatePlace.place.latitude.isNaN() && !CreatePlace.place.longitude.isNaN()
-                        && !CreatePlace.place.description.isNullOrEmpty()) {
-
-                        viewModel.savePlace()
-                        fragmentManager?.beginTransaction()
-                            ?.replace(R.id.content, QrCodeFragment())
-                            ?.addToBackStack(null)
-                            ?.commit()
-
-                    } else {
-                        //TODO composit message please fill required boxes
-                    }
-                }
-        )
+        AsyncTask.execute { generateQrCode() }
     }
 
     override fun onRequestPermissionsResult(
@@ -117,22 +68,16 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
-                this.context?.let {
-                    val result = ContextCompat.checkSelfPermission(
-                        it,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                    if (result == PackageManager.PERMISSION_DENIED) {
-                        fragmentManager?.popBackStack()
-                    }
-                }
+                context
+                    ?.permissionsGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    ?.takeIf { !it }
+                    ?.run { fragmentManager?.popBackStack() }
             }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         for (fragment in childFragmentManager.fragments) {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
@@ -145,20 +90,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
     override fun onStop() {
         super.onStop()
-
-        activity?.window?.let { window ->
-            this.context?.let { context ->
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    window.statusBarColor =
-                            ContextCompat.getColor(context, R.color.colorPrimaryDark)
-                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                } else {
-                    window.statusBarColor =
-                            ContextCompat.getColor(context, R.color.colorStatusBarSdkPre23)
-                }
-            }
-        }
-        activity?.window?.statusBarColor = resources.getColor(R.color.colorPrimaryDark)
+        resetStatusBar()
     }
 
     override fun onDestroy() {
@@ -175,32 +107,83 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
             qrCodeId = "",
             timestamp = ""
         )
-        compositDisposable.dispose()
     }
 
-    private fun generateQrCodeObservable(): Observable<Bitmap> {
-        return Observable.create {
-            val timestamp = Timestamp(System.currentTimeMillis())
+    private fun setupStatusBar() =
+        activity?.window?.apply {
+            decorView.systemUiVisibility = 0
+            statusBarColor = resources.getColor(R.color.colorSysBarCreatePlace)
+        }
 
-            viewModel.getUser()?.let {
-                val qrCodeId =
-                    String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + it.id)))
-                val uri = "quo://" + qrCodeId
-                val width = 1024
-                val height = 1024
-                val multiFormatWriter = MultiFormatWriter()
-                val bm = multiFormatWriter.encode(uri, BarcodeFormat.QR_CODE, width, height)
-                val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    private fun setupToolbar() =
+        toolbar.apply {
+            setNavigationIcon(R.drawable.ic_back)
+            inflateMenu(R.menu.create_place_menu)
+            title = getString(R.string.new_place)
+            setTitleTextColor(resources.getColor(R.color.colorTextWhite))
 
-                for (x in 0 until width) {
-                    for (y in 0 until height) {
-                        imageBitmap.setPixel(x, y, if (bm.get(x, y)) Color.BLACK else Color.WHITE)
-                    }
+            setNavigationOnClickListener { activity?.onBackPressed() }
+
+            setOnMenuItemClickListener {
+                if (!CreatePlace.place.titlePicture.isNullOrEmpty() && !CreatePlace.place.title.isEmpty()
+                    && !CreatePlace.place.latitude.isNaN() && !CreatePlace.place.longitude.isNaN()
+                    && !CreatePlace.place.description.isNullOrEmpty()) {
+
+                    viewModel.savePlace(CreatePlace.place)
+
+                    fragmentManager?.createAndReplaceFragment(
+                        Constants.FragmentTag.QR_CODE_FRAGMENT,
+                        QrCodeFragment::class.java,
+                        addToBackStack = true
+                    )
+                } else {
+                    //TODO message please fill required boxes
                 }
-
-                CreatePlace.place.qrCodeId = qrCodeId
-                CreatePlace.qrCodeImage = imageBitmap
+                true
             }
         }
+
+    private fun resetStatusBar() =
+        activity?.window?.apply {
+            context?.let { context ->
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    statusBarColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    statusBarColor = ContextCompat.getColor(context, R.color.colorStatusBarSdkPre23)
+                }
+            }
+            statusBarColor = resources.getColor(R.color.colorPrimaryDark)
+        }
+
+    private fun generateQrCode() =
+        viewModel.getUser()?.let {
+            val qrCodeId = generateQrCodeId(it)
+            val imageBitmap = generateQrCodeBitmap(qrCodeId)
+
+            CreatePlace.place.qrCodeId = qrCodeId
+            CreatePlace.qrCodeImage = imageBitmap
+        }
+
+    private fun generateQrCodeId(user: User): String {
+        val timestamp = Timestamp(System.currentTimeMillis())
+        return String(Hex.encodeHex(DigestUtils.md5(timestamp.toString() + user.id)))
+    }
+
+    private fun generateQrCodeBitmap(qrCodeId: String): Bitmap {
+        val uri = QR_CODE_URI + qrCodeId
+        val width = QR_CODE_DIM
+        val height = QR_CODE_DIM
+        val bitMatrix =
+            MultiFormatWriter().encode(uri, BarcodeFormat.QR_CODE, width, height)
+        val imageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val color = if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE
+                imageBitmap.setPixel(x, y, color)
+            }
+        }
+        return imageBitmap
     }
 }

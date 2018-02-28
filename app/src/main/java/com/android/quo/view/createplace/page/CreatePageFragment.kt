@@ -3,7 +3,6 @@ package com.android.quo.view.createplace.page
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -12,7 +11,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.view.Gravity.TOP
 import android.view.View
@@ -26,11 +24,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.network.model.ServerComponent
+import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
+import com.android.quo.util.Constants.Request.CREATE_PAGE_REQUEST_GALLERY
 import com.android.quo.util.CreatePlace.components
+import com.android.quo.util.extension.addTo
+import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.view.BaseFragment
 import com.jakewharton.rxbinding2.widget.RxTextView
 import id.zelory.compressor.Compressor
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
 import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewLayout
@@ -44,10 +45,7 @@ import java.io.File
  */
 class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
 
-    private var compositeDisposable = CompositeDisposable()
-    private val RESULT_GALLERY = 2
-    private val PERMISSION_REQUEST_EXTERNAL_STORAGE = 101
-
+    // TODO wtf make this nice
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -73,14 +71,14 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
                 )
             )
 
-            compositeDisposable.add(RxTextView.afterTextChangeEvents(editText)
-                .subscribe {
+            RxTextView.afterTextChangeEvents(editText)
+                .subscribe { event ->
                     components
-                        .filter { c -> c.position == it.view().getTag(id) }
-                        .forEach { c ->
-                            c.text = it.view().text.toString()
-                        }
-                })
+                        .filter { component -> component.position == event.view().getTag(id) }
+                        .forEach { component -> component.text = event.view().text.toString() }
+                }
+                .addTo(compositeDisposable)
+
             pagePreviewLayout.visibility = GONE
         }
 
@@ -92,6 +90,7 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
         roundGalleryButton.setOnClickListener {
             roundEditButton.visibility = GONE
             roundGalleryButton.visibility = GONE
+
             requestPermissions(
                 arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -108,7 +107,7 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
     }
 
     private fun createCardView(view: View): CardView? {
-        this.context?.let { context ->
+        context?.let { context ->
             val layoutParams = LinearLayout.LayoutParams(
                 MATCH_PARENT,
                 MATCH_PARENT
@@ -126,7 +125,7 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
     private fun createEditText(): EditText {
         val layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         layoutParams.setMargins(10, 10, 10, 10)
-        val editText = EditText(this.context)
+        val editText = EditText(context)
         editText.layoutParams = layoutParams
         editText.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
         editText.gravity = TOP
@@ -140,45 +139,39 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
 
     private fun createImageView(drawable: Drawable): ImageView {
         val layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, 600)
-        val imageView = ImageView(this.context)
+        val imageView = ImageView(context)
         imageView.layoutParams = layoutParams
         imageView.setImageDrawable(drawable)
         return imageView
-
     }
 
-    /**
-     * open the phone gallery to select the header image
-     */
-    private fun openPhoneGallery() {
-
-        val galleryIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-
-        activity?.startActivityForResult(galleryIntent, RESULT_GALLERY)
-    }
+    private fun openPhoneGallery() =
+        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).let {
+            activity?.startActivityForResult(it, CREATE_PAGE_REQUEST_GALLERY)
+        }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         try {
             if (resultCode != Activity.RESULT_CANCELED) {
-                if (requestCode == RESULT_GALLERY) {
-                    val selectedImageUri = data?.data
-
-                    val compressedImage = compressImage(File(selectedImageUri?.let { getPath(it) }))
-                    val bitmap = BitmapFactory.decodeFile(compressedImage.absolutePath)
-                    val bitmapDrawable = BitmapDrawable(resources, bitmap)
-                    pagePreviewLayout.visibility = GONE
-                    generatedLayout.addView(createCardView(createImageView(bitmapDrawable)))
-                    components.add(
-                        ServerComponent(
-                            null,
-                            compressedImage.absolutePath,
-                            null,
-                            generatedLayout.childCount - 1
+                when (requestCode) {
+                    CREATE_PAGE_REQUEST_GALLERY -> {
+                        val selectedImageUri = data?.data
+                        // TODO reactive
+                        val compressedImage =
+                            compressImage(File(selectedImageUri?.let { getPath(it) }))
+                        val bitmap = BitmapFactory.decodeFile(compressedImage.absolutePath)
+                        val bitmapDrawable = BitmapDrawable(resources, bitmap)
+                        pagePreviewLayout.visibility = GONE
+                        generatedLayout.addView(createCardView(createImageView(bitmapDrawable)))
+                        components.add(
+                            ServerComponent(
+                                id = null,
+                                picture = compressedImage.absolutePath,
+                                text = null,
+                                position = generatedLayout.childCount - 1
+                            )
                         )
-                    )
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -209,15 +202,13 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
     }
 
     private fun compressImage(file: File): File {
-        return Compressor(this.context)
+        return Compressor(context)
             .setMaxWidth(640)
             .setMaxHeight(480)
             .setQuality(75)
             .setCompressFormat(Bitmap.CompressFormat.JPEG)
             .setDestinationDirectoryPath(
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES
-                ).absolutePath + "/Quo"
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Quo"
             )
             .compressToFile(file)
     }
@@ -230,17 +221,11 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
-                this.context?.let {
-                    val result = ContextCompat.checkSelfPermission(
-                        it,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
-                    if (result == PackageManager.PERMISSION_GRANTED) {
-                        openPhoneGallery()
-                    }
-                }
+                context
+                    ?.permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    ?.takeIf { it }
+                    ?.run { openPhoneGallery() }
             }
         }
     }
-
 }

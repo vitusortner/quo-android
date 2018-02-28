@@ -34,9 +34,7 @@ class ImageFragment : BaseFragment(R.layout.fragment_gallery_image) {
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_back)
 
-        toolbar.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
+        toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         // handle tap on image
         imageView.controller.setOnGesturesListener(object : GestureController.OnGestureListener {

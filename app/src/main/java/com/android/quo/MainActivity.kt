@@ -4,15 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.android.quo.R.id.actionHome
 import com.android.quo.R.id.actionPlaces
 import com.android.quo.R.id.actionQrCode
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants.Extra
-import com.android.quo.util.Constants.FragmentTag
+import com.android.quo.util.Constants.FragmentTag.HOME_FRAGMENT
+import com.android.quo.util.Constants.FragmentTag.MY_PLACES_FRAGMENT
+import com.android.quo.util.Constants.FragmentTag.PLACE_FRAGMENT
 import com.android.quo.util.extension.createAndReplaceFragment
+import com.android.quo.view.BaseActivity
 import com.android.quo.view.home.HomeFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.myplaces.MyPlacesFragment
@@ -22,7 +24,7 @@ import com.android.quo.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import org.koin.android.architecture.ext.viewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private val viewModel by viewModel<LoginViewModel>()
 
@@ -44,32 +46,38 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         validateLoginState()
     }
 
-    private fun validateLoginState() {
-        viewModel.validateLoginState {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
-    }
+    private fun validateLoginState() =
+        viewModel.validateLoginState(
+            onSuccess = {
+                log.i("User logged in")
+            },
+            onError = {
+                Intent(this, LoginActivity::class.java).let {
+                    startActivity(it)
+                }
+            }
+        )
 
-    /**
-     * get place object from intent and hand it over to the place fragment
-     * start place fragment
-     */
     override fun onNewIntent(intent: Intent) {
         intent.getParcelableExtra<Place>(Extra.PLACE_EXTRA)?.let { place ->
+            log.d("PLACE: $place")
+
             val bundle = Bundle()
             bundle.putParcelable(Extra.PLACE_EXTRA, place)
+
             val fragment = PlaceFragment()
             fragment.arguments = bundle
 
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.content, fragment)
-                .addToBackStack(null)
-                .commit()
+            supportFragmentManager.createAndReplaceFragment(
+                PLACE_FRAGMENT,
+                PlaceFragment::class.java,
+                bundle,
+                true,
+                allowingStateLoss = true
+            )
         }
     }
 
@@ -83,14 +91,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 actionHome -> {
                     supportFragmentManager.createAndReplaceFragment(
-                        FragmentTag.HOME_FRAGMENT,
+                        HOME_FRAGMENT,
                         HomeFragment::class.java
                     )
                     true
                 }
                 actionPlaces -> {
                     supportFragmentManager.createAndReplaceFragment(
-                        FragmentTag.MY_PLACES_FRAGMENT,
+                        MY_PLACES_FRAGMENT,
                         MyPlacesFragment::class.java
                     )
                     true
@@ -109,7 +117,6 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         for (fragment in supportFragmentManager.fragments) {
             fragment.onActivityResult(requestCode, resultCode, data)
         }

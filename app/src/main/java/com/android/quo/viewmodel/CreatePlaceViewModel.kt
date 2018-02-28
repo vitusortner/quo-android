@@ -33,12 +33,12 @@ class CreatePlaceViewModel(
 ) :
     BaseViewModel() {
 
-    fun savePlace() =
+    fun savePlace(place: ServerPlace) =
         userRepository.getUserSingle()
             .subscribeOnIo()
             .flatMap {
                 CreatePlace.place.host = it.id
-                placeRepository.addPlace(CreatePlace.place)
+                placeRepository.addPlace(place)
             }
             .subscribe(
                 {
@@ -173,6 +173,7 @@ class CreatePlaceViewModel(
                 .addTo(compositeDisposable)
         }
 
+    // TODO nicer plz
     private fun saveQrCode(bitmap: Bitmap, qrCodeId: String?): String {
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
@@ -193,4 +194,3 @@ class CreatePlaceViewModel(
 
     fun getUser() = userRepository.getUser()
 }
-
