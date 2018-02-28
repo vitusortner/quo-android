@@ -76,7 +76,7 @@ class MainActivity : BaseActivity() {
                 PlaceFragment::class.java,
                 bundle,
                 true,
-                allowingStateLoss = true
+                allowStateLoss = true
             )
         }
     }

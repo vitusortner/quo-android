@@ -7,6 +7,7 @@ import com.android.quo.repository.ComponentRepository
 import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * Created by vitusortner on 19.11.17.
@@ -27,9 +28,9 @@ class PageViewModel(private val componentRepository: ComponentRepository) : Base
             .filter { it.isNotEmpty() }
             .map { it.sortedBy { it.position } }
             .observeOnUi()
-            .subscribe(
-                { components.value = it },
-                { log.e("Error while loading components.", it) }
+            .subscribeBy(
+                onNext = { components.value = it },
+                onError = { log.e("Error while loading components.", it) }
             )
             .addTo(compositeDisposable)
     }

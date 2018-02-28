@@ -8,6 +8,7 @@ import com.android.quo.service.UploadService
 import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.subscribeBy
 import java.io.File
 
 /**
@@ -27,14 +28,7 @@ class PlaceViewModel(
             .map { createServerPicture(it, placeId, image.path) }
             .flatMap { pictureRepository.addPicture(placeId, it) }
             .observeOnUi()
-            .subscribe(
-                {
-                    // picture added
-                },
-                {
-                    // error
-                }
-            )
+            .subscribe()
             .addTo(compositeDisposable)
 
     private fun createServerPicture(user: User, placeId: String, imagePath: String) =

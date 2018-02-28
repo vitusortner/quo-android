@@ -15,6 +15,7 @@ import com.android.quo.util.Constants
 import com.android.quo.util.CreatePlace
 import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.subscribeBy
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -40,12 +41,14 @@ class CreatePlaceViewModel(
                 CreatePlace.place.host = it.id
                 placeRepository.addPlace(place)
             }
-            .subscribe(
-                {
+            .subscribeBy(
+                onSuccess = {
                     addQrCode(it)
                     addTitlePicture(it)
                 },
-                { log.e("Error while saving place", it) }
+                onError = {
+                    log.e("Error while saving place", it)
+                }
             )
 
     private fun addTitlePicture(place: ServerPlace) =
@@ -80,9 +83,9 @@ class CreatePlaceViewModel(
                 place.titlePicture = it.path
                 placeRepository.updatePlace(placeId, place)
             }
-            .subscribe(
-                { addComponents(it) },
-                { log.e("Error", it) }
+            .subscribeBy(
+                onSuccess = { addComponents(it) },
+                onError = { log.e("Error while uploading custom title picture", it) }
             )
             .addTo(compositeDisposable)
 
@@ -97,9 +100,9 @@ class CreatePlaceViewModel(
                 place.titlePicture = it.path
                 placeRepository.updatePlace(placeId, place)
             }
-            .subscribe(
-                { addComponents(it) },
-                { log.e("Error while adding default picture", it) }
+            .subscribeBy(
+                onSuccess = { addComponents(it) },
+                onError = { log.e("Error while adding default picture", it) }
             )
             .addTo(compositeDisposable)
 
@@ -131,18 +134,18 @@ class CreatePlaceViewModel(
                 component.picture = serverPicture.src
                 componentRepository.addComponent(serverPicture.placeId, component)
             }
-            .subscribe(
-                { log.i("Success uploading image component $it") },
-                { log.e("Error uploading image component", it) }
+            .subscribeBy(
+                onSuccess = { log.i("Success uploading image component $it") },
+                onError = { log.e("Error uploading image component", it) }
             )
             .addTo(compositeDisposable)
 
     private fun uploadTextComponent(placeId: String, component: ServerComponent) =
         componentRepository.addComponent(placeId, component)
             .subscribeOnIo()
-            .subscribe(
-                { log.i("Success uploading text component $it") },
-                { log.e("Error uploading text component", it) }
+            .subscribeBy(
+                onSuccess = { log.i("Success uploading text component $it") },
+                onError = { log.e("Error uploading text component", it) }
             )
             .addTo(compositeDisposable)
 
@@ -166,9 +169,9 @@ class CreatePlaceViewModel(
                     place.qrCode = it.path
                     placeRepository.updatePlace(placeId, place)
                 }
-                .subscribe(
-                    { log.i("QR Code uploaded and added to place $it") },
-                    { log.e("Error while uploading and adding QR Code to place", it) }
+                .subscribeBy(
+                    onSuccess = { log.i("QR Code uploaded and added to place $it") },
+                    onError = { log.e("Error while uploading and adding QR Code to place", it) }
                 )
                 .addTo(compositeDisposable)
         }

@@ -12,6 +12,7 @@ import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import com.android.quo.util.extension.toDate
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * Created by vitusortner on 06.12.17.
@@ -38,9 +39,9 @@ class HomeViewModel(
             .filter { it.isNotEmpty() }
             .map { it.sortedByDescending { it.lastScanned.toDate() } }
             .observeOnUi()
-            .subscribe(
-                { places.value = it },
-                { log.e("Error while getting visited places: $it") }
+            .subscribeBy(
+                onNext = { places.value = it },
+                onError = { log.e("Error while getting visited places: $it") }
             )
             .addTo(compositeDisposable)
 

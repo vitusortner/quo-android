@@ -9,6 +9,7 @@ import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * Created by vitusortner on 11.12.17.
@@ -31,9 +32,9 @@ class QrCodeScannerViewModel(
             .subscribeOnIo()
             .flatMapFlowable { placeRepository.getPlace(qrCodeId, it.id) }
             .observeOnUi()
-            .subscribe(
-                { place.value = it },
-                { log.e("Error while getting place: $it") }
+            .subscribeBy(
+                onNext = { place.value = it },
+                onError = { log.e("Error while getting place: $it") }
             )
             .addTo(compositeDisposable)
 

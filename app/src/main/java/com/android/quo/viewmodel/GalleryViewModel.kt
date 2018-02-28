@@ -8,6 +8,7 @@ import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import com.android.quo.util.extension.toDate
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * Created by vitusortner on 09.12.17.
@@ -28,9 +29,9 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : BaseV
             .filter { it.isNotEmpty() }
             .map { it.sortedByDescending { it.timestamp.toDate() } }
             .observeOnUi()
-            .subscribe(
-                { pictures.value = it },
-                { log.e("Error while loading pictures", it) }
+            .subscribeBy(
+                onNext = { pictures.value = it },
+                onError = { log.e("Error while loading pictures", it) }
             )
             .addTo(compositeDisposable)
 

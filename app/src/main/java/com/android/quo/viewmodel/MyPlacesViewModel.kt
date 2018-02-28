@@ -10,6 +10,7 @@ import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import com.android.quo.util.extension.toDate
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * Created by vitusortner on 21.12.17.
@@ -35,9 +36,9 @@ class MyPlacesViewModel(
             .filter { it.isNotEmpty() }
             .map { it.sortedByDescending { it.timestamp.toDate() } }
             .observeOnUi()
-            .subscribe(
-                { places.value = it },
-                { log.e("Error while getting hosted places: $it") }
+            .subscribeBy(
+                onNext = { places.value = it },
+                onError = { log.e("Error while getting hosted places: $it") }
             )
             .addTo(compositeDisposable)
 }

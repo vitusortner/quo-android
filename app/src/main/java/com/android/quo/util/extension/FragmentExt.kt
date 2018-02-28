@@ -16,7 +16,7 @@ fun <T : Fragment> FragmentManager.createAndReplaceFragment(
     bundle: Bundle? = null,
     addToBackStack: Boolean = false,
     animations: Pair<Int, Int>? = null,
-    allowingStateLoss: Boolean = false
+    allowStateLoss: Boolean = false
 ) {
     val fragment = findFragmentByTag(tag) ?: clazz.newInstance()
     bundle?.let { fragment.arguments = it }
@@ -24,7 +24,7 @@ fun <T : Fragment> FragmentManager.createAndReplaceFragment(
         .apply { animations?.let { setCustomAnimations(animations.first, animations.second) } }
         .replace(R.id.content, fragment, tag)
         .apply { if (addToBackStack) addToBackStack(null) }
-        .apply { if (allowingStateLoss) commitAllowingStateLoss() else commit() }
+        .apply { if (allowStateLoss) commitAllowingStateLoss() else commit() }
 }
 
 fun FragmentManager.addFragment(

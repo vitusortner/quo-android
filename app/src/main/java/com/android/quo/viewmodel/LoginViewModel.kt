@@ -10,6 +10,7 @@ import com.android.quo.util.extension.subscribeOnIo
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * Created by Jung on 09.11.17.
@@ -75,9 +76,11 @@ class LoginViewModel(
         authService.login(email, password)
             .subscribeOnIo()
             .observeOnUi()
-            .subscribe(
-                { callback(true) },
-                {
+            .subscribeBy(
+                onSuccess = {
+                    callback(true)
+                },
+                onError = {
                     log.e("Error while login", it)
                     callback(false)
                 }
@@ -89,9 +92,11 @@ class LoginViewModel(
         authService.signup(email, password)
             .subscribeOnIo()
             .observeOnUi()
-            .subscribe(
-                { callback(true) },
-                {
+            .subscribeBy(
+                onSuccess = {
+                    callback(true)
+                },
+                onError = {
                     log.e("Error while signup", it)
                     callback(false)
                 }
