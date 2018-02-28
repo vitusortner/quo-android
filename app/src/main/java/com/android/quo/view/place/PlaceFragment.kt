@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,19 +17,22 @@ import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Extra
+import com.android.quo.util.Constants.IMG_QUALITY
+import com.android.quo.util.Constants.MAX_IMG_DIM
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
 import com.android.quo.util.Constants.Request.REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
 import com.android.quo.util.extension.addFragment
+import com.android.quo.util.extension.compressImage
+import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
+import com.android.quo.util.extension.subscribeOnComputation
 import com.android.quo.util.extension.toPx
 import com.android.quo.view.BaseFragment
 import com.android.quo.view.place.info.InfoFragment
 import com.android.quo.viewmodel.PlaceViewModel
-import id.zelory.compressor.Compressor
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.cameraButton
 import kotlinx.android.synthetic.main.bottom_sheet_add_image.view.galleryButton
@@ -183,25 +185,6 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
         return image
     }
 
-    // TODO make this a static helper function
-    private fun compressImage(image: File, completionHandler: (File?) -> Unit) {
-        Compressor(context)
-            .setMaxWidth(640)
-            .setMaxHeight(640)
-            .setQuality(75)
-            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-            .compressToFileAsFlowable(image)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { completionHandler(it) },
-                {
-                    log.e("Error while compressing image: $it")
-                    completionHandler(null)
-                }
-            )
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
@@ -210,13 +193,17 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
                         val selectedImageUri = data?.data
                         val image = File(selectedImageUri?.let { getPath(it) })
 
-                        compressImage(image) {
-                            it?.let {
-                                viewModel.uploadImage(it, placeId)
+                        imageCompressor
+                            .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY)
+                            .subscribeOnComputation()
+                            .observeOnUi()
+                            .subscribeBy(
                                 // TODO refresh gallery
-                                bottomSheetDialog?.hide()
-                            }
-                        }
+                                // https://app.clickup.com/751518/751948/t/xazx
+                                // maybe composit completionHandler to uploadImage function and update gallery then
+                                onNext = { viewModel.uploadImage(it, placeId) },
+                                onError = { log.e("Error while compressing image: $it") }
+                            )
                     }
                 }
                 REQUEST_CAMERA -> {
@@ -224,15 +211,20 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
                         currentPhotoPath?.let {
                             val image = File(it)
 
-                            compressImage(image) {
-                                it?.let {
-                                    viewModel.uploadImage(it, placeId)
-                                    // TODO refresh gallery
-                                    // https://app.clickup.com/751518/751948/t/xazx
-                                    // maybe composit completionHandler to uploadImage function and update gallery then
-                                    bottomSheetDialog?.hide()
-                                }
-                            }
+                            imageCompressor
+                                .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY)
+                                .subscribeOnComputation()
+                                .observeOnUi()
+                                .subscribeBy(
+                                    onNext = {
+                                        // TODO refresh gallery
+                                        viewModel.uploadImage(it, placeId)
+                                        bottomSheetDialog?.hide()
+                                    },
+                                    onError = {
+                                        log.e("Error while compressing image: $it")
+                                    }
+                                )
                         }
                     }
                 }

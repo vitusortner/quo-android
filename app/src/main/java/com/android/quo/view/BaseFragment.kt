@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.util.Logger
 import com.bumptech.glide.Glide
+import id.zelory.compressor.Compressor
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -18,6 +19,8 @@ abstract class BaseFragment(@LayoutRes private val layout: Int) : Fragment() {
     val log = Logger(javaClass)
 
     val imageLoader by lazy { Glide.with(context) }
+
+    val imageCompressor by lazy { Compressor(context) }
 
     val compositeDisposable by lazy { CompositeDisposable() }
 

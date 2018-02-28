@@ -3,7 +3,6 @@ package com.android.quo.view.createplace.page
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -24,14 +23,18 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.network.model.ServerComponent
-import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
+import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Request.CREATE_PAGE_REQUEST_GALLERY
+import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
 import com.android.quo.util.CreatePlace.components
 import com.android.quo.util.extension.addTo
+import com.android.quo.util.extension.compressImage
+import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
+import com.android.quo.util.extension.subscribeOnComputation
 import com.android.quo.view.BaseFragment
 import com.jakewharton.rxbinding2.widget.RxTextView
-import id.zelory.compressor.Compressor
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout
 import kotlinx.android.synthetic.main.fragment_create_page.pagePreviewLayout
@@ -134,7 +137,6 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
         editText.setBackgroundColor(resources.getColor(R.color.colorPrimary))
         editText.setTextColor(resources.getColor(R.color.colorTextGray))
         return editText
-
     }
 
     private fun createImageView(drawable: Drawable): ImageView {
@@ -155,22 +157,49 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
             if (resultCode != Activity.RESULT_CANCELED) {
                 when (requestCode) {
                     CREATE_PAGE_REQUEST_GALLERY -> {
-                        val selectedImageUri = data?.data
-                        // TODO reactive
-                        val compressedImage =
-                            compressImage(File(selectedImageUri?.let { getPath(it) }))
-                        val bitmap = BitmapFactory.decodeFile(compressedImage.absolutePath)
-                        val bitmapDrawable = BitmapDrawable(resources, bitmap)
-                        pagePreviewLayout.visibility = GONE
-                        generatedLayout.addView(createCardView(createImageView(bitmapDrawable)))
-                        components.add(
-                            ServerComponent(
-                                id = null,
-                                picture = compressedImage.absolutePath,
-                                text = null,
-                                position = generatedLayout.childCount - 1
-                            )
-                        )
+                        data?.data?.let { imageUri ->
+                            val image = File(getPath(imageUri))
+                            val imageDir =
+                                Environment
+                                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                                    .absolutePath + Constants.IMAGE_DIR
+
+                            imageCompressor
+                                .compressImage(
+                                    image,
+                                    Constants.MAX_IMG_DIM,
+                                    Constants.MAX_IMG_DIM,
+                                    Constants.IMG_QUALITY,
+                                    imageDir
+                                )
+                                .subscribeOnComputation()
+                                .observeOnUi()
+                                .subscribeBy(
+                                    onNext = {
+                                        val bitmap = BitmapFactory.decodeFile(it.absolutePath)
+                                        val bitmapDrawable = BitmapDrawable(resources, bitmap)
+                                        pagePreviewLayout.visibility = GONE
+                                        generatedLayout.addView(
+                                            createCardView(
+                                                createImageView(
+                                                    bitmapDrawable
+                                                )
+                                            )
+                                        )
+                                        components.add(
+                                            ServerComponent(
+                                                id = null,
+                                                picture = it.absolutePath,
+                                                text = null,
+                                                position = generatedLayout.childCount - 1
+                                            )
+                                        )
+                                    },
+                                    onError = {
+                                        log.e("Error while compressing image", it)
+                                    }
+                                )
+                        }
                     }
                 }
             }
@@ -199,18 +228,6 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
             result = getString(R.string.not_found)
         }
         return result as String
-    }
-
-    private fun compressImage(file: File): File {
-        return Compressor(context)
-            .setMaxWidth(640)
-            .setMaxHeight(480)
-            .setQuality(75)
-            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-            .setDestinationDirectoryPath(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Quo"
-            )
-            .compressToFile(file)
     }
 
     override fun onRequestPermissionsResult(

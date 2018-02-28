@@ -28,9 +28,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.dataclass.DateTime
-import com.android.quo.util.Constants
 import com.android.quo.util.Constants.DEFAULT_IMG
 import com.android.quo.util.Constants.IMAGE_DIR
+import com.android.quo.util.Constants.IMG_QUALITY
+import com.android.quo.util.Constants.MAX_IMG_DIM
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_GPS
@@ -38,15 +39,15 @@ import com.android.quo.util.Constants.Request.REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
 import com.android.quo.util.CreatePlace
 import com.android.quo.util.extension.addTo
+import com.android.quo.util.extension.compressImage
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
+import com.android.quo.util.extension.subscribeOnComputation
 import com.android.quo.view.BaseFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
-import id.zelory.compressor.Compressor
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventNameEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView
@@ -374,9 +375,14 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
                     REQUEST_GALLERY -> {
                         val selectedImageUri = data?.data
                         val image = File(selectedImageUri?.let { getPath(it) })
+                        val imageDir =
+                            Environment
+                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                                .absolutePath + IMAGE_DIR
 
-                        compressImage(image)
-                            .subscribeOn(Schedulers.computation())
+                        imageCompressor
+                            .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY, imageDir)
+                            .subscribeOnComputation()
                             .map {
                                 CreatePlace.place.titlePicture = it.absolutePath
                                 BitmapFactory.decodeFile(it.absolutePath)
@@ -522,19 +528,6 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
         }
         currentEditText.setText(sdf.format(calendar.time))
     }
-
-    private fun compressImage(file: File) =
-        Compressor(context)
-            .setMaxWidth(Constants.MAX_IMG_DIM)
-            .setMaxHeight(Constants.MAX_IMG_DIM)
-            .setQuality(Constants.IMG_QUALITY)
-            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-            .setDestinationDirectoryPath(
-                Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                    .absolutePath + IMAGE_DIR
-            )
-            .compressToFileAsFlowable(file)
 
     private fun onClick(drawable: Drawable, position: Int) {
         CreatePlace.place.titlePicture = "quo_default_${position + 1}.png"

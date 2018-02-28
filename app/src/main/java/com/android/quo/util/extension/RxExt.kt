@@ -18,6 +18,8 @@ fun <T> Flowable<T>.observeOnUi() = observeOn(AndroidSchedulers.mainThread())
 
 fun <T> Flowable<T>.subscribeOnIo() = subscribeOn(Schedulers.io())
 
+fun <T> Flowable<T>.subscribeOnComputation() = subscribeOn(Schedulers.computation())
+
 fun <T, R> Single<T>.flatMapFlowable(mapper: (T) -> Flowable<R>) = toFlowable().flatMap(mapper)
 
 fun Disposable.addTo(compositeDisposable: CompositeDisposable) =
