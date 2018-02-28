@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.extension.toDate
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.place_info_address_cardview.addressNameTextView
@@ -96,7 +95,7 @@ class InfoAdapter(private val imageLoader: RequestManager, private val place: Pl
 
     @SuppressLint("SimpleDateFormat")
     private fun formatDate(dateString: String?): String? =
-        dateString.toDate()?.let { SimpleDateFormat("dd.MM.yyyy").format(it) }
+        dateString?.toDate()?.let { SimpleDateFormat("dd.MM.yyyy").format(it) }
 
     private class DescriptionViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer

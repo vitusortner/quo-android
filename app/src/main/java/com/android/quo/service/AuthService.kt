@@ -11,7 +11,6 @@ import com.android.quo.network.model.ServerSignup
 import com.android.quo.util.Constants
 import com.android.quo.util.Logger
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
-import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by vitusortner on 03.01.18.

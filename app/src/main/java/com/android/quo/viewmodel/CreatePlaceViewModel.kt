@@ -13,8 +13,8 @@ import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
 import com.android.quo.util.Constants
 import com.android.quo.util.CreatePlace
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import java.io.ByteArrayOutputStream
 import java.io.File

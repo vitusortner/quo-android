@@ -5,10 +5,10 @@ import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Place
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
 /**

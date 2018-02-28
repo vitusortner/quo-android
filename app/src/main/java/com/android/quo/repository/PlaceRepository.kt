@@ -27,9 +27,11 @@ class PlaceRepository(
                 override fun getRemote(): Single<List<ServerPlace>> =
                     apiClient.getHostedPlaces(userId)
 
-                override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(true)
+                override fun getLocal(): Flowable<List<Place>> =
+                    placeDao.getPlaces(true)
 
-                override fun sync(data: List<ServerPlace>) = syncService.saveHostedPlaces(data)
+                override fun sync(data: List<ServerPlace>) =
+                    syncService.saveHostedPlaces(data)
             }
         }, BackpressureStrategy.BUFFER)
 
@@ -40,7 +42,8 @@ class PlaceRepository(
                 override fun getRemote(): Single<List<ServerPlaceResponse>> =
                     apiClient.getVisitedPlaces(userId)
 
-                override fun getLocal(): Flowable<List<Place>> = placeDao.getPlaces(false)
+                override fun getLocal(): Flowable<List<Place>> =
+                    placeDao.getPlaces(false)
 
                 override fun sync(data: List<ServerPlaceResponse>) =
                     syncService.saveVisitedPlaces(data)
@@ -51,11 +54,14 @@ class PlaceRepository(
         Flowable.create({ emitter ->
             object : NetworkBoundResource<Place, ServerPlace>(emitter) {
 
-                override fun getRemote(): Single<ServerPlace> = apiClient.getPlace(qrCodeId, userId)
+                override fun getRemote(): Single<ServerPlace> =
+                    apiClient.getPlace(qrCodeId, userId)
 
-                override fun getLocal(): Flowable<Place> = placeDao.getPlaceByQrCodeId(qrCodeId)
+                override fun getLocal(): Flowable<Place> =
+                    placeDao.getPlaceByQrCodeId(qrCodeId)
 
-                override fun sync(data: ServerPlace) = syncService.savePlace(data, userId)
+                override fun sync(data: ServerPlace) =
+                    syncService.savePlace(data, userId)
             }
         }, BackpressureStrategy.BUFFER)
 

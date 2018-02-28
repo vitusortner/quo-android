@@ -61,10 +61,8 @@ class SyncService(
 
     fun saveComponents(data: List<ServerComponent>, placeId: String) {
         if (data.isNotEmpty()) {
-            val components = data.map { component ->
-                toComponent(component, placeId)
-            }
-            // delete components of place before inserting updated comonents
+            val components = data.map { toComponent(it, placeId) }
+            // delete components of place before inserting updated components
             componentDao.deleteComponentsOfPlace(placeId)
             componentDao.insertAllComponents(components)
 
@@ -87,8 +85,8 @@ class SyncService(
         }
     }
 
-    private fun toPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = ""): Place {
-        return Place(
+    private fun toPlace(serverPlace: ServerPlace, isHost: Boolean, date: String = "") =
+        Place(
             id = serverPlace.id ?: "",
             isHost = isHost,
             description = serverPlace.description ?: "",
@@ -113,19 +111,17 @@ class SyncService(
             timestamp = serverPlace.timestamp,
             lastScanned = date
         )
-    }
 
-    private fun toComponent(serverComponent: ServerComponent, placeId: String): Component {
-        return Component(
+    private fun toComponent(serverComponent: ServerComponent, placeId: String) =
+        Component(
             id = serverComponent.id ?: "",
             picture = serverComponent.picture,
             text = serverComponent.text,
             placeId = placeId
         )
-    }
 
-    private fun toPicture(serverPicture: ServerPicture): Picture {
-        return Picture(
+    private fun toPicture(serverPicture: ServerPicture) =
+        Picture(
             id = serverPicture.id ?: "",
             ownerId = serverPicture.ownerId,
             placeId = serverPicture.placeId,
@@ -133,5 +129,4 @@ class SyncService(
             isVisible = serverPicture.isVisible,
             timestamp = serverPicture.timestamp ?: ""
         )
-    }
 }

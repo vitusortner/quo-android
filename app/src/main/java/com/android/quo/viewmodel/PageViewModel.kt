@@ -4,9 +4,9 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Component
 import com.android.quo.repository.ComponentRepository
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
 /**

@@ -26,7 +26,8 @@ class PictureRepository(
                 override fun getRemote(): Single<List<ServerPicture>> =
                     apiClient.getPictures(placeId)
 
-                override fun getLocal(): Flowable<List<Picture>> = pictureDao.getPictures(placeId)
+                override fun getLocal(): Flowable<List<Picture>> =
+                    pictureDao.getPictures(placeId)
 
                 override fun sync(data: List<ServerPicture>) =
                     syncService.savePictures(data, placeId)

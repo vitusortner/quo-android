@@ -41,7 +41,6 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         context?.let {
             createPlaceViewPager.adapter = CreatePlacePagerAdapter(childFragmentManager, it)
         }

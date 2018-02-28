@@ -3,8 +3,6 @@ package com.android.quo.util.extension
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -21,6 +19,3 @@ fun <T> Flowable<T>.subscribeOnIo() = subscribeOn(Schedulers.io())
 fun <T> Flowable<T>.subscribeOnComputation() = subscribeOn(Schedulers.computation())
 
 fun <T, R> Single<T>.flatMapFlowable(mapper: (T) -> Flowable<R>) = toFlowable().flatMap(mapper)
-
-fun Disposable.addTo(compositeDisposable: CompositeDisposable) =
-    compositeDisposable.add(this)

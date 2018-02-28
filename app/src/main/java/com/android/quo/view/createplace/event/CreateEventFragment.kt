@@ -38,7 +38,6 @@ import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_GPS
 import com.android.quo.util.Constants.Request.REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
 import com.android.quo.util.CreatePlace
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.compressImage
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
@@ -48,6 +47,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventNameEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView

@@ -10,7 +10,6 @@ import android.view.View
 import com.android.quo.MainActivity
 import com.android.quo.R
 import com.android.quo.R.style.EditTextTheme
-import com.android.quo.util.extension.addTo
 import com.android.quo.view.BaseActivity
 import com.android.quo.viewmodel.LoginViewModel
 import com.facebook.CallbackManager
@@ -20,6 +19,7 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_login.clickableForgotPasswordTextView
 import kotlinx.android.synthetic.main.activity_login.emailEditText
 import kotlinx.android.synthetic.main.activity_login.emailWrapper

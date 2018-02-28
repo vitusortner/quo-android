@@ -4,10 +4,10 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Picture
 import com.android.quo.repository.PictureRepository
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import com.android.quo.util.extension.toDate
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
 /**

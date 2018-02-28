@@ -27,13 +27,13 @@ import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Request.CREATE_PAGE_REQUEST_GALLERY
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_EXTERNAL_STORAGE
 import com.android.quo.util.CreatePlace.components
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.compressImage
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.util.extension.subscribeOnComputation
 import com.android.quo.view.BaseFragment
 import com.jakewharton.rxbinding2.widget.RxTextView
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_create_page.floatingActionButton
 import kotlinx.android.synthetic.main.fragment_create_page.generatedLayout

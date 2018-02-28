@@ -11,14 +11,14 @@ import java.util.*
 /**
  * Created by vitusortner on 19.11.17.
  */
-fun Context.getDisplayMetrics(): DisplayMetrics = this.resources.displayMetrics
+fun Context.getDisplayMetrics(): DisplayMetrics = resources.displayMetrics
 
 fun Float.toPx(context: Context): Int =
     (this * (context.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
 
 @SuppressLint("SimpleDateFormat")
-fun String?.toDate(): Date? =
-    this?.let {
+fun String.toDate(): Date? =
+    this.let {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
         simpleDateFormat.parse(it)
     }

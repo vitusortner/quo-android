@@ -4,12 +4,12 @@ import android.os.AsyncTask
 import android.util.Patterns
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.Single
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
 /**

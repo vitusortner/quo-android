@@ -5,10 +5,9 @@ import com.android.quo.network.model.ServerPicture
 import com.android.quo.repository.PictureRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
-import com.android.quo.util.extension.addTo
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
-import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.addTo
 import java.io.File
 
 /**
