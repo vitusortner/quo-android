@@ -8,10 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class ServerComponent(
         @SerializedName("_id")
         var id: String? = null,
-
         var picture: String? = null,
-
         var text: String? = null,
-
         var position: Int? = null
 )

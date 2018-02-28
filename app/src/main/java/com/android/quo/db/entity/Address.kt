@@ -12,11 +12,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Address(
         var street: String = "",
-
         var city: String = "",
-
         @ColumnInfo(name = "zip_code")
         var zipCode: Int = 0,
-
         var name: String? = ""
 ) : Parcelable

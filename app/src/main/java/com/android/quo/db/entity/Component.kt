@@ -11,13 +11,9 @@ import android.arch.persistence.room.PrimaryKey
 data class Component(
         @PrimaryKey
         var id: String = "",
-
         var picture: String? = null,
-
         var text: String? = null,
-
         @ColumnInfo(name = "place_id")
         var placeId: String = "",
-
         var position: Int = 0
 )

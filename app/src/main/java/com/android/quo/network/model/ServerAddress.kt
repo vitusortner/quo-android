@@ -7,11 +7,8 @@ import com.google.gson.annotations.SerializedName
  */
 data class ServerAddress(
         var street: String,
-
         var city: String,
-
         @SerializedName("zip_code")
         var zipCode: Int,
-
         val name: String
 )

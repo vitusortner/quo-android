@@ -16,17 +16,12 @@ import kotlinx.android.parcel.Parcelize
 data class Picture(
         @PrimaryKey
         var id: String = "",
-
         @ColumnInfo(name = "owner_id")
         var ownerId: String = "",
-
         @ColumnInfo(name = "place_id")
         var placeId: String = "",
-
         var src: String = "",
-
         @ColumnInfo(name = "is_visible")
         var isVisible: Boolean = false,
-
         var timestamp: String = ""
 ) : Parcelable
