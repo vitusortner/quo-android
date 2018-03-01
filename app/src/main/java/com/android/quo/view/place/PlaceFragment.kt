@@ -173,8 +173,8 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
 
     @SuppressLint("SimpleDateFormat")
     private fun createImageFile(): File {
-        val storageDir = Environment
-            .getExternalStoragePublicDirectory("${Environment.DIRECTORY_PICTURES}${Constants.IMAGE_DIR}")
+        val path = "${Environment.DIRECTORY_PICTURES}${Constants.IMAGE_DIR}"
+        val storageDir = Environment.getExternalStoragePublicDirectory(path)
 
         if (!storageDir.exists()) storageDir.mkdirs()
 

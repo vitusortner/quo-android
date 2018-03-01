@@ -12,6 +12,7 @@ import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
 import com.android.quo.util.Constants
+import com.android.quo.util.Constants.DEFAULT_IMG
 import com.android.quo.util.CreatePlace
 import com.android.quo.util.extension.subscribeOnIo
 import io.reactivex.rxkotlin.addTo
@@ -20,8 +21,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-// TODO ??
-@Suppress("IMPLICIT_CAST_TO_ANY")
 /**
  * Created by Jung on 11.12.17.
  */
@@ -54,21 +53,17 @@ class CreatePlaceViewModel(
     private fun addTitlePicture(place: ServerPlace) =
         place.titlePicture?.let { titlePicture ->
             place.id?.let { placeId ->
-
-                val picture = ServerPicture(
-                    id = null,
-                    ownerId = place.host,
-                    placeId = place.id ?: "",
-                    src = "",
-                    isVisible = true
-                )
-
-                if (!titlePicture.startsWith("quo_default_")) {
+                if (!titlePicture.startsWith(DEFAULT_IMG)) {
+                    val picture = ServerPicture(
+                        id = null,
+                        ownerId = place.host,
+                        placeId = place.id ?: "",
+                        src = "",
+                        isVisible = true
+                    )
                     picture.src = titlePicture
-
                     val uri = Uri.parse(picture.src)
                     val image = File(uri.path)
-
                     uploadCustomTitlePicture(placeId, image, place)
                 } else {
                     uploadDefaultTitlePicture(placeId, titlePicture, place)
@@ -112,7 +107,6 @@ class CreatePlaceViewModel(
                 if (component.picture != null) {
                     val uri = Uri.parse(component.picture)
                     val image = File(uri.path)
-
                     uploadImageComponent(placeId, image, place, component)
                 } else if (component.text != null) {
                     uploadTextComponent(placeId, component)
@@ -128,7 +122,15 @@ class CreatePlaceViewModel(
     ) =
         uploadService.uploadImage(image)
             .subscribeOnIo()
-            .map { createServerPicture(place, it.path) }
+            .map {
+                ServerPicture(
+                    id = null,
+                    ownerId = place.host,
+                    placeId = place.id ?: "",
+                    src = it.path,
+                    isVisible = true
+                )
+            }
             .flatMap { serverPicture -> pictureRepository.addPicture(placeId, serverPicture) }
             .flatMap { serverPicture ->
                 component.picture = serverPicture.src
@@ -149,21 +151,12 @@ class CreatePlaceViewModel(
             )
             .addTo(compositeDisposable)
 
-    private fun createServerPicture(place: ServerPlace, imagePath: String) =
-        ServerPicture(
-            id = null,
-            ownerId = place.host,
-            placeId = place.id ?: "",
-            src = imagePath,
-            isVisible = true
-        )
 
     private fun addQrCode(place: ServerPlace) =
         place.id?.let { placeId ->
-            val uri = Uri.parse(saveQrCode(CreatePlace.qrCodeImage, place.qrCodeId))
-            val image = File(uri.path)
+            val qrCode = createQrCodeFile(CreatePlace.qrCodeImage, place.qrCodeId)
 
-            uploadService.uploadImage(image)
+            uploadService.uploadImage(qrCode)
                 .subscribeOnIo()
                 .flatMap {
                     place.qrCode = it.path
@@ -176,23 +169,21 @@ class CreatePlaceViewModel(
                 .addTo(compositeDisposable)
         }
 
-    // TODO nicer plz
-    private fun saveQrCode(bitmap: Bitmap, qrCodeId: String?): String {
+    private fun createQrCodeFile(bitmap: Bitmap, qrCodeId: String?): File {
         val bytes = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
 
-        val path = File(
-            Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES
-            ).absolutePath + Constants.IMAGE_DIR
-        )
-        val file = File(path, "$qrCodeId.jpg")
-        path.mkdirs()
-        file.createNewFile()
-        val fo = FileOutputStream(file)
-        fo.write(bytes.toByteArray())
-        fo.close()
-        return file.path
+        val path = "${Environment.DIRECTORY_PICTURES}${Constants.IMAGE_DIR}"
+        val storageDir = Environment.getExternalStoragePublicDirectory(path)
+
+        if (!storageDir.exists()) storageDir.mkdirs()
+
+        val image = File.createTempFile(qrCodeId, ".jpg", storageDir)
+        FileOutputStream(image).apply {
+            write(bytes.toByteArray())
+            close()
+        }
+        return image
     }
 
     fun getUser() = userRepository.getUser()
