@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
+import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP
 import com.android.quo.util.extension.toDate
 import com.bumptech.glide.RequestManager
 import kotlinx.android.extensions.LayoutContainer
@@ -58,7 +59,7 @@ class InfoAdapter(private val imageLoader: RequestManager, private val place: Pl
             else -> 0
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             DESCRIPTION -> DescriptionViewHolder(
                 inflateView(parent, R.layout.place_info_description_cardview)
@@ -66,11 +67,13 @@ class InfoAdapter(private val imageLoader: RequestManager, private val place: Pl
             ADDRESS -> AddressViewHolder(inflateView(parent, R.layout.place_info_address_cardview))
             TIME -> TimeViewHolder(inflateView(parent, R.layout.place_info_time_cardview))
             QR_CODE -> QrCodeViewHolder(inflateView(parent, R.layout.place_info_qr_code_cardview))
-            else -> null
+            else -> DescriptionViewHolder(
+                inflateView(parent, R.layout.place_info_description_cardview)
+            )
         }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is DescriptionViewHolder -> holder.contentTextView.text = place.description
             is AddressViewHolder -> {
@@ -95,7 +98,7 @@ class InfoAdapter(private val imageLoader: RequestManager, private val place: Pl
 
     @SuppressLint("SimpleDateFormat")
     private fun formatDate(dateString: String?): String? =
-        dateString?.toDate()?.let { SimpleDateFormat("dd.MM.yyyy").format(it) }
+        dateString?.toDate(MONGO_DB_TIMESTAMP)?.let { SimpleDateFormat("dd.MM.yyyy").format(it) }
 
     private class DescriptionViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer

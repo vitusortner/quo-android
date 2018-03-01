@@ -44,4 +44,8 @@ object Constants {
 
         const val CREATE_PAGE_REQUEST_GALLERY = 7
     }
+
+    object Date {
+        const val MONGO_DB_TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    }
 }

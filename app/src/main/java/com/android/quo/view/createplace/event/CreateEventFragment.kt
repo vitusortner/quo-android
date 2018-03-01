@@ -492,7 +492,7 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             .show()
     }
 
-
+    // TODO make me nicer
     private fun updateLabel(isStartDate: Boolean, isTimeLabel: Boolean) {
         val sdf: SimpleDateFormat
         val timestampFormat: SimpleDateFormat
@@ -530,7 +530,7 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
     }
 
     private fun onClick(drawable: Drawable, position: Int) {
-        CreatePlace.place.titlePicture = "quo_default_${position + 1}.png"
+        CreatePlace.place.titlePicture = "$DEFAULT_IMG${position + 1}.png"
         headerImageView.setImageDrawable(drawable)
     }
 }

@@ -59,29 +59,6 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
         AsyncTask.execute { generateQrCode() }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
-                context
-                    ?.permissionsGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    ?.takeIf { !it }
-                    ?.run { fragmentManager?.popBackStack() }
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        for (fragment in childFragmentManager.fragments) {
-            fragment.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         setupStatusBar()
@@ -106,6 +83,29 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
             qrCodeId = "",
             timestamp = ""
         )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                context
+                    ?.permissionsGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    ?.takeIf { !it }
+                    ?.run { fragmentManager?.popBackStack() }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        for (fragment in childFragmentManager.fragments) {
+            fragment.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun setupStatusBar() =

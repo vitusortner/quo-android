@@ -7,6 +7,7 @@ import com.android.quo.db.entity.Place
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
+import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP
 import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
@@ -37,7 +38,7 @@ class HomeViewModel(
             .flatMapFlowable { placeRepository.getVisitedPlaces(it.id) }
             .distinctUntilChanged()
             .filter { it.isNotEmpty() }
-            .map { it.sortedByDescending { it.lastScanned.toDate() } }
+            .map { it.sortedByDescending { it.lastScanned.toDate(MONGO_DB_TIMESTAMP) } }
             .observeOnUi()
             .subscribeBy(
                 onNext = { places.value = it },

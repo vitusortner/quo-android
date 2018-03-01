@@ -26,14 +26,14 @@ class PageAdapter(private val imageLoader: RequestManager) : BaseRecyclerViewAda
             else -> 0
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             PICTURE -> ImageViewHolder(inflateView(parent, R.layout.component_image))
             TEXT -> TextViewHolder(inflateView(parent, R.layout.component_text))
-            else -> null
+            else -> ImageViewHolder(inflateView(parent, R.layout.component_image))
         }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ImageViewHolder -> {
                 val imageUrl = list[position].picture

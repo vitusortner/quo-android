@@ -63,8 +63,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 }
                 R.id.logout -> {
                     viewModel.logout()
-                    val intent = Intent(context, LoginActivity::class.java)
-                    startActivity(intent)
+                    Intent(context, LoginActivity::class.java).let { startActivity(it) }
                 }
             }
             true
