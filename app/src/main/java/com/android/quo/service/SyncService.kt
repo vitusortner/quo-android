@@ -12,6 +12,7 @@ import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerPlaceResponse
+import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
 import com.android.quo.util.Logger
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,11 +34,8 @@ class SyncService(
     fun saveVisitedPlaces(data: List<ServerPlaceResponse>) =
         savePlaces(data, false) { toPlace(it.place, false, it.timestamp) }
 
-    @SuppressLint("SimpleDateFormat")
     fun savePlace(data: ServerPlace, userId: String) {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        val date = dateFormat.format(Date())
+        val date = createMongoDate()
 
         val place = toPlace(data, userId == data.host, date)
         placeDao.deletePlace(place)
@@ -129,4 +127,11 @@ class SyncService(
             isVisible = serverPicture.isVisible,
             timestamp = serverPicture.timestamp ?: ""
         )
+
+    @SuppressLint("SimpleDateFormat")
+    private fun createMongoDate(): String {
+        val dateFormat = SimpleDateFormat(MONGO_DB_TIMESTAMP_FORMAT)
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        return dateFormat.format(Date())
+    }
 }

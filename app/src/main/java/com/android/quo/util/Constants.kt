@@ -16,6 +16,7 @@ object Constants {
     const val IMG_QUALITY = 75
     const val HTTP = "http"
     const val DEFAULT_IMG = "quo_default_"
+    const val DATA = "data"
 
     object Extra {
         const val PLACE_EXTRA = "place_extra"
@@ -46,6 +47,8 @@ object Constants {
     }
 
     object Date {
-        const val MONGO_DB_TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        const val MONGO_DB_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        const val DISPLAY_DATE_FORMAT = "E, dd MMM yyyy"
+        const val DISPLAY_TIME_FORMAT = "HH:mm"
     }
 }

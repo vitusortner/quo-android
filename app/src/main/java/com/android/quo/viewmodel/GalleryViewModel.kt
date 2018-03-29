@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Picture
 import com.android.quo.repository.PictureRepository
-import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP
+import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import com.android.quo.util.extension.toDate
@@ -28,7 +28,7 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : BaseV
             .subscribeOnIo()
             .distinctUntilChanged()
             .filter { it.isNotEmpty() }
-            .map { it.sortedByDescending { it.timestamp.toDate(MONGO_DB_TIMESTAMP) } }
+            .map { it.sortedByDescending { it.timestamp.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
             .observeOnUi()
             .subscribeBy(
                 onNext = { pictures.value = it },

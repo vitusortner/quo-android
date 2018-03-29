@@ -1,9 +1,9 @@
 package com.android.quo.viewmodel
 
-import android.os.AsyncTask
 import android.util.Patterns
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
+import com.android.quo.util.extension.async
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import io.reactivex.Observable
@@ -105,7 +105,7 @@ class LoginViewModel(
     }
 
     fun validateLoginState(onSuccess: () -> Unit, onError: () -> Unit) =
-        AsyncTask.execute {
+        async {
             if (userRepository.getUser() == null) onError() else onSuccess()
         }
 }

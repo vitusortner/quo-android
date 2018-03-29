@@ -17,7 +17,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.FragmentActivity
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MotionEvent
 import android.view.View
@@ -28,7 +27,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.android.quo.R
 import com.android.quo.dataclass.DateTime
+import com.android.quo.util.Constants.DATA
 import com.android.quo.util.Constants.DEFAULT_IMG
+import com.android.quo.util.Constants.Date.DISPLAY_DATE_FORMAT
+import com.android.quo.util.Constants.Date.DISPLAY_TIME_FORMAT
 import com.android.quo.util.Constants.IMAGE_DIR
 import com.android.quo.util.Constants.IMG_QUALITY
 import com.android.quo.util.Constants.MAX_IMG_DIM
@@ -38,16 +40,22 @@ import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_GPS
 import com.android.quo.util.Constants.Request.REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
 import com.android.quo.util.CreatePlace
+import com.android.quo.util.DefaultImages
 import com.android.quo.util.extension.compressImage
+import com.android.quo.util.extension.now
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.util.extension.subscribeOnComputation
 import com.android.quo.view.BaseFragment
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.android.quo.view.createplace.event.CreateEventFragment.Label.DATE
+import com.android.quo.view.createplace.event.CreateEventFragment.Label.TIME
+import com.android.quo.view.createplace.event.CreateEventFragment.Time.END
+import com.android.quo.view.createplace.event.CreateEventFragment.Time.START
 import com.google.android.gms.location.LocationServices
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_create_event.descriptionEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventNameEditText
 import kotlinx.android.synthetic.main.fragment_create_event.eventScrollView
@@ -64,35 +72,96 @@ import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.ca
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.defaultImageListView
 import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.photosLayout
 import java.io.File
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by Jung on 27.11.17.
  */
-// TODO wtf too big
+// TODO wtf way too big!
 class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
 
-    private val calendar = Calendar.getInstance()
-    private val dateFormat = "E, MMM dd yyyy"
-    private val timeFormat = "h:mm a"
-    private val timestampDateFormat = "yyyy-MM-dd"
-    private val timestampTimeFormat = "HH:mm:ss"
+    private enum class Label { TIME, DATE }
+    private enum class Time { START, END }
 
-    private var foundLocation = false
-    private var startDateTime = DateTime()
-    private var endDateTime = DateTime()
+    private var dateTime = DateTime.now()
 
     private lateinit var currentEditText: EditText
     private lateinit var bottomSheetDialog: BottomSheetDialog
-    private lateinit var locationClient: FusedLocationProviderClient
+
+    private val locationClient by lazy {
+        LocationServices.getFusedLocationProviderClient(requireContext())
+    }
+
+    private val defaultImages by lazy {
+        DefaultImages.get(requireContext())
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setDefaultValuesOnStart()
+        setLabelDefaultValues()
         setupButtons()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setHeaderImage()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_GPS -> {
+                requireContext()
+                    .permissionsGranted(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                    .takeIf { it }
+                    ?.run {
+                        locationProgressBar.visibility = VISIBLE
+                        locationEditText.clearFocus()
+                        hideKeyboard(requireActivity())
+                        checkForLastLocation {
+                            persistAddressFromLocation(it)
+                        }
+                    }
+            }
+            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
+                requireContext()
+                    .permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .takeIf { it }
+                    ?.run { openPhoneGallery() }
+            }
+            PERMISSION_REQUEST_CAMERA -> {
+                requireContext()
+                    .permissionsGranted(Manifest.permission.CAMERA)
+                    .takeIf { it }
+                    ?.run { openPhoneCamera() }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        try {
+            if (resultCode != Activity.RESULT_CANCELED) {
+                when (requestCode) {
+                    REQUEST_GALLERY -> setHeaderImageFromGallery(data.data)
+                    REQUEST_CAMERA -> setHeaderImageFromCamera(data.extras)
+                }
+            }
+        } catch (e: Exception) {
+            log.e("Error while selecting image.", e)
+        }
     }
 
     private fun setupButtons() {
@@ -100,24 +169,26 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             .subscribe { CreatePlace.place.title = eventNameEditText.text.toString() }
             .addTo(compositeDisposable)
 
+        val calendar = Calendar.getInstance()
+
         fromDateEditText.setOnClickListener {
             currentEditText = fromDateEditText
-            showCalendarView(true)
+            createDatePickerDialog(START, calendar).show()
         }
 
         toDateEditText.setOnClickListener {
             currentEditText = toDateEditText
-            showCalendarView(false)
+            createDatePickerDialog(END, calendar).show()
         }
 
         fromTimeEditText.setOnClickListener {
             currentEditText = fromTimeEditText
-            showTimeView(true)
+            createTimePickerDialog(START, calendar).show()
         }
 
         toTimeEditText.setOnClickListener {
             currentEditText = toTimeEditText
-            showTimeView(false)
+            createTimePickerDialog(END, calendar).show()
         }
 
         expirationCheckBox.setOnClickListener {
@@ -128,51 +199,46 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             } else {
                 toDateEditText.isEnabled = true
                 toTimeEditText.isEnabled = true
-                CreatePlace.place.endDate =
-                        Timestamp.valueOf("${endDateTime.date} ${endDateTime.time}").time.toString()
+                CreatePlace.place.endDate = DateTime.now().toMongoTimestamp()
             }
         }
 
         galleryButton.setOnClickListener {
-            context?.let { context ->
-                bottomSheetDialog = BottomSheetDialog(context)
-                val sheetView = activity?.layoutInflater?.inflate(
-                    R.layout.layout_bottom_sheet_select_picture,
-                    null
+            bottomSheetDialog = BottomSheetDialog(requireContext())
+
+            // TODO nicer please
+            val view = requireActivity()
+                .layoutInflater
+                .inflate(R.layout.layout_bottom_sheet_select_picture, null)
+
+            val adapter = EventDefaultImagesAdapter { drawable, position ->
+                onClick(drawable, position)
+            }
+            view.defaultImageListView.adapter = adapter
+            val layoutManager = LinearLayoutManager(requireContext())
+            layoutManager.orientation = LinearLayout.HORIZONTAL
+            view.defaultImageListView?.layoutManager = layoutManager
+
+            adapter.setItems(defaultImages)
+
+            bottomSheetDialog.setContentView(view)
+            bottomSheetDialog.show()
+
+            view.photosLayout.setOnClickListener {
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    PERMISSION_REQUEST_EXTERNAL_STORAGE
                 )
-                sheetView?.let {
-                    val adapter = EventDefaultImagesAdapter { drawable, position ->
-                        onClick(drawable, position)
-                    }
-                    it.defaultImageListView.adapter = adapter
-                    val layoutManager = LinearLayoutManager(context)
-                    layoutManager.orientation = LinearLayout.HORIZONTAL
-                    it.defaultImageListView?.layoutManager = layoutManager
+            }
 
-                    val defaultImages = getDefaultImageList()
-                    adapter.setItems(defaultImages)
-
-                    bottomSheetDialog.setContentView(sheetView)
-                    bottomSheetDialog.show()
-
-                    it.photosLayout.setOnClickListener {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            ),
-                            PERMISSION_REQUEST_EXTERNAL_STORAGE
-                        )
-                    }
-
-                    it.cameraLayout.setOnClickListener {
-                        requestPermissions(
-                            arrayOf(Manifest.permission.CAMERA),
-                            PERMISSION_REQUEST_CAMERA
-                        )
-                    }
-                }
-
+            view.cameraLayout.setOnClickListener {
+                requestPermissions(
+                    arrayOf(Manifest.permission.CAMERA),
+                    PERMISSION_REQUEST_CAMERA
+                )
             }
         }
 
@@ -198,8 +264,9 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             .addTo(compositeDisposable)
 
         RxView.focusChanges(locationEditText)
-            .filter { locationEditText.text.toString() != "" }
-            .subscribe { getLocationFromAddress(locationEditText.text.toString()) }
+            .map { locationEditText.text.toString() }
+            .filter { it != "" }
+            .subscribe { persistAddress(it) }
             .addTo(compositeDisposable)
 
         RxView.touches(descriptionEditText, { motionEvent ->
@@ -216,117 +283,41 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             .addTo(compositeDisposable)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSION_REQUEST_GPS -> {
-                context
-                    ?.permissionsGranted(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                    ?.takeIf { it }
-                    ?.run {
-                        locationProgressBar.visibility = VISIBLE
-                        locationEditText.clearFocus()
-                        foundLocation = false
-                        getLocation()
-                    }
-            }
-            PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
-                context
-                    ?.permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    ?.takeIf { it }
-                    ?.run { openPhoneGallery() }
-            }
-            PERMISSION_REQUEST_CAMERA -> {
-                context
-                    ?.permissionsGranted(Manifest.permission.CAMERA)
-                    ?.takeIf { it }
-                    ?.run { openPhoneCamera() }
-            }
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
+    private fun setHeaderImage() {
         CreatePlace.place.titlePicture?.let { titlePicture ->
-            if (titlePicture.startsWith(DEFAULT_IMG)) {
-                //split string because we need the index of the default image to display it at the beginning
-                // or after changing default image
-                var splitString = titlePicture.split(DEFAULT_IMG)
-                splitString = splitString[1].split(".")
-
-                headerImageView.setImageDrawable(getDefaultImageList()[splitString[0].toInt() - 1])
-            } else if (titlePicture.isNotEmpty()) {
-                val uri = Uri.parse(titlePicture)
-                val bitmap = BitmapFactory.decodeFile(uri.path)
-                headerImageView.setImageBitmap(bitmap)
+            when {
+                titlePicture.startsWith(DEFAULT_IMG) -> {
+                    // split createDateOrTimeString because we need the index of the default image to display it at the beginning
+                    // or after changing default image
+                    val index = titlePicture.split(DEFAULT_IMG)[1].split(".")[0].toInt()
+                    defaultImages[index - 1]
+                        .let { headerImageView.setImageDrawable(it) }
+                }
+                else -> {
+                    Uri.parse(titlePicture)
+                        .let { BitmapFactory.decodeFile(it.path) }
+                        .let { headerImageView.setImageBitmap(it) }
+                }
             }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
+    private fun hideKeyboard(activity: FragmentActivity) {
+        //Find the currently focused view, so we can grab the correct window token from it.
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        val view = activity.currentFocus ?: View(activity)
+        (activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(view.windowToken, 0)
     }
-
-    private fun getDefaultImageList(): ArrayList<Drawable> {
-        val list = ArrayList<Drawable>()
-        context?.let { context ->
-            ContextCompat.getDrawable(context, R.drawable.default_event_image1)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image2)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image3)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image4)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image5)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image6)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image7)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image8)
-                ?.let { list.add(it) }
-            ContextCompat.getDrawable(context, R.drawable.default_event_image9)
-                ?.let { list.add(it) }
-        }
-        CreatePlace.list = list
-        return list
-    }
-
-    private fun hideKeyboard(activity: FragmentActivity?) =
-        activity?.let { activity ->
-            val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            //Find the currently focused view, so we can grab the correct window token from it.
-            var view = activity.currentFocus
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
-            if (view == null) {
-                view = View(activity)
-            }
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
 
     @SuppressLint("MissingPermission")
-    private fun getLocation() {
-        hideKeyboard(activity)
-        context?.let { context ->
-            locationClient = LocationServices.getFusedLocationProviderClient(context).apply {
-                lastLocation.addOnSuccessListener { it?.let { getAddressFromLocation(it) } }
-            }
-        }
+    private fun checkForLastLocation(callback: (Location) -> Unit) {
+        locationClient.lastLocation.addOnSuccessListener { it?.let { callback(it) } }
     }
 
-    private fun getAddressFromLocation(location: Location) {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+    private fun persistAddressFromLocation(location: Location) {
+        val addresses = Geocoder(context, Locale.getDefault())
+            .getFromLocation(location.latitude, location.longitude, 1)
 
         val city = addresses[0].locality
         val postalCode = addresses[0].postalCode
@@ -338,23 +329,22 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
 
         CreatePlace.place.apply {
             address?.city = city
-            address?.street = "${addresses[0].thoroughfare}  ${addresses[0].subThoroughfare}"
+            address?.street = "$street  $number"
             address?.zipCode = postalCode.toInt()
             latitude = location.latitude
             longitude = location.longitude
         }
     }
 
-    private fun getLocationFromAddress(address: String) {
-        val geocoder = Geocoder(context)
-        val addresses = geocoder.getFromLocationName(address, 1)
+    private fun persistAddress(address: String) {
+        val addresses = Geocoder(requireContext()).getFromLocationName(address, 1)
         if (addresses.size > 0) {
             val location = Location("")
             location.latitude = addresses[0].latitude
             location.longitude = addresses[0].longitude
-            getAddressFromLocation(location)
+            persistAddressFromLocation(location)
         } else {
-            log.e("address not found")
+            log.e("Address not found")
         }
     }
 
@@ -368,169 +358,134 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             activity?.startActivityForResult(it, REQUEST_CAMERA)
         }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        try {
-            if (resultCode != Activity.RESULT_CANCELED) {
-                when (requestCode) {
-                    REQUEST_GALLERY -> {
-                        val selectedImageUri = data?.data
-                        val image = File(selectedImageUri?.let { getPath(it) })
-                        val imageDir =
-                            Environment
-                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                                .absolutePath + IMAGE_DIR
+    private fun setHeaderImageFromGallery(uri: Uri) =
+        getPath(uri)?.let {
+            val image = File(it)
+            val imageDir =
+                Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .absolutePath + IMAGE_DIR
 
-                        imageCompressor
-                            .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY, imageDir)
-                            .subscribeOnComputation()
-                            .map {
-                                CreatePlace.place.titlePicture = it.absolutePath
-                                BitmapFactory.decodeFile(it.absolutePath)
-                            }
-                            .observeOnUi()
-                            .subscribe(
-                                {
-                                    headerImageView.setImageBitmap(it)
-                                    bottomSheetDialog.dismiss()
-                                }, {
-                                    log.e("Error while compressing image", it)
-                                }
-                            )
-                    }
-                    REQUEST_CAMERA -> {
-                        val image = data?.extras?.get("data") as Bitmap
-                        headerImageView.setImageBitmap(image)
-                        CreatePlace.place.titlePicture = data.extras?.get("data") as String
-                    }
+            imageCompressor
+                .compressImage(
+                    image,
+                    MAX_IMG_DIM,
+                    MAX_IMG_DIM,
+                    IMG_QUALITY,
+                    imageDir
+                )
+                .subscribeOnComputation()
+                .map {
+                    CreatePlace.place.titlePicture = it.absolutePath
+                    BitmapFactory.decodeFile(it.absolutePath)
                 }
-            }
-        } catch (e: Exception) {
-            log.e("Error while selecting image.", e)
+                .observeOnUi()
+                .subscribeBy(
+                    onNext = {
+                        headerImageView.setImageBitmap(it)
+                        bottomSheetDialog.dismiss()
+                    },
+                    onError = {
+                        log.e("Error while compressing image", it)
+                    }
+                )
         }
+
+    // TODO use proper implementation for getting image from camera in full resolution
+    private fun setHeaderImageFromCamera(extras: Bundle) {
+        CreatePlace.place.titlePicture = extras.get(DATA) as String
+        (extras.get(DATA) as Bitmap).let { headerImageView.setImageBitmap(it) }
     }
 
-    private fun getPath(uri: Uri): String {
+    private fun getPath(uri: Uri): String? {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context?.let { context ->
-            context.contentResolver?.query(
-                uri, mediaStoreData,
-                null, null, null
-            )
-        }
 
-        cursor?.let { cursor ->
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
-                result = cursor.getString(columnIndex)
-                cursor.close()
+        requireContext().contentResolver.query(uri, mediaStoreData, null, null, null).apply {
+            if (moveToFirst()) {
+                result = getColumnIndexOrThrow(mediaStoreData[0]).let { getString(it) }
+                close()
             }
         }
-
-        if (result == null) {
-            result = getString(R.string.not_found)
-        }
-        return result as String
+        return result
     }
 
-    private fun setDefaultValuesOnStart() {
-        val currentDate = SimpleDateFormat(dateFormat, Locale.US).format(calendar.time)
-        val currentTime = SimpleDateFormat(timeFormat, Locale.US).format(calendar.time)
-
-        fromDateEditText.hint = currentDate
-        toDateEditText.hint = currentDate
-
-        fromTimeEditText.hint = currentTime
-        toTimeEditText.hint = currentTime
-
-        val timestampFormatTime =
-            SimpleDateFormat(timestampTimeFormat, Locale.US).format(calendar.time)
-        startDateTime.time = timestampFormatTime
-        endDateTime.time = timestampFormatTime
-
-        val timestampFormatDate =
-            SimpleDateFormat(timestampDateFormat, Locale.US).format(calendar.time)
-        startDateTime.date = timestampFormatDate
-        endDateTime.date = timestampFormatDate
+    private fun setLabelDefaultValues() {
+        Date().apply {
+            now(DISPLAY_DATE_FORMAT).let {
+                fromDateEditText.hint = it
+                toDateEditText.hint = it
+            }
+            now(DISPLAY_TIME_FORMAT).let {
+                fromTimeEditText.hint = it
+                toTimeEditText.hint = it
+            }
+        }
+        persistDateTime(dateTime, START)
+        persistDateTime(dateTime, END)
     }
 
-    private fun showCalendarView(isStartDate: Boolean) {
-        val date = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, monthOfYear)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-            updateLabel(isStartDate, false)
+    private fun createDateSetListener(time: Time, calendar: Calendar) =
+        DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            calendar.apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, monthOfYear)
+                set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            }
+            DateTime.DATE_FORMAT.format(calendar.time).let { dateTime.date = it }
+            persistDateTime(dateTime, time)
+            updateLabel(DATE, calendar.time)
         }
 
+    private fun createDatePickerDialog(time: Time, calendar: Calendar) =
         DatePickerDialog(
-            context,
+            requireContext(),
             R.style.DatePickerDialogStyle,
-            date, calendar
-                .get(Calendar.YEAR),
+            createDateSetListener(time, calendar),
+            calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
-            .show()
-    }
 
-    private fun showTimeView(isStartDate: Boolean) {
-        val time = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-            calendar.set(Calendar.HOUR, hour)
-            calendar.set(Calendar.MINUTE, minute)
-            updateLabel(isStartDate, true)
+    private fun createTimeSetListener(time: Time, calendar: Calendar) =
+        TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+            calendar.apply {
+                set(Calendar.HOUR, hour)
+                set(Calendar.MINUTE, minute)
+            }
+            DateTime.TIME_FORMAT.format(calendar.time).let { dateTime.time = it }
+            persistDateTime(dateTime, time)
+            updateLabel(TIME, calendar.time)
         }
 
+    private fun createTimePickerDialog(time: Time, calendar: Calendar) =
         TimePickerDialog(
-            context,
+            requireContext(),
             R.style.TimePickerDialogStyle,
-            time,
+            createTimeSetListener(time, calendar),
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
-            false
+            true
         )
-            .show()
-    }
 
-    // TODO make me nicer
-    private fun updateLabel(isStartDate: Boolean, isTimeLabel: Boolean) {
-        val sdf: SimpleDateFormat
-        val timestampFormat: SimpleDateFormat
-        val timestamp: String
-
-        if (isTimeLabel) {
-            sdf = SimpleDateFormat(timeFormat, Locale.US)
-            timestampFormat = SimpleDateFormat(timestampTimeFormat, Locale.US)
-            timestamp = timestampFormat.format(calendar.time)
-            if (isStartDate) {
-                startDateTime.time = timestamp
-            } else {
-                endDateTime.time = timestamp
-            }
-        } else {
-            sdf = SimpleDateFormat(dateFormat, Locale.US)
-            timestampFormat = SimpleDateFormat(timestampDateFormat, Locale.US)
-            timestamp = timestampFormat.format(calendar.time)
-            if (isStartDate) {
-                startDateTime.date = timestamp
-            } else {
-                endDateTime.date = timestamp
-            }
+    private fun persistDateTime(dateTime: DateTime, time: Time) =
+        when (time) {
+            START -> CreatePlace.place.startDate = dateTime.toMongoTimestamp()
+            END -> CreatePlace.place.endDate = dateTime.toMongoTimestamp()
         }
 
-        if (isStartDate) {
-            CreatePlace.place.startDate =
-                    Timestamp.valueOf("${startDateTime.date} ${startDateTime.time}")
-                        .time.toString()
-        } else {
-            CreatePlace.place.endDate =
-                    Timestamp.valueOf("${endDateTime.date} ${endDateTime.time}").time.toString()
+    private fun updateLabel(label: Label, date: Date) {
+        val format = when (label) {
+            TIME -> DISPLAY_TIME_FORMAT
+            DATE -> DISPLAY_DATE_FORMAT
         }
-        currentEditText.setText(sdf.format(calendar.time))
+        SimpleDateFormat(format, Locale.getDefault()).format(date)
+            .let { currentEditText.setText(it) }
     }
 
     private fun onClick(drawable: Drawable, position: Int) {
         CreatePlace.place.titlePicture = "$DEFAULT_IMG${position + 1}.png"
         headerImageView.setImageDrawable(drawable)
     }
+
 }

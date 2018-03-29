@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Place
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
-import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP
+import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
 import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
@@ -35,7 +35,7 @@ class MyPlacesViewModel(
             .flatMapFlowable { placeRepository.getHostedPlaces(it.id) }
             .distinctUntilChanged()
             .filter { it.isNotEmpty() }
-            .map { it.sortedByDescending { it.timestamp.toDate(MONGO_DB_TIMESTAMP) } }
+            .map { it.sortedByDescending { it.timestamp.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
             .observeOnUi()
             .subscribeBy(
                 onNext = { places.value = it },

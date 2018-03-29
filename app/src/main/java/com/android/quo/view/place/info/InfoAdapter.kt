@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.db.entity.Place
-import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP
+import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
 import com.android.quo.util.extension.toDate
 import com.bumptech.glide.RequestManager
 import kotlinx.android.extensions.LayoutContainer
@@ -98,7 +98,7 @@ class InfoAdapter(private val imageLoader: RequestManager, private val place: Pl
 
     @SuppressLint("SimpleDateFormat")
     private fun formatDate(dateString: String?): String? =
-        dateString?.toDate(MONGO_DB_TIMESTAMP)?.let { SimpleDateFormat("dd.MM.yyyy").format(it) }
+        dateString?.toDate(MONGO_DB_TIMESTAMP_FORMAT)?.let { SimpleDateFormat("dd.MM.yyyy").format(it) }
 
     private class DescriptionViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer

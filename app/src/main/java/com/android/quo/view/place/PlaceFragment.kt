@@ -59,9 +59,7 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
     private var bottomSheetDialog: BottomSheetDialog? = null
 
     private val isPhotoUploadAllowed: Boolean by lazy {
-        place?.let { place ->
-            place.isPhotoUploadAllowed?.let { it || place.isHost }
-        } ?: false
+        place?.let { place -> place.isPhotoUploadAllowed?.let { it || place.isHost } } ?: false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

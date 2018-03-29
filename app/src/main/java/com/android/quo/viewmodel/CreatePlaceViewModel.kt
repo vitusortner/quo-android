@@ -1,8 +1,6 @@
 package com.android.quo.viewmodel
 
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.network.model.ServerPlace
@@ -11,15 +9,13 @@ import com.android.quo.repository.PictureRepository
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
-import com.android.quo.util.Constants
 import com.android.quo.util.Constants.DEFAULT_IMG
 import com.android.quo.util.CreatePlace
+import com.android.quo.util.QrCode
 import com.android.quo.util.extension.subscribeOnIo
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 
 /**
  * Created by Jung on 11.12.17.
@@ -154,37 +150,23 @@ class CreatePlaceViewModel(
 
     private fun addQrCode(place: ServerPlace) =
         place.id?.let { placeId ->
-            val qrCode = createQrCodeFile(CreatePlace.qrCodeImage, place.qrCodeId)
+            place.qrCodeId?.let { qrCodeId ->
+                // TODO OMG WTF!
+                val qrCode = QrCode.createFile(CreatePlace.qrCodeImage, qrCodeId)
 
-            uploadService.uploadImage(qrCode)
-                .subscribeOnIo()
-                .flatMap {
-                    place.qrCode = it.path
-                    placeRepository.updatePlace(placeId, place)
-                }
-                .subscribeBy(
-                    onSuccess = { log.i("QR Code uploaded and added to place $it") },
-                    onError = { log.e("Error while uploading and adding QR Code to place", it) }
-                )
-                .addTo(compositeDisposable)
+                uploadService.uploadImage(qrCode)
+                    .subscribeOnIo()
+                    .flatMap {
+                        place.qrCode = it.path
+                        placeRepository.updatePlace(placeId, place)
+                    }
+                    .subscribeBy(
+                        onSuccess = { log.i("QR Code uploaded and added to place $it") },
+                        onError = { log.e("Error while uploading and adding QR Code to place", it) }
+                    )
+                    .addTo(compositeDisposable)
+            }
         }
-
-    private fun createQrCodeFile(bitmap: Bitmap, qrCodeId: String?): File {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes)
-
-        val path = "${Environment.DIRECTORY_PICTURES}${Constants.IMAGE_DIR}"
-        val storageDir = Environment.getExternalStoragePublicDirectory(path)
-
-        if (!storageDir.exists()) storageDir.mkdirs()
-
-        val image = File.createTempFile(qrCodeId, ".jpg", storageDir)
-        FileOutputStream(image).apply {
-            write(bytes.toByteArray())
-            close()
-        }
-        return image
-    }
 
     fun getUser() = userRepository.getUser()
 }

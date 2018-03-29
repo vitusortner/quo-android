@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import com.android.quo.util.Logger
+import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,3 +33,9 @@ fun Context.permissionsGranted(vararg permissions: String): Boolean =
     permissions.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
+
+fun Date.now(pattern: String): String =
+    SimpleDateFormat(pattern, Locale.getDefault()).format(this)
+
+fun async(block: () -> Unit) =
+    Completable.complete().subscribeOn(Schedulers.newThread()).subscribe(block)

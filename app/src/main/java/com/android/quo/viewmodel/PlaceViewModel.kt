@@ -1,6 +1,5 @@
 package com.android.quo.viewmodel
 
-import com.android.quo.db.entity.User
 import com.android.quo.network.model.ServerPicture
 import com.android.quo.repository.PictureRepository
 import com.android.quo.repository.UserRepository
@@ -24,17 +23,16 @@ class PlaceViewModel(
         uploadService.uploadImage(image)
             .subscribeOnIo()
             .flatMap { userRepository.getUserSingle() }
-            .map { createServerPicture(it, placeId, image.path) }
+            .map {
+                ServerPicture(
+                    ownerId = it.id,
+                    placeId = placeId,
+                    src = image.path,
+                    isVisible = true
+                )
+            }
             .flatMap { pictureRepository.addPicture(placeId, it) }
             .observeOnUi()
             .subscribe()
             .addTo(compositeDisposable)
-
-    private fun createServerPicture(user: User, placeId: String, imagePath: String) =
-        ServerPicture(
-            ownerId = user.id,
-            placeId = placeId,
-            src = imagePath,
-            isVisible = true
-        )
 }

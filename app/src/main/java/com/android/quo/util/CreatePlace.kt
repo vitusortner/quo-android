@@ -1,7 +1,6 @@
 package com.android.quo.util
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import com.android.quo.network.model.ServerComponent
 import com.android.quo.network.model.ServerPlace
 import com.android.quo.network.model.ServerSettings
@@ -11,7 +10,18 @@ import com.android.quo.network.model.ServerSettings
  */
 object CreatePlace {
 
-    var place = ServerPlace(
+    var place = initPlace()
+
+    val components = ArrayList<ServerComponent>()
+
+    lateinit var qrCodeImage: Bitmap
+
+    fun reset() {
+        place = initPlace()
+    }
+
+    private fun initPlace() =
+        ServerPlace(
             host = "",
             title = "",
             startDate = "",
@@ -21,11 +31,5 @@ object CreatePlace {
             titlePicture = "quo_default_1.png",
             qrCodeId = "",
             timestamp = ""
-    )
-
-    val components = ArrayList<ServerComponent>()
-
-    var list: ArrayList<Drawable>? = null
-
-    lateinit var qrCodeImage: Bitmap
+        )
 }

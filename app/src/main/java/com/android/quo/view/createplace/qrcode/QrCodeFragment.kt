@@ -22,11 +22,12 @@ class QrCodeFragment : BaseFragment(R.layout.fragment_qr_code_view) {
         qrCodeImageView.setImageBitmap(CreatePlace.qrCodeImage)
 
         floatingActionButton.setOnClickListener {
-            val sendIntent = Intent()
-            sendIntent.action = Intent.ACTION_SEND
-            sendIntent.type = "image/jpeg"
-            sendIntent.putExtra(Intent.EXTRA_STREAM, "uri")
-            startActivity(sendIntent)
+            Intent(Intent.ACTION_SEND).apply {
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_STREAM, "uri")
+            }.let {
+                startActivity(it)
+            }
         }
     }
 
@@ -35,9 +36,7 @@ class QrCodeFragment : BaseFragment(R.layout.fragment_qr_code_view) {
         toolbar.inflateMenu(R.menu.qr_code_view_menu)
         toolbar.title = getString(R.string.qr_code)
 
-        toolbar.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
+        toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         toolbar.setOnMenuItemClickListener {
             // TODO
