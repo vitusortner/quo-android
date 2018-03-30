@@ -7,7 +7,7 @@ import com.android.quo.db.entity.Picture
 import com.android.quo.view.BaseRecyclerViewAdapter
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
-import kotlinx.android.synthetic.main.gallery_image_thumbnail.view.imageView
+import kotlinx.android.synthetic.main.layout_gallery_image_thumbnail.view.imageView
 
 /**
  * Created by vitusortner on 14.11.17.
@@ -19,7 +19,7 @@ class GalleryAdapter(
     BaseRecyclerViewAdapter<Picture>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(inflateView(parent, R.layout.gallery_image_thumbnail))
+        ViewHolder(inflateView(parent, R.layout.layout_gallery_image_thumbnail))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.apply {

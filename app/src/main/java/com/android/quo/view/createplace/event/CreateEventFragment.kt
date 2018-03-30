@@ -68,9 +68,9 @@ import kotlinx.android.synthetic.main.fragment_create_event.locationEditText
 import kotlinx.android.synthetic.main.fragment_create_event.locationProgressBar
 import kotlinx.android.synthetic.main.fragment_create_event.toDateEditText
 import kotlinx.android.synthetic.main.fragment_create_event.toTimeEditText
-import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.cameraLayout
-import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.defaultImageListView
-import kotlinx.android.synthetic.main.layout_bottom_sheet_select_picture.view.photosLayout
+import kotlinx.android.synthetic.main.bottom_sheet_select_picture.view.cameraLayout
+import kotlinx.android.synthetic.main.bottom_sheet_select_picture.view.defaultImageListView
+import kotlinx.android.synthetic.main.bottom_sheet_select_picture.view.photosLayout
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -92,7 +92,6 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
     private val locationClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
     }
-
     private val defaultImages by lazy {
         DefaultImages.get(requireContext())
     }
@@ -209,7 +208,7 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
             // TODO nicer please
             val view = requireActivity()
                 .layoutInflater
-                .inflate(R.layout.layout_bottom_sheet_select_picture, null)
+                .inflate(R.layout.bottom_sheet_select_picture, null)
 
             val adapter = EventDefaultImagesAdapter { drawable, position ->
                 onClick(drawable, position)

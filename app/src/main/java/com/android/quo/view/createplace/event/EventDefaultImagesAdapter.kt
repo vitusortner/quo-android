@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.android.quo.R
 import com.android.quo.view.BaseRecyclerViewAdapter
-import kotlinx.android.synthetic.main.event_default_image.view.defaultImageView
+import kotlinx.android.synthetic.main.layout_event_default_image.view.defaultImageView
 
 /**
  * Created by Jung on 02.12.17.
@@ -22,5 +22,5 @@ class EventDefaultImagesAdapter(private val onClick: (drawable: Drawable, positi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(inflateView(parent, R.layout.event_default_image))
+        ViewHolder(inflateView(parent, R.layout.layout_event_default_image))
 }

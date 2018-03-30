@@ -7,10 +7,10 @@ import com.android.quo.db.entity.Place
 import com.android.quo.view.BaseRecyclerViewAdapter
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
-import kotlinx.android.synthetic.main.place_preview_cardview.view.pagePreviewCardView
-import kotlinx.android.synthetic.main.place_preview_cardview.view.placePreviewDescriptionTextView
-import kotlinx.android.synthetic.main.place_preview_cardview.view.placePreviewImageView
-import kotlinx.android.synthetic.main.place_preview_cardview.view.placePreviewTitleTextView
+import kotlinx.android.synthetic.main.cardview_place_preview.view.pagePreviewCardView
+import kotlinx.android.synthetic.main.cardview_place_preview.view.placePreviewDescriptionTextView
+import kotlinx.android.synthetic.main.cardview_place_preview.view.placePreviewImageView
+import kotlinx.android.synthetic.main.cardview_place_preview.view.placePreviewTitleTextView
 
 /**
  * Created by vitusortner on 27.10.17.
@@ -22,7 +22,7 @@ class PlacePreviewAdapter(
     BaseRecyclerViewAdapter<Place>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(inflateView(parent, R.layout.place_preview_cardview))
+        ViewHolder(inflateView(parent, R.layout.cardview_place_preview))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.apply {

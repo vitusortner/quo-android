@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/place_bottom_sheet_title_margin_bottom"
         android:text="@string/place_bottom_sheet_add_photo"
+        android:textColor="@color/boulder"
         android:textSize="@dimen/place_bottom_sheet_title_text_size" />
 
     <LinearLayout
@@ -28,12 +29,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/place_bottom_sheet_icon_padding_end"
-            android:src="@drawable/ic_camera_black" />
+            android:src="@drawable/ic_camera_black"
+            android:tint="@color/boulder" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/place_bottom_sheet_camera"
+            android:textColor="@color/boulder"
             android:textSize="@dimen/place_bottom_sheet_item_text_size" />
     </LinearLayout>
 
@@ -49,12 +52,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/place_bottom_sheet_icon_padding_end"
-            android:src="@drawable/ic_gallery_black" />
+            android:src="@drawable/ic_gallery_black"
+            android:tint="@color/boulder" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/place_bottom_sheet_photos"
+            android:textColor="@color/boulder"
             android:textSize="@dimen/place_bottom_sheet_item_text_size" />
     </LinearLayout>
 </LinearLayout>

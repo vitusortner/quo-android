@@ -8,8 +8,8 @@ import com.android.quo.db.entity.Component
 import com.android.quo.view.BaseRecyclerViewAdapter
 import com.bumptech.glide.RequestManager
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.component_image.imageView
-import kotlinx.android.synthetic.main.component_text.textView
+import kotlinx.android.synthetic.main.layout_component_image.imageView
+import kotlinx.android.synthetic.main.layout_component_text.textView
 
 /**
  * Created by vitusortner on 11.12.17.
@@ -28,9 +28,9 @@ class PageAdapter(private val imageLoader: RequestManager) : BaseRecyclerViewAda
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            PICTURE -> ImageViewHolder(inflateView(parent, R.layout.component_image))
-            TEXT -> TextViewHolder(inflateView(parent, R.layout.component_text))
-            else -> ImageViewHolder(inflateView(parent, R.layout.component_image))
+            PICTURE -> ImageViewHolder(inflateView(parent, R.layout.layout_component_image))
+            TEXT -> TextViewHolder(inflateView(parent, R.layout.layout_component_text))
+            else -> ImageViewHolder(inflateView(parent, R.layout.layout_component_image))
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

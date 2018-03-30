@@ -7,7 +7,7 @@
     <color name="black_haze">#F0F2F2</color>
     <color name="silver">#BDBDBD</color>
     <color name="oslo_gray">#95989A</color>
-    <color name="dorado_alpha_50">#80545454</color>
+    <color name="boulder">#757575</color>
 
     <color name="tradewind">#4CB5AB</color>
     <color name="gossamer">#009688</color>
@@ -16,7 +16,7 @@
     <color name="fire">#B92D00</color>
 
     <color name="silver_alpha_55">#8cC1C1C1</color>
-    <color name="black_alpha_55">#8c000000</color>
+    <color name="dorado_alpha_50">#80545454</color>
 
     <color name="transparent">#00000000</color>
 

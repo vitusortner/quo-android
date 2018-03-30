@@ -12,11 +12,11 @@ import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
 import com.android.quo.util.extension.toDate
 import com.bumptech.glide.RequestManager
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.place_info_address_cardview.addressNameTextView
-import kotlinx.android.synthetic.main.place_info_address_cardview.addressTextView
-import kotlinx.android.synthetic.main.place_info_description_cardview.contentTextView
-import kotlinx.android.synthetic.main.place_info_qr_code_cardview.imageView
-import kotlinx.android.synthetic.main.place_info_time_cardview.dateTextView
+import kotlinx.android.synthetic.main.cardview_place_info_address.addressNameTextView
+import kotlinx.android.synthetic.main.cardview_place_info_address.addressTextView
+import kotlinx.android.synthetic.main.cardview_place_info_description.contentTextView
+import kotlinx.android.synthetic.main.cardview_place_info_qr_code.imageView
+import kotlinx.android.synthetic.main.cardview_place_info_time.dateTextView
 import java.text.SimpleDateFormat
 
 /**
@@ -63,13 +63,13 @@ class InfoAdapter(private val imageLoader: RequestManager, private val place: Pl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             DESCRIPTION -> DescriptionViewHolder(
-                inflateView(parent, R.layout.place_info_description_cardview)
+                inflateView(parent, R.layout.cardview_place_info_description)
             )
-            ADDRESS -> AddressViewHolder(inflateView(parent, R.layout.place_info_address_cardview))
-            TIME -> TimeViewHolder(inflateView(parent, R.layout.place_info_time_cardview))
-            QR_CODE -> QrCodeViewHolder(inflateView(parent, R.layout.place_info_qr_code_cardview))
+            ADDRESS -> AddressViewHolder(inflateView(parent, R.layout.cardview_place_info_address))
+            TIME -> TimeViewHolder(inflateView(parent, R.layout.cardview_place_info_time))
+            QR_CODE -> QrCodeViewHolder(inflateView(parent, R.layout.cardview_place_info_qr_code))
             else -> DescriptionViewHolder(
-                inflateView(parent, R.layout.place_info_description_cardview)
+                inflateView(parent, R.layout.cardview_place_info_description)
             )
         }
 
