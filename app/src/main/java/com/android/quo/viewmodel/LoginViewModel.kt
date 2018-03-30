@@ -72,7 +72,7 @@ class LoginViewModel(
             }
         }
 
-    fun login(email: String, password: String, callback: (Boolean) -> Unit) {
+    fun login(email: String, password: String, callback: (Boolean) -> Unit) =
         authService.login(email, password)
             .subscribeOnIo()
             .observeOnUi()
@@ -86,9 +86,8 @@ class LoginViewModel(
                 }
             )
             .addTo(compositeDisposable)
-    }
 
-    fun signup(email: String, password: String, callback: (Boolean) -> Unit) {
+    fun signup(email: String, password: String, callback: (Boolean) -> Unit) =
         authService.signup(email, password)
             .subscribeOnIo()
             .observeOnUi()
@@ -102,7 +101,6 @@ class LoginViewModel(
                 }
             )
             .addTo(compositeDisposable)
-    }
 
     fun validateLoginState(onSuccess: () -> Unit, onError: () -> Unit) =
         async {

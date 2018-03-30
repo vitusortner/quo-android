@@ -35,9 +35,7 @@ class SyncService(
         savePlaces(data, false) { toPlace(it.place, false, it.timestamp) }
 
     fun savePlace(data: ServerPlace, userId: String) {
-        val date = createMongoDate()
-
-        val place = toPlace(data, userId == data.host, date)
+        val place = toPlace(data, userId == data.host, createMongoDate())
         placeDao.deletePlace(place)
         placeDao.insertPlace(place)
 
@@ -47,7 +45,6 @@ class SyncService(
     private fun <T> savePlaces(data: List<T>, isHost: Boolean, mapper: (T) -> Place) {
         if (data.isNotEmpty()) {
             val places = data.map(mapper)
-            // delete places before inserting updated places
             placeDao.deletePlaces(isHost)
             placeDao.insertAllPlaces(places)
 
@@ -60,7 +57,6 @@ class SyncService(
     fun saveComponents(data: List<ServerComponent>, placeId: String) {
         if (data.isNotEmpty()) {
             val components = data.map { toComponent(it, placeId) }
-            // delete components of place before inserting updated components
             componentDao.deleteComponentsOfPlace(placeId)
             componentDao.insertAllComponents(components)
 
@@ -73,7 +69,6 @@ class SyncService(
     fun savePictures(data: List<ServerPicture>, placeId: String) {
         if (data.isNotEmpty()) {
             val pictures = data.map(::toPicture)
-            // delete pictures of given place before inserting updated pictures
             pictureDao.deletePicturesOfPlace(placeId)
             pictureDao.insertAllPictures(pictures)
 
@@ -129,9 +124,9 @@ class SyncService(
         )
 
     @SuppressLint("SimpleDateFormat")
-    private fun createMongoDate(): String {
-        val dateFormat = SimpleDateFormat(MONGO_DB_TIMESTAMP_FORMAT)
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        return dateFormat.format(Date())
-    }
+    private fun createMongoDate(): String =
+        SimpleDateFormat(MONGO_DB_TIMESTAMP_FORMAT).run {
+            timeZone = TimeZone.getTimeZone("UTC")
+            format(Date())
+        }
 }
