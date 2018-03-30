@@ -96,7 +96,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
     private fun setupToolbar() =
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_back)
-            inflateMenu(R.menu.create_place_menu)
+            inflateMenu(R.menu.menu_create_place)
             title = getString(R.string.new_place)
             setTitleTextColor(resources.getColor(R.color.white))
 

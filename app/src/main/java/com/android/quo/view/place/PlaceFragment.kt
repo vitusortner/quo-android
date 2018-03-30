@@ -245,7 +245,7 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
 
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
-        toolbar.inflateMenu(R.menu.place_menu)
+        toolbar.inflateMenu(R.menu.menu_place)
         toolbar.title = place?.title ?: ""
 
         // TODO else show placeholder https://app.clickup.com/751518/751948/t/w5hm

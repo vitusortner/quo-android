@@ -33,7 +33,7 @@ class QrCodeFragment : BaseFragment(R.layout.fragment_qr_code_view) {
 
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
-        toolbar.inflateMenu(R.menu.qr_code_view_menu)
+        toolbar.inflateMenu(R.menu.menu_qr_code_view)
         toolbar.title = getString(R.string.qr_code)
 
         toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }

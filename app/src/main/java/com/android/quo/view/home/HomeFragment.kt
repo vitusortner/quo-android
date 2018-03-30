@@ -52,7 +52,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     }
 
     private fun setupToolbar() {
-        toolbar.inflateMenu(R.menu.home_menu)
+        toolbar.inflateMenu(R.menu.menu_home)
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.settings -> {
