@@ -41,6 +41,6 @@ class InfoFragment : BaseFragment(R.layout.fragment_info) {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material)
         toolbar.title = place?.title ?: ""
 
-        toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
     }
 }

@@ -32,9 +32,9 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.bottomNavigationView?.visibility = VISIBLE
+        requireActivity().bottomNavigationView?.visibility = VISIBLE
 
-        adapter = PlacePreviewAdapter(imageLoader) { onClick(it, fragmentManager) }
+        adapter = PlacePreviewAdapter(imageLoader) { onClick(it, requireFragmentManager()) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,13 +93,13 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     companion object {
 
-        fun onClick(place: Place, fragmentManager: FragmentManager?) {
+        fun onClick(place: Place, fragmentManager: FragmentManager) {
             val bundle = Bundle()
             bundle.putParcelable(Constants.Extra.PLACE_EXTRA, place)
             val fragment = PlaceFragment()
             fragment.arguments = bundle
 
-            fragmentManager?.addFragment(
+            fragmentManager.addFragment(
                 fragment,
                 true,
                 R.anim.slide_in to R.anim.slide_out

@@ -31,7 +31,6 @@ ext {
     retrofit_version = '2.3.0'
     rxbinding_version = '2.1.0'
     glide_version = '4.4.0'
-    leakcanary_version = '1.5.4'
     koin_version = '0.8.2'
 }
 

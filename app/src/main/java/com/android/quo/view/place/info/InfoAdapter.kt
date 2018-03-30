@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat
 /**
  * Created by vitusortner on 22.11.17.
  */
+// TODO this is kind on buggy
 class InfoAdapter(private val imageLoader: RequestManager, private val place: Place) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

@@ -29,9 +29,9 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.bottomNavigationView?.visibility = View.VISIBLE
+        requireActivity().bottomNavigationView.visibility = View.VISIBLE
 
-        adapter = PlacePreviewAdapter(imageLoader) { HomeFragment.onClick(it, fragmentManager) }
+        adapter = PlacePreviewAdapter(imageLoader) { HomeFragment.onClick(it, requireFragmentManager()) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +65,7 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
 
     private fun setupFloatingActionButton() =
         floatingActionButton.setOnClickListener {
-            fragmentManager?.createAndReplaceFragment(
+            requireFragmentManager().createAndReplaceFragment(
                 FragmentTag.CREATE_PLACE_FRAGMENT,
                 CreatePlaceFragment::class.java,
                 addToBackStack = true

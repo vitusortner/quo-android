@@ -65,9 +65,10 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Show bottom navigation bar when coming from fragment with hidden bottom nav bar
-        if (activity?.bottomNavigationView?.visibility == View.GONE) {
-            activity?.bottomNavigationView?.visibility = View.VISIBLE
-        }
+        requireActivity().bottomNavigationView
+            .let {
+                if (it.visibility == View.GONE) it.visibility = View.VISIBLE
+            }
         place = arguments?.getParcelable(Extra.PLACE_EXTRA)
     }
 
@@ -90,14 +91,13 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
         }
     }
 
-    private fun setupBottomSheetDialog() =
-        context?.let { context ->
-            bottomSheetDialog = BottomSheetDialog(context)
-            val view = layoutInflater.inflate(R.layout.bottom_sheet_add_image, null)
+    private fun setupBottomSheetDialog() {
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_add_image, null)
 
-            setupBottomSheetButtons(view)
-            bottomSheetDialog?.setContentView(view)
-        }
+        setupBottomSheetButtons(view)
+        bottomSheetDialog?.setContentView(view)
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -106,19 +106,19 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
     ) {
         when (requestCode) {
             PERMISSION_REQUEST_CAMERA -> {
-                context
-                    ?.permissionsGranted(
+                requireContext()
+                    .permissionsGranted(
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
-                    ?.takeIf { it }
+                    .takeIf { it }
                     ?.run { openCamera() }
             }
             PERMISSION_REQUEST_EXTERNAL_STORAGE -> {
-                context
-                    ?.permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    ?.takeIf { it }
+                requireContext()
+                    .permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .takeIf { it }
                     ?.run { openGallery() }
             }
         }
@@ -149,25 +149,23 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
 
     private fun openGallery() =
         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).let {
-            activity?.startActivityForResult(it, REQUEST_GALLERY)
+            requireActivity().startActivityForResult(it, REQUEST_GALLERY)
         }
 
-    private fun openCamera() =
-        context?.let { context ->
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).let { intent ->
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    val image = createImageFile()
-                    val imageUri = FileProvider.getUriForFile(
-                        context,
-                        "com.android.quo",
-                        image
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-                    activity?.startActivityForResult(intent, REQUEST_CAMERA)
-                }
+    private fun openCamera() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).let { intent ->
+            if (intent.resolveActivity(requireContext().packageManager) != null) {
+                val image = createImageFile()
+                val imageUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.android.quo",
+                    image
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+                requireActivity().startActivityForResult(intent, REQUEST_CAMERA)
             }
         }
-
+    }
 
     @SuppressLint("SimpleDateFormat")
     private fun createImageFile(): File {
@@ -233,15 +231,15 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
     private fun getPath(uri: Uri): String? {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context?.contentResolver?.query(uri, mediaStoreData, null, null, null)
+        val cursor = requireContext().contentResolver.query(uri, mediaStoreData, null, null, null)
 
-        cursor?.apply {
+        cursor.apply {
             if (moveToFirst()) {
                 val columnIndex = getColumnIndexOrThrow(mediaStoreData[0])
                 result = getString(columnIndex)
             }
         }
-        cursor?.close()
+        cursor.close()
         return result
     }
 
@@ -257,7 +255,7 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
             .load(imageUrl)
             .into(imageView)
 
-        toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
 
         toolbar.setOnMenuItemClickListener {
             val bundle = Bundle()
@@ -265,67 +263,65 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
             val fragment = InfoFragment()
             fragment.arguments = bundle
 
-            fragmentManager?.addFragment(fragment, true)
+            requireFragmentManager().addFragment(fragment, true)
             true
         }
 
-        context?.let {
-            // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
-            // set tab layout colors denpendent on how far scrolled
-            var scrollRange = -1
+        // TODO resolve log spam https://stackoverflow.com/questions/38913215/requestlayout-improperly-called-by-collapsingtoolbarlayout
+        // set tab layout colors denpendent on how far scrolled
+        var scrollRange = -1
 
-            appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                // set shadow
-                ViewCompat.setElevation(appBarLayout, 4f.toPx(it).toFloat())
+        appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            // set shadow
+            ViewCompat.setElevation(appBarLayout, 4f.toPx(requireContext()).toFloat())
 
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset <= 150) {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
-                    tabLayout.setTabTextColors(
-                        resources.getColor(R.color.colorTextBlack),
-                        resources.getColor(R.color.colorTextBlack)
-                    )
-                } else {
-                    tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
-                    tabLayout.setTabTextColors(
-                        resources.getColor(R.color.colorTextWhite),
-                        resources.getColor(R.color.colorTextWhite)
-                    )
-                }
+            if (scrollRange == -1) {
+                scrollRange = appBarLayout.totalScrollRange
+            }
+            if (scrollRange + verticalOffset <= 150) {
+                tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+                tabLayout.setTabTextColors(
+                    resources.getColor(R.color.colorTextBlack),
+                    resources.getColor(R.color.colorTextBlack)
+                )
+            } else {
+                tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+                tabLayout.setTabTextColors(
+                    resources.getColor(R.color.colorTextWhite),
+                    resources.getColor(R.color.colorTextWhite)
+                )
             }
         }
     }
 
     private fun setupViewPager() {
-        context?.let { context ->
-            place?.id?.let { placeId ->
-                viewPager.adapter = PlacePagerAdapter(childFragmentManager, context, placeId)
-            }
+        place?.id?.let { placeId ->
+            viewPager.adapter = PlacePagerAdapter(childFragmentManager, requireContext(), placeId)
         }
-
         if (isPhotoUploadAllowed) {
-            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-                override fun onPageScrollStateChanged(state: Int) {
-                }
-
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                }
-
-                override fun onPageSelected(position: Int) {
-                    if (position == 0) {
-                        floatingActionButton.hide()
-                    } else {
-                        floatingActionButton.show()
-                    }
-                }
-            })
+            viewPager.addOnPageChangeListener(observer)
         }
     }
+
+    private val observer = object : ViewPager.OnPageChangeListener {
+
+        override fun onPageScrollStateChanged(state: Int) {
+        }
+
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            if (position == 0) {
+                floatingActionButton.hide()
+            } else {
+                floatingActionButton.show()
+            }
+        }
+    }
+
 }

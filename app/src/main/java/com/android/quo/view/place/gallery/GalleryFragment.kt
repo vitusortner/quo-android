@@ -62,6 +62,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
         val intent = Intent(context, ImagePagerActivity::class.java)
         intent.putParcelableArrayListExtra(Extra.PICTURE_LIST_EXTRA, ArrayList(list))
         intent.putExtra(Extra.PICTURE_POSITION_EXTRA, position)
-        context?.startActivity(intent)
+        requireContext().startActivity(intent)
     }
 }

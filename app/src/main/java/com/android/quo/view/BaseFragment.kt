@@ -18,9 +18,9 @@ abstract class BaseFragment(@LayoutRes private val layout: Int) : Fragment() {
 
     val log = Logger(javaClass)
 
-    val imageLoader by lazy { Glide.with(context) }
+    val imageLoader by lazy { Glide.with(requireContext()) }
 
-    val imageCompressor by lazy { Compressor(context) }
+    val imageCompressor by lazy { Compressor(requireContext()) }
 
     val compositeDisposable by lazy { CompositeDisposable() }
 

@@ -34,47 +34,48 @@ class ImageFragment : BaseFragment(R.layout.fragment_gallery_image) {
     private fun setupToolbar() {
         toolbar.setNavigationIcon(R.drawable.ic_back)
 
-        toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
 
         // handle tap on image
-        imageView.controller.setOnGesturesListener(object : GestureController.OnGestureListener {
-            override fun onSingleTapUp(event: MotionEvent) = false
-
-            override fun onDown(event: MotionEvent) {
-            }
-
-            override fun onDoubleTap(event: MotionEvent) = false
-
-            override fun onUpOrCancel(event: MotionEvent) {
-            }
-
-            override fun onLongPress(event: MotionEvent) {
-            }
-
-            override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-                activity?.let { activity ->
-                    val decorView = activity.window.decorView
-
-                    if ((decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
-                        decorView.systemUiVisibility =
-                                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                        or View.SYSTEM_UI_FLAG_FULLSCREEN
-                                        or View.SYSTEM_UI_FLAG_LOW_PROFILE
-                                        or View.SYSTEM_UI_FLAG_IMMERSIVE)
-                        toolbar.visibility = View.GONE
-                    } else {
-                        decorView.systemUiVisibility =
-                                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-                        toolbar.visibility = View.VISIBLE
-                    }
-                }
-                return true
-            }
-        })
+        imageView.controller.setOnGesturesListener(observer)
     }
+
+    private val observer = object : GestureController.OnGestureListener {
+        override fun onSingleTapUp(event: MotionEvent) = false
+
+        override fun onDown(event: MotionEvent) {
+        }
+
+        override fun onDoubleTap(event: MotionEvent) = false
+
+        override fun onUpOrCancel(event: MotionEvent) {
+        }
+
+        override fun onLongPress(event: MotionEvent) {
+        }
+
+        override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+            val decorView = requireActivity().window.decorView
+
+            if ((decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
+                decorView.systemUiVisibility =
+                        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_LOW_PROFILE
+                                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+                toolbar.visibility = View.GONE
+            } else {
+                decorView.systemUiVisibility =
+                        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+                toolbar.visibility = View.VISIBLE
+            }
+            return true
+        }
+    }
+
 }

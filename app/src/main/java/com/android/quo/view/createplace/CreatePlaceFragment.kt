@@ -74,7 +74,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
                 requireContext()
                     .permissionsGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     .takeIf { !it }
-                    ?.run { fragmentManager?.popBackStack() }
+                    ?.run { requireFragmentManager().popBackStack() }
             }
         }
     }
@@ -100,7 +100,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
             title = getString(R.string.new_place)
             setTitleTextColor(resources.getColor(R.color.colorTextWhite))
 
-            setNavigationOnClickListener { activity?.onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressed() }
 
             setOnMenuItemClickListener {
                 if (!CreatePlace.place.titlePicture.isNullOrEmpty() && !CreatePlace.place.title.isEmpty()
@@ -110,7 +110,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
                     viewModel.savePlace(CreatePlace.place)
 
-                    fragmentManager?.createAndReplaceFragment(
+                    requireFragmentManager().createAndReplaceFragment(
                         Constants.FragmentTag.QR_CODE_FRAGMENT,
                         QrCodeFragment::class.java,
                         addToBackStack = true

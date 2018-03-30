@@ -14,6 +14,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityCompat.requestPermissions
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
@@ -61,7 +63,8 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_code_scanner)
 
-        requestPermissions(
+        ActivityCompat.requestPermissions(
+            this,
             arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -88,8 +91,7 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
 
         photosButton.setOnClickListener { openPhoneGallery() }
 
-        this
-            .permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+        permissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
             .takeIf { it }
             ?.run { photosButton.background = getLastImageFromGallery() }
     }
@@ -108,11 +110,10 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
     }
 
     private fun trySetupLocationClient() =
-        this
-            .permissionsGranted(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+        permissionsGranted(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
             .takeIf { it }
             ?.let { locationClient = LocationServices.getFusedLocationProviderClient(this) }
 
@@ -192,7 +193,8 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
 
         alert.setButton(AlertDialog.BUTTON_POSITIVE,
             getString(R.string.qr_code_location_off_turn_on), { _, _ ->
-                requestPermissions(
+                ActivityCompat.requestPermissions(
+                    this,
                     arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION
@@ -208,6 +210,7 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
         alert.show()
     }
 
+    @Suppress("IMPLICIT_CAST_TO_ANY")
     @SuppressLint("MissingPermission")
     private fun tryOpenPlace(qrCodeId: String) {
         viewModel.getPlace(qrCodeId).observe(this, Observer {
@@ -226,7 +229,8 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
                                 placeLocation.longitude = place.longitude
 
                                 if (placeLocation.distanceTo(it) <= Constants.LOCATION_DISTANCE
-                                    || place.isHost) {
+                                    || place.isHost
+                                ) {
                                     startPlaceIntent(place)
                                 } else {
                                     openWrongLocationAlert()

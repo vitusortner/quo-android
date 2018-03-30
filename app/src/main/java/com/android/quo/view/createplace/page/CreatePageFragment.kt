@@ -110,19 +110,16 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
     }
 
     private fun createCardView(view: View): CardView? {
-        context?.let { context ->
-            val layoutParams = LinearLayout.LayoutParams(
-                MATCH_PARENT,
-                MATCH_PARENT
-            )
-            layoutParams.bottomMargin = 20
-            val cardView = CardView(context)
-            cardView.layoutParams = layoutParams
-            cardView.cardElevation = 15f
-            cardView.addView(view)
-            return cardView
-        }
-        return null
+        val layoutParams = LinearLayout.LayoutParams(
+            MATCH_PARENT,
+            MATCH_PARENT
+        )
+        layoutParams.bottomMargin = 20
+        val cardView = CardView(requireContext())
+        cardView.layoutParams = layoutParams
+        cardView.cardElevation = 15f
+        cardView.addView(view)
+        return cardView
     }
 
     private fun createEditText(): EditText {
@@ -149,7 +146,7 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
 
     private fun openPhoneGallery() =
         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).let {
-            activity?.startActivityForResult(it, CREATE_PAGE_REQUEST_GALLERY)
+            requireActivity().startActivityForResult(it, CREATE_PAGE_REQUEST_GALLERY)
         }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -211,18 +208,16 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
     private fun getPath(uri: Uri): String {
         var result: String? = null
         val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context?.contentResolver?.query(
+        val cursor = requireContext().contentResolver.query(
             uri, mediaStoreData, null,
             null, null
         )
 
-        cursor?.let { cursor ->
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
-                result = cursor.getString(columnIndex)
-            }
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
+            result = cursor.getString(columnIndex)
         }
-        cursor?.close()
+        cursor.close()
 
         if (result == null) {
             result = getString(R.string.not_found)

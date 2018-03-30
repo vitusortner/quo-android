@@ -350,12 +350,12 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
 
     private fun openPhoneGallery() =
         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).let {
-            activity?.startActivityForResult(it, REQUEST_GALLERY)
+            requireActivity().startActivityForResult(it, REQUEST_GALLERY)
         }
 
     private fun openPhoneCamera() =
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).let {
-            activity?.startActivityForResult(it, REQUEST_CAMERA)
+            requireActivity().startActivityForResult(it, REQUEST_CAMERA)
         }
 
     private fun setHeaderImageFromGallery(uri: Uri) =
