@@ -310,8 +310,8 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
     }
 
     @SuppressLint("MissingPermission")
-    private fun checkForLastLocation(callback: (Location) -> Unit) {
-        locationClient.lastLocation.addOnSuccessListener { it?.let { callback(it) } }
+    private fun checkForLastLocation(onSuccess: (Location) -> Unit) {
+        locationClient.lastLocation.addOnSuccessListener { it?.let { onSuccess(it) } }
     }
 
     private fun persistAddressFromLocation(location: Location) {
