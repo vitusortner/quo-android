@@ -2,12 +2,12 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.os.AsyncTask
 import com.android.quo.db.entity.Place
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
 import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
+import com.android.quo.util.extension.async
 import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
@@ -38,6 +38,7 @@ class HomeViewModel(
             .flatMapFlowable { placeRepository.getVisitedPlaces(it.id) }
             .distinctUntilChanged()
             .filter { it.isNotEmpty() }
+            // TODO move this ordering to DB level
             .map { it.sortedByDescending { it.lastScanned.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
             .observeOnUi()
             .subscribeBy(
@@ -46,5 +47,5 @@ class HomeViewModel(
             )
             .addTo(compositeDisposable)
 
-    fun logout() = AsyncTask.execute { authService.logout() }
+    fun logout() = async { authService.logout() }
 }

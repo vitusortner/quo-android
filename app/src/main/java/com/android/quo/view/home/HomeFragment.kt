@@ -94,11 +94,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     companion object {
 
         fun onClick(place: Place, fragmentManager: FragmentManager) {
-            val bundle = Bundle()
-            bundle.putParcelable(Constants.Extra.PLACE_EXTRA, place)
-            val fragment = PlaceFragment()
-            fragment.arguments = bundle
-
+            val fragment = PlaceFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(Constants.Extra.PLACE_EXTRA, place)
+                }
+            }
             fragmentManager.addFragment(
                 fragment,
                 true,
@@ -106,4 +106,5 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
             )
         }
     }
+
 }
