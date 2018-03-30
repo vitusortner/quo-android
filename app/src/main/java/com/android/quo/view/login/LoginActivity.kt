@@ -137,7 +137,7 @@ class LoginActivity : BaseActivity() {
     private fun checkEditTextTintColor(message: String?): Int {
         var backgroundTintColor: Int = EditTextTheme
         if (!message.isNullOrEmpty()) {
-            backgroundTintColor = R.color.colorAlert
+            backgroundTintColor = R.color.fire
         }
         return backgroundTintColor
     }
@@ -275,7 +275,7 @@ class LoginActivity : BaseActivity() {
                     val password = dialogView.passwordSignUpEditText.text.toString()
                     signup(email, password)
                 } else {
-                    dialogView.agreementCheckbox.setTextColor(getColor(R.color.colorAlert))
+                    dialogView.agreementCheckbox.setTextColor(getColor(R.color.fire))
                 }
             }
         })
@@ -317,16 +317,16 @@ class LoginActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.black_haze)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.silver)
         }
     }
 
     override fun onStop() {
         super.onStop()
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black_haze)
     }
 
     override fun onDestroy() {

@@ -90,7 +90,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
     private fun setupStatusBar() =
         requireActivity().window.apply {
             decorView.systemUiVisibility = 0
-            statusBarColor = resources.getColor(R.color.colorSysBarCreatePlace)
+            statusBarColor = resources.getColor(R.color.pine_green)
         }
 
     private fun setupToolbar() =
@@ -98,7 +98,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
             setNavigationIcon(R.drawable.ic_back)
             inflateMenu(R.menu.create_place_menu)
             title = getString(R.string.new_place)
-            setTitleTextColor(resources.getColor(R.color.colorTextWhite))
+            setTitleTextColor(resources.getColor(R.color.white))
 
             setNavigationOnClickListener { requireActivity().onBackPressed() }
 
@@ -125,13 +125,13 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
     private fun resetStatusBar() =
         requireActivity().window.apply {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                statusBarColor = ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark)
+                statusBarColor = ContextCompat.getColor(requireContext(), R.color.black_haze)
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             } else {
                 statusBarColor =
-                        ContextCompat.getColor(requireContext(), R.color.colorStatusBarSdkPre23)
+                        ContextCompat.getColor(requireContext(), R.color.silver)
             }
-            statusBarColor = resources.getColor(R.color.colorPrimaryDark)
+            statusBarColor = resources.getColor(R.color.black_haze)
         }
 
     private fun generateQrCode() =

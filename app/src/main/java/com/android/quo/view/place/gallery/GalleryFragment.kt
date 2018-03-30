@@ -51,7 +51,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
     }
 
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setColorSchemeResources(R.color.tradewind)
         swipeRefreshLayout.setOnRefreshListener {
             placeId?.let { viewModel.updatePictures(it) }
             swipeRefreshLayout.isRefreshing = false

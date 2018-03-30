@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/placePreviewDescriptionTextView"
                 android:layout_alignParentStart="true"
-                android:background="@color/colorCardViewTitleBackground"
+                android:background="@color/silver_alpha_55"
                 android:paddingBottom="@dimen/home_cardview_padding_bottom"
                 android:paddingTop="@dimen/home_cardview_padding_top"
                 android:paddingEnd="@dimen/home_cardview_padding_end"

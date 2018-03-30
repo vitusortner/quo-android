@@ -84,7 +84,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
      * Update place preview list and stop refreshing animation
      */
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setColorSchemeResources(R.color.tradewind)
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.updatePlaces()
             swipeRefreshLayout.isRefreshing = false

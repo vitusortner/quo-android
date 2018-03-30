@@ -8,7 +8,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:elevation="@dimen/main_toolbar_elevation" />
 
     <ImageView
@@ -25,6 +25,6 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_share"
-        app:backgroundTint="@color/colorAccentDark" />
+        app:backgroundTint="@color/gossamer" />
 
 </RelativeLayout>

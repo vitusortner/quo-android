@@ -4,7 +4,7 @@
     android:id="@+id/createPageLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/black_haze"
     android:orientation="vertical">
 
     <ScrollView
@@ -53,7 +53,7 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add"
-        app:backgroundTint="@color/colorAccentDark" />
+        app:backgroundTint="@color/gossamer" />
 
     <ImageButton
         android:id="@+id/roundGalleryButton"

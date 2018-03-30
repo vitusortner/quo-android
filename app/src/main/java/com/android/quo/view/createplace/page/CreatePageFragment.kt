@@ -131,8 +131,8 @@ class CreatePageFragment : BaseFragment(R.layout.fragment_create_page) {
         editText.gravity = TOP
         editText.minLines = 10
         editText.setSingleLine(false)
-        editText.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-        editText.setTextColor(resources.getColor(R.color.colorTextGray))
+        editText.setBackgroundColor(resources.getColor(R.color.white))
+        editText.setTextColor(resources.getColor(R.color.oslo_gray))
         return editText
     }
 

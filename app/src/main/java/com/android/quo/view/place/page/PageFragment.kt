@@ -47,7 +47,7 @@ class PageFragment : BaseFragment(R.layout.fragment_place_page) {
         }
 
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setColorSchemeResources(R.color.tradewind)
         swipeRefreshLayout.setOnRefreshListener {
             placeId?.let {
                 viewModel.updateComponents(it)

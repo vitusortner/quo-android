@@ -37,10 +37,10 @@ class MainActivity : BaseActivity() {
 
         // set status bar color
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.black_haze)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusBarSdkPre23)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.silver)
         }
     }
 

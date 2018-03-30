@@ -279,16 +279,16 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
                 scrollRange = appBarLayout.totalScrollRange
             }
             if (scrollRange + verticalOffset <= 150) {
-                tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextBlack))
+                tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.black))
                 tabLayout.setTabTextColors(
-                    resources.getColor(R.color.colorTextBlack),
-                    resources.getColor(R.color.colorTextBlack)
+                    resources.getColor(R.color.black),
+                    resources.getColor(R.color.black)
                 )
             } else {
-                tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.colorTextWhite))
+                tabLayout.setSelectedTabIndicatorColor(resources.getColor(R.color.white))
                 tabLayout.setTabTextColors(
-                    resources.getColor(R.color.colorTextWhite),
-                    resources.getColor(R.color.colorTextWhite)
+                    resources.getColor(R.color.white),
+                    resources.getColor(R.color.white)
                 )
             }
         }

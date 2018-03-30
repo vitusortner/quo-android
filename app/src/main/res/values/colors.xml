@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#F0F2F2</color>
-    <color name="colorAccent">#4CB5AB</color>
-    <color name="colorAccentDark">#009688</color>
-    <color name="colorAlert">#B92D00</color>
-    <color name="colorSecondary">#8c000000</color>
-    <color name="colorCardViewTitleBackground">#8cC1C1C1</color>
-    <color name="colorSysBarCreatePlace">#00796B</color>
 
-    <!-- COLOR FOR TEXT -->
-    <color name="colorTextWhite">#FFFFFF</color>
-    <color name="colorTextGray">#95989A</color>
-    <color name="colorTextDarkGray">#8c000000</color>
-    <color name="colorTextBlack">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
-    <color name="colorStatusBarSdkPre23">#BDBDBD</color>
+    <color name="black_haze">#F0F2F2</color>
+    <color name="silver">#BDBDBD</color>
+    <color name="oslo_gray">#95989A</color>
+    <color name="dorado_alpha_50">#80545454</color>
 
-    <color name="colorInfoToolbar">#80545454</color>
-    <color name="colorInfoToolbarContentScrim">#FFFFFF</color>
-    <color name="colorPlaceToolbarContentScrim">#FFFFFF</color>
-    <color name="colorPlaceTablayoutHighlight">#FFFFFF</color>
-    <color name="colorTransparent">#00000000</color>
-    <color name="colorTitle">#000000</color>
-    <color name="colorTitleWhite">#FFFFFF</color>
-    <color name="colorInfoIcon">#FFFFFF</color>
-    <color name="colorInfoIconDark">#95989A</color>
-    <color name="colorImagePagerBackground">#000000</color>
+    <color name="tradewind">#4CB5AB</color>
+    <color name="gossamer">#009688</color>
+    <color name="pine_green">#00796B</color>
 
-    <color name="colorBackgroundWhite">#FFFFFF</color>
+    <color name="fire">#B92D00</color>
+
+    <color name="silver_alpha_55">#8cC1C1C1</color>
+    <color name="black_alpha_55">#8c000000</color>
+
+    <color name="transparent">#00000000</color>
+
 </resources>

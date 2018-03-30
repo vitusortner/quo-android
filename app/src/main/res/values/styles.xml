@@ -3,12 +3,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="titleTextColor">@color/colorSecondary</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-
+        <item name="titleTextColor">@color/black_alpha_55</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/black_haze</item>
+        <item name="colorAccent">@color/tradewind</item>
     </style>
 
     <style name="TransparentAppTheme" parent="Theme.AppCompat.Light">
@@ -17,12 +15,12 @@
     </style>
 
     <style name="TransparentStatusBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/colorInfoToolbar</item>
+        <item name="android:statusBarColor">@color/dorado_alpha_50</item>
     </style>
 
     <style name="AccentActionBarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="actionMenuTextColor">@color/colorTextWhite</item>
-        <item name="android:actionMenuTextColor">@color/colorTextWhite</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
     <style name="PlaceToolbarStyle">
@@ -32,52 +30,52 @@
 
     <style name="CardViewTitleFont">
         <item name="android:textSize">@dimen/home_cardview_title_textsize</item>
-        <item name="android:textColor">@color/colorTextWhite</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="CardViewDescriptionFont">
         <item name="android:textSize">@dimen/home_cardview_description_textsize</item>
-        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 
     <style name="DatePickerDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/colorAccent</item>
-        <item name="colorPrimaryDark">@color/colorAccentDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/tradewind</item>
+        <item name="colorPrimaryDark">@color/gossamer</item>
+        <item name="colorAccent">@color/tradewind</item>
     </style>
 
     <style name="TimePickerDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorAccentDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/gossamer</item>
+        <item name="colorAccent">@color/tradewind</item>
     </style>
 
     <style name="SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorAccentDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/gossamer</item>
+        <item name="colorAccent">@color/tradewind</item>
     </style>
 
     <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorControlNormal">@color/colorTextGray</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/oslo_gray</item>
+        <item name="colorControlActivated">@color/tradewind</item>
+        <item name="colorControlHighlight">@color/tradewind</item>
     </style>
 
     <style name="EditTextStyle">
-        <item name="android:textColor">@color/colorTextGray</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/oslo_gray</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="RadioButtonTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorControlNormal">@color/colorTextGray</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/oslo_gray</item>
+        <item name="colorControlActivated">@color/tradewind</item>
+        <item name="colorControlHighlight">@color/tradewind</item>
     </style>
 
     <style name="RadioButtonStyle">
-        <item name="android:textColor">@color/colorTextGray</item>
+        <item name="android:textColor">@color/oslo_gray</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -87,12 +85,11 @@
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/tradewind</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorAccent</item>
-
+        <item name="android:textColor">@color/tradewind</item>
     </style>
 
 </resources>
