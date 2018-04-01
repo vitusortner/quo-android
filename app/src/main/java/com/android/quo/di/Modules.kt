@@ -1,6 +1,6 @@
 package com.android.quo.di
 
-import com.android.quo.App
+import com.android.quo.db.Database
 import com.android.quo.network.ApiClient
 import com.android.quo.repository.ComponentRepository
 import com.android.quo.repository.PictureRepository
@@ -19,6 +19,7 @@ import com.android.quo.viewmodel.PlaceViewModel
 import com.android.quo.viewmodel.QrCodeScannerViewModel
 import devliving.online.securedpreferencestore.SecuredPreferenceStore
 import org.koin.android.architecture.ext.viewModel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module.applicationContext
 
 /**
@@ -36,29 +37,29 @@ private val viewModelsModule = applicationContext {
 }
 
 private val daosModule = applicationContext {
-    val db = App.database
-    provide { db.componentDao() }
-    provide { db.pictureDao() }
-    provide { db.placeDao() }
-    provide { db.userDao() }
+    bean { Database.instance(androidApplication()) }
+    bean { get<Database>().componentDao() }
+    bean { get<Database>().pictureDao() }
+    bean { get<Database>().placeDao() }
+    bean { get<Database>().userDao() }
 }
 
 private val utilsModule = applicationContext {
-    provide { ApiClient.instance(get()) }
-    provide { SecuredPreferenceStore.getSharedInstance() }
+    bean { ApiClient.instance(get()) }
+    bean { SecuredPreferenceStore.getSharedInstance() }
 }
 
 private val servicesModule = applicationContext {
-    provide { AuthService(get(), get(), get(), get(), get(), get()) }
-    provide { SyncService(get(), get(), get()) }
-    provide { UploadService(get()) }
+    bean { AuthService(get(), get(), get(), get(), get(), get()) }
+    bean { SyncService(get(), get(), get()) }
+    bean { UploadService(get()) }
 }
 
 private val repositoriesModule = applicationContext {
-    provide { ComponentRepository(get(), get(), get()) }
-    provide { PictureRepository(get(), get(), get()) }
-    provide { PlaceRepository(get(), get(), get()) }
-    provide { UserRepository(get()) }
+    bean { ComponentRepository(get(), get(), get()) }
+    bean { PictureRepository(get(), get(), get()) }
+    bean { PlaceRepository(get(), get(), get()) }
+    bean { UserRepository(get()) }
 }
 
 val modules =
