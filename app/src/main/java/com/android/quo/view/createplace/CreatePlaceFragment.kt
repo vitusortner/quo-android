@@ -26,7 +26,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
-    private val viewModel by viewModel<CreatePlaceViewModel>(false)
+    private val viewModel by viewModel<CreatePlaceViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

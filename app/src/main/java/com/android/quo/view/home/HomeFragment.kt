@@ -26,7 +26,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
-    private val viewModel by viewModel<HomeViewModel>(false)
+    private val viewModel by viewModel<HomeViewModel>()
 
     private lateinit var adapter: PlacePreviewAdapter
 

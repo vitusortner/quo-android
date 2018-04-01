@@ -20,7 +20,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
 
-    private val viewModel by viewModel<GalleryViewModel>(false)
+    private val viewModel by viewModel<GalleryViewModel>()
 
     private lateinit var adapter: GalleryAdapter
 

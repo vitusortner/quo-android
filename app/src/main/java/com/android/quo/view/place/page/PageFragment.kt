@@ -17,7 +17,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class PageFragment : BaseFragment(R.layout.fragment_place_page) {
 
-    private val viewModel by viewModel<PageViewModel>(false)
+    private val viewModel by viewModel<PageViewModel>()
 
     private lateinit var adapter: PageAdapter
 

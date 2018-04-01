@@ -23,7 +23,7 @@ import org.koin.android.architecture.ext.viewModel
  */
 class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
 
-    private val viewModel by viewModel<MyPlacesViewModel>(false)
+    private val viewModel by viewModel<MyPlacesViewModel>()
 
     private lateinit var adapter: PlacePreviewAdapter
 

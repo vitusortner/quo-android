@@ -52,7 +52,7 @@ import java.util.*
  */
 class PlaceFragment : BaseFragment(R.layout.fragment_place) {
 
-    private val viewModel by viewModel<PlaceViewModel>(false)
+    private val viewModel by viewModel<PlaceViewModel>()
 
     private var place: Place? = null
     private var currentPhotoPath: String? = null
