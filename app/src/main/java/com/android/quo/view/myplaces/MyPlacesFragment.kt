@@ -58,6 +58,7 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.tradewind)
         swipeRefreshLayout.setOnRefreshListener {
+            // TODO add real refreshing/success/error state to requests
             viewModel.updatePlaces()
             swipeRefreshLayout.isRefreshing = false
         }
@@ -67,7 +68,7 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
         floatingActionButton.setOnClickListener {
             requireFragmentManager().createAndReplaceFragment(
                 FragmentTag.CREATE_PLACE_FRAGMENT,
-                CreatePlaceFragment::class.java,
+                CreatePlaceFragment::class,
                 addToBackStack = true
             )
         }

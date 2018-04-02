@@ -112,7 +112,7 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
 
                     requireFragmentManager().createAndReplaceFragment(
                         Constants.FragmentTag.QR_CODE_FRAGMENT,
-                        QrCodeFragment::class.java,
+                        QrCodeFragment::class,
                         addToBackStack = true
                     )
                 } else {

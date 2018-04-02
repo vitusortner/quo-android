@@ -32,7 +32,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().bottomNavigationView?.visibility = VISIBLE
+        requireActivity().bottomNavigationView.visibility = VISIBLE
 
         adapter = PlacePreviewAdapter(imageLoader) { onClick(it, requireFragmentManager()) }
     }

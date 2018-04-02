@@ -73,7 +73,7 @@ class MainActivity : BaseActivity() {
 
             supportFragmentManager.createAndReplaceFragment(
                 PLACE_FRAGMENT,
-                PlaceFragment::class.java,
+                PlaceFragment::class,
                 bundle,
                 true,
                 allowStateLoss = true
@@ -92,14 +92,14 @@ class MainActivity : BaseActivity() {
                 actionHome -> {
                     supportFragmentManager.createAndReplaceFragment(
                         HOME_FRAGMENT,
-                        HomeFragment::class.java
+                        HomeFragment::class
                     )
                     true
                 }
                 actionPlaces -> {
                     supportFragmentManager.createAndReplaceFragment(
                         MY_PLACES_FRAGMENT,
-                        MyPlacesFragment::class.java
+                        MyPlacesFragment::class
                     )
                     true
                 }
