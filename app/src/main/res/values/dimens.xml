@@ -1,53 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--TODO group common dimens-->
+    <!--Text-->
+    <dimen name="small">14sp</dimen>
+    <dimen name="medium">16sp</dimen>
+    <dimen name="large">18sp</dimen>
+    <dimen name="xlarge">20sp</dimen>
+    <dimen name="xxlarge">24sp</dimen>
+    <dimen name="xxxlarge">30sp</dimen>
 
-    <!-- General -->
+    <dimen name="content_line_spacing_extra">6dp</dimen>
+
+    <!--General-->
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="toolbar_height">48dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="separator_line_height">0.5dp</dimen>
 
-    <!-- QR Code Scanner -->
-    <dimen name="qr_code_scanner_gallery_button_height">64dp</dimen>
-    <dimen name="qr_code_scanner_gallery_button_width">64dp</dimen>
-    <dimen name="qr_code_scanner_icon_width">42dp</dimen>
-    <dimen name="qr_code_scanner_icon_height">42dp</dimen>
+    <!--Cardview-->
+    <dimen name="cardview_margin">8dp</dimen>
+    <dimen name="cardview_corner_radius_small">2dp</dimen>
+
+    <!--QR code scanner-->
+    <dimen name="qr_code_scanner_gallery_button_dimens">64dp</dimen>
+    <dimen name="qr_code_scanner_icon_dimens">42dp</dimen>
     <dimen name="qr_code_scanner_button_margin">50dp</dimen>
     <dimen name="qr_code_scanner_text_margin_start">45dp</dimen>
     <dimen name="qr_code_scanner_text_margin_bottom">-30dp</dimen>
-    <dimen name="qr_code_scanner_flash_button_margin">20dp</dimen>
-    <dimen name="qr_code_scanner_gallery_button_margin">20dp</dimen>
 
-    <dimen name="qr_code_scanner_flash_button_height">42dp</dimen>
-    <dimen name="qr_code_scanner_flash_button_width">42dp</dimen>
-
-    <dimen name="cardview_margin_bottom">8dp</dimen>
-    <dimen name="cardview_margin_start">8dp</dimen>
-    <dimen name="cardview_margin_end">8dp</dimen>
-
-    <!-- Action Bar -->
-    <dimen name="title_textsize">20sp</dimen>
-    <dimen name="content_textsize">14sp</dimen>
-    <!-- line height gets defined by adding line spacing extra to text size -->
-    <dimen name="content_line_spacing_extra">6dp</dimen>
-
-    <!-- Home -->
-    <dimen name="home_cardview_image_height">150dp</dimen>
-    <dimen name="home_cardview_textview_padding_bottom">5dp</dimen>
-    <dimen name="home_cardview_textview_padding_top">7dp</dimen>
-    <dimen name="home_cardview_textview_padding_end">13dp</dimen>
-    <dimen name="home_cardview_textview_padding_start">9dp</dimen>
-    <dimen name="home_cardview_margin">8dp</dimen>
-    <dimen name="home_cardview_title_textsize">24sp</dimen>
-    <dimen name="home_cardview_description_textsize">14sp</dimen>
+    <!--Home-->
     <dimen name="home_recyclerview_padding_top">8dp</dimen>
-    <dimen name="home_cardview_corner_radius">2dp</dimen>
-    <dimen name="home_cardview_padding_bottom">4dp</dimen>
-    <dimen name="home_cardview_padding_top">2dp</dimen>
-    <dimen name="home_cardview_padding_end">8dp</dimen>
-    <dimen name="home_cardview_padding_start">8dp</dimen>
-    <dimen name="home_cardview_cardCornerRadius">2dp</dimen>
 
-    <!-- Login Page -->
+    <dimen name="home_cardview_image_height">150dp</dimen>
+    <dimen name="home_cardview_textview_padding_top">7dp</dimen>
+    <dimen name="home_cardview_textview_padding_start">9dp</dimen>
+    <dimen name="home_cardview_textview_padding_end">13dp</dimen>
+    <dimen name="home_cardview_textview_padding_bottom">5dp</dimen>
+    <dimen name="home_cardview_padding_top">2dp</dimen>
+    <dimen name="home_cardview_padding_start_end">8dp</dimen>
+    <dimen name="home_cardview_padding_bottom">4dp</dimen>
+
+    <!--Login Page-->
     <dimen name="login_logo_image_view_margin_top">80dp</dimen>
     <dimen name="login_email_edit_text_margin_top">40dp</dimen>
     <dimen name="login_sign_up_button_margin_top">40dp</dimen>
@@ -59,7 +52,6 @@
     <dimen name="error_message_margin_top">-8dp</dimen>
     <dimen name="password_edit_text_margin_top">10dp</dimen>
     <dimen name="login_button_margin_top">20dp</dimen>
-    <dimen name="login_button_text_size">16sp</dimen>
     <dimen name="forgot_password_margin_start">5dp</dimen>
     <dimen name="dialog_edit_text_width">250dp</dimen>
     <dimen name="dialog_layout_margin_top">10dp</dimen>
@@ -68,6 +60,7 @@
     <dimen name="dialog_layout_padding_start">20dp</dimen>
     <dimen name="checkbox_padding_top">10dp</dimen>>
 
+    <!--Create event-->
     <dimen name="event_header_image_height">200dp</dimen>
     <dimen name="event_layout_padding_left_right">20dp</dimen>
     <dimen name="event_gallery_button_marginTop">170dp</dimen>
@@ -81,66 +74,64 @@
     <dimen name="event_edit_text_small_height">40dp</dimen>
     <dimen name="event_date_edit_text_width">200dp</dimen>
     <dimen name="event_time_marginStart">30dp</dimen>
-    <dimen name="event_expiration_check_box_marginStart">-3dp</dimen>
-    <dimen name="event_description_marginBottom">10dp</dimen>
+    <dimen name="event_expiration_check_box_margin_start">-3dp</dimen>
+    <dimen name="event_description_margin_bottom">10dp</dimen>
     <dimen name="event_description_padding">10dp</dimen>
     <dimen name="event_description_height">150dp</dimen>
 
-    <!-- ROUND BUTTON -->
-    <dimen name="round_button_normal_size">56dp</dimen>
-    <dimen name="round_button_small_size">40dp</dimen>
+    <!--Round button-->
+    <dimen name="round_button_size">56dp</dimen>
+    <dimen name="round_button_size_small">40dp</dimen>
 
-    <!-- Place -->
-    <dimen name="place_collapsing_toolbar_height">128dp</dimen>
-    <dimen name="place_collapsing_toolbar_min_height">48dp</dimen>
-    <dimen name="place_toolbar_height">48dp</dimen>
+    <!--Place-->
     <dimen name="place_page_padding">28dp</dimen>
     <dimen name="place_page_title_margin_bottom">10dp</dimen>
-    <dimen name="place_gallery_thumbnail_margin">4dp</dimen>
-    <dimen name="place_gallery_image_margin_top">24dp</dimen>
-    <dimen name="place_image_pager_margin">10dp</dimen>
     <dimen name="place_page_image_height">200dp</dimen>
 
-    <!-- PLACE BOTTOM SHEET -->
+    <dimen name="place_gallery_thumbnail_margin">4dp</dimen>
+    <dimen name="place_gallery_image_margin_top">24dp</dimen>
+
+    <dimen name="place_image_pager_margin">10dp</dimen>
+    <dimen name="place_collapsing_toolbar_height">128dp</dimen>
+
+    <!--Place bottom sheet-->
     <dimen name="place_bottom_sheet_title_margin_bottom">33dp</dimen>
-    <dimen name="place_bottom_sheet_title_text_size">14sp</dimen>
     <dimen name="place_bottom_sheet_camera_margin_bottom">29dp</dimen>
     <dimen name="place_bottom_sheet_icon_padding_end">34dp</dimen>
     <dimen name="place_bottom_sheet_gallery_margin_bottom">20dp</dimen>
     <dimen name="place_bottom_sheet_icon_margin_start">3dp</dimen>
-    <dimen name="place_bottom_sheet_item_text_size">16sp</dimen>
     <dimen name="place_bottom_sheet_padding">16dp</dimen>
 
-    <!-- Place Info -->
+    <!--Place Info-->
     <dimen name="info_cardview_padding_top">12dp</dimen>
     <dimen name="info_cardview_padding_start">24dp</dimen>
     <dimen name="info_cardview_padding_end">24dp</dimen>
     <dimen name="info_cardview_padding_bottom">34dp</dimen>
     <dimen name="info_cardview_title_margin_bottom">10dp</dimen>
+
     <dimen name="info_collapsing_toolbar_height">238dp</dimen>
-    <dimen name="info_toolbar_elevation">4dp</dimen>
     <dimen name="info_recyclerview_overlap_top">60dp</dimen>
 
-    <!-- Main -->
-    <dimen name="main_toolbar_elevation">4dp</dimen>
-    <dimen name="text_size_medium">16dp</dimen>
+
+    <!--Create place-->
     <dimen name="create_settings_padding">20dp</dimen>
     <dimen name="create_settings_margin_large">40dp</dimen>
     <dimen name="create_settings_margin">20dp</dimen>
-    <dimen name="view_line_height">0.5dp</dimen>
+
     <dimen name="event_default_image_size">75dp</dimen>
     <dimen name="event_default_image_margin">10dp</dimen>
-    <dimen name="event_name_text_size">30sp</dimen>
+
     <dimen name="create_page_margin_small">20dp</dimen>
     <dimen name="create_page_margin">24dp</dimen>
     <dimen name="create_page_margin_large">10dp</dimen>
     <dimen name="create_page_margin_extra_large">24dp</dimen>
+
     <dimen name="bottom_sheet_margin_small">10dp</dimen>
     <dimen name="bottom_sheet_margin">20dp</dimen>
     <dimen name="bottom_sheet_margin_large">70dp</dimen>
     <dimen name="bottom_sheet_padding">20dp</dimen>
-    <dimen name="bottom_sheet_text_size">18sp</dimen>
     <dimen name="bottom_sheet_height">600dp</dimen>
+
 </resources>
 
 

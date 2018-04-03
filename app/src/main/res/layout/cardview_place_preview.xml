@@ -7,10 +7,10 @@
         android:id="@+id/pagePreviewCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/home_cardview_margin"
-        android:layout_marginLeft="@dimen/home_cardview_margin"
-        android:layout_marginRight="@dimen/home_cardview_margin"
-        app:cardCornerRadius="@dimen/home_cardview_corner_radius"
+        android:layout_marginBottom="@dimen/cardview_margin"
+        android:layout_marginLeft="@dimen/cardview_margin"
+        android:layout_marginRight="@dimen/cardview_margin"
+        app:cardCornerRadius="@dimen/cardview_corner_radius_small"
         android:layout_centerHorizontal="true"
         android:innerRadius="0dp"
         android:shape="ring"
@@ -38,8 +38,8 @@
                 android:background="@color/silver_alpha_55"
                 android:paddingBottom="@dimen/home_cardview_padding_bottom"
                 android:paddingTop="@dimen/home_cardview_padding_top"
-                android:paddingEnd="@dimen/home_cardview_padding_end"
-                android:paddingStart="@dimen/home_cardview_padding_start"
+                android:paddingEnd="@dimen/home_cardview_padding_start_end"
+                android:paddingStart="@dimen/home_cardview_padding_start_end"
                 android:lineSpacingExtra="6dp"/>
 
             <TextView

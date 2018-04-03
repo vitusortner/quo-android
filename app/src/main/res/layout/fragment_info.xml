@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/dorado_alpha_50"
-                android:elevation="@dimen/info_toolbar_elevation"
+                android:elevation="@dimen/toolbar_elevation"
                 android:theme="@style/PlaceToolbarStyle"
                 app:layout_collapseMode="pin" />
         </android.support.design.widget.CollapsingToolbarLayout>

@@ -3,9 +3,9 @@
     android:id="@+id/descriptionCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/cardview_margin_bottom"
-    android:layout_marginEnd="@dimen/cardview_margin_end"
-    android:layout_marginStart="@dimen/cardview_margin_start">
+    android:layout_marginBottom="@dimen/cardview_margin"
+    android:layout_marginEnd="@dimen/cardview_margin"
+    android:layout_marginStart="@dimen/cardview_margin">
 
         <ImageView
             android:id="@+id/imageView"

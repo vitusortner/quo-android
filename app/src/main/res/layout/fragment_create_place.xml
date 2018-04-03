@@ -19,7 +19,7 @@
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/white"
         app:tabMode="fixed"
-        android:elevation="@dimen/main_toolbar_elevation"
+        android:elevation="@dimen/toolbar_elevation"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@color/white" />
 

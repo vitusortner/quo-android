@@ -27,8 +27,8 @@
 
             <ImageButton
                 android:id="@+id/galleryButton"
-                android:layout_width="@dimen/round_button_normal_size"
-                android:layout_height="@dimen/round_button_normal_size"
+                android:layout_width="@dimen/round_button_size"
+                android:layout_height="@dimen/round_button_size"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/event_gallery_button_marginTop"
                 android:background="@drawable/round_button"
@@ -44,7 +44,7 @@
                 android:layout_below="@+id/galleryButton"
                 android:hint="@string/event_name"
                 android:textColor="@color/tradewind"
-                android:textSize="@dimen/event_name_text_size"
+                android:textSize="@dimen/xxxlarge"
                 android:theme="@style/EditTextTheme" />
 
             <EditText
@@ -144,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/toTimeEditText"
-                android:layout_marginStart="@dimen/event_expiration_check_box_marginStart"
+                android:layout_marginStart="@dimen/event_expiration_check_box_margin_start"
                 android:layout_marginTop="@dimen/event_middle_margin_top"
                 android:paddingStart="@dimen/checkbox_padding_left"
                 android:text="@string/no_expiration_date"
@@ -156,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/event_description_height"
                 android:layout_below="@id/expirationCheckBox"
-                android:layout_marginBottom="@dimen/event_description_marginBottom"
+                android:layout_marginBottom="@dimen/event_description_margin_bottom"
                 android:layout_marginTop="@dimen/event_middle_margin_top"
                 android:background="@drawable/description_edit_text"
                 android:gravity="top|start"

@@ -13,7 +13,7 @@
         android:layout_marginBottom="@dimen/place_bottom_sheet_title_margin_bottom"
         android:text="@string/place_bottom_sheet_add_photo"
         android:textColor="@color/boulder"
-        android:textSize="@dimen/place_bottom_sheet_title_text_size" />
+        android:textSize="@dimen/small" />
 
     <LinearLayout
         android:id="@+id/cameraButton"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:text="@string/place_bottom_sheet_camera"
             android:textColor="@color/boulder"
-            android:textSize="@dimen/place_bottom_sheet_item_text_size" />
+            android:textSize="@dimen/medium" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,6 +60,6 @@
             android:layout_height="wrap_content"
             android:text="@string/place_bottom_sheet_photos"
             android:textColor="@color/boulder"
-            android:textSize="@dimen/place_bottom_sheet_item_text_size" />
+            android:textSize="@dimen/medium" />
     </LinearLayout>
 </LinearLayout>

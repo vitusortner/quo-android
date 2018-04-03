@@ -17,8 +17,8 @@
 
     <Button
         android:id="@+id/flashButton"
-        android:layout_width="@dimen/qr_code_scanner_icon_width"
-        android:layout_height="@dimen/qr_code_scanner_icon_height"
+        android:layout_width="@dimen/qr_code_scanner_icon_dimens"
+        android:layout_height="@dimen/qr_code_scanner_icon_dimens"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/qr_code_scanner_button_margin"
         android:layout_marginStart="@dimen/qr_code_scanner_button_margin"
@@ -36,8 +36,8 @@
 
     <Button
         android:id="@+id/photosButton"
-        android:layout_width="@dimen/qr_code_scanner_gallery_button_width"
-        android:layout_height="@dimen/qr_code_scanner_gallery_button_height"
+        android:layout_width="@dimen/qr_code_scanner_gallery_button_dimens"
+        android:layout_height="@dimen/qr_code_scanner_gallery_button_dimens"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/qr_code_scanner_button_margin"
@@ -55,8 +55,8 @@
 
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="@dimen/qr_code_scanner_icon_width"
-        android:layout_height="@dimen/qr_code_scanner_icon_height"
+        android:layout_width="@dimen/qr_code_scanner_icon_dimens"
+        android:layout_height="@dimen/qr_code_scanner_icon_dimens"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/qr_code_scanner_button_margin"

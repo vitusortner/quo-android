@@ -15,7 +15,7 @@
             android:id="@+id/generatedLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/home_cardview_margin"
+            android:layout_margin="@dimen/cardview_margin"
             android:orientation="vertical">
 
         </LinearLayout>
@@ -57,8 +57,8 @@
 
     <ImageButton
         android:id="@+id/roundGalleryButton"
-        android:layout_width="@dimen/round_button_small_size"
-        android:layout_height="@dimen/round_button_small_size"
+        android:layout_width="@dimen/round_button_size_small"
+        android:layout_height="@dimen/round_button_size_small"
         android:layout_above="@id/floatingActionButton"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/create_page_margin_large"
@@ -71,8 +71,8 @@
 
     <ImageButton
         android:id="@+id/roundEditButton"
-        android:layout_width="@dimen/round_button_small_size"
-        android:layout_height="@dimen/round_button_small_size"
+        android:layout_width="@dimen/round_button_size_small"
+        android:layout_height="@dimen/round_button_size_small"
         android:layout_above="@id/roundGalleryButton"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/create_page_margin_small"

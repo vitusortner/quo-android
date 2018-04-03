@@ -47,7 +47,7 @@
     <View
         android:id="@+id/grayLineView"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/view_line_height"
+        android:layout_height="@dimen/separator_line_height"
         android:layout_marginTop="@dimen/create_settings_margin"
         android:background="@color/oslo_gray" />
 
