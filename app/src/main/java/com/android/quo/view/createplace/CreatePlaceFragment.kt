@@ -56,10 +56,6 @@ class CreatePlaceFragment : BaseFragment(R.layout.fragment_create_place) {
     override fun onStop() {
         super.onStop()
         resetStatusBar()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         CreatePlace.reset()
     }
 
