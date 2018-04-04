@@ -1,10 +1,16 @@
 package com.android.quo.util.extension
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.MediaStore
+import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.android.quo.util.Logger
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
@@ -39,3 +45,24 @@ fun Date.now(pattern: String): String =
 
 fun async(block: () -> Unit) =
     Completable.complete().subscribeOn(Schedulers.newThread()).subscribe(block)
+
+fun Uri.getImagePath(context: Context): String? {
+    var result: String? = null
+    val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
+    val cursor = context.contentResolver.query(this, mediaStoreData, null, null, null)
+
+    cursor.apply {
+        if (moveToFirst()) {
+            val columnIndex = getColumnIndexOrThrow(mediaStoreData[0])
+            result = getString(columnIndex)
+        }
+    }
+    cursor?.close()
+    return result
+}
+
+fun FragmentActivity.hideKeyboard() {
+    val view = (this.currentFocus ?: View(this)).apply { clearFocus() }
+    (this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+        .hideSoftInputFromWindow(view.windowToken, 0)
+}

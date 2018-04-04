@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -25,6 +24,7 @@ import com.android.quo.util.Constants.Request.REQUEST_CAMERA
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
 import com.android.quo.util.extension.addFragment
 import com.android.quo.util.extension.compressImage
+import com.android.quo.util.extension.getImagePath
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.util.extension.subscribeOnComputation
@@ -184,63 +184,33 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_GALLERY -> {
-                    place?.id?.let { placeId ->
-                        val selectedImageUri = data?.data
-                        val image = File(selectedImageUri?.let { getPath(it) })
-
-                        imageCompressor
-                            .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY)
-                            .subscribeOnComputation()
-                            .observeOnUi()
-                            .subscribeBy(
-                                // TODO refresh gallery
-                                // https://app.clickup.com/751518/751948/t/xazx
-                                // maybe composit completionHandler to uploadImage function and update gallery then
-                                onNext = { viewModel.uploadImage(it, placeId) },
-                                onError = { log.e("Error while compressing image: $it") }
-                            )
-                    }
+                REQUEST_GALLERY -> data?.data?.getImagePath(requireContext())?.let {
+                    compressAndUploadImage(it)
                 }
-                REQUEST_CAMERA -> {
-                    place?.id?.let { placeId ->
-                        currentPhotoPath?.let {
-                            val image = File(it)
-
-                            imageCompressor
-                                .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY)
-                                .subscribeOnComputation()
-                                .observeOnUi()
-                                .subscribeBy(
-                                    onNext = {
-                                        // TODO refresh gallery
-                                        viewModel.uploadImage(it, placeId)
-                                        bottomSheetDialog?.hide()
-                                    },
-                                    onError = {
-                                        log.e("Error while compressing image: $it")
-                                    }
-                                )
-                        }
-                    }
-                }
+                REQUEST_CAMERA -> currentPhotoPath?.let { compressAndUploadImage(it) }
             }
         }
     }
 
-    private fun getPath(uri: Uri): String? {
-        var result: String? = null
-        val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = requireContext().contentResolver.query(uri, mediaStoreData, null, null, null)
+    private fun compressAndUploadImage(filePath: String) {
+        place?.id?.let { placeId ->
+            val image = File(filePath)
 
-        cursor.apply {
-            if (moveToFirst()) {
-                val columnIndex = getColumnIndexOrThrow(mediaStoreData[0])
-                result = getString(columnIndex)
-            }
+            imageCompressor
+                .compressImage(image, MAX_IMG_DIM, MAX_IMG_DIM, IMG_QUALITY)
+                .subscribeOnComputation()
+                .observeOnUi()
+                .subscribeBy(
+                    onNext = {
+                        // TODO refresh gallery
+                        viewModel.uploadImage(it, placeId)
+                        bottomSheetDialog?.hide()
+                    },
+                    onError = {
+                        log.e("Error while compressing image: $it")
+                    }
+                )
         }
-        cursor.close()
-        return result
     }
 
     private fun setupToolbar() {

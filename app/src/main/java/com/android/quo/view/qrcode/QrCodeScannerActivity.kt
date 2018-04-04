@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityCompat.requestPermissions
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
@@ -31,6 +30,7 @@ import com.android.quo.util.Constants.QR_CODE_URI
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_GPS
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_MULTIPLE
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
+import com.android.quo.util.extension.getImagePath
 import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.view.BaseActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
@@ -52,6 +52,7 @@ import org.koin.android.architecture.ext.viewModel
 /**
  * Created by Jung on 30.10.17.
  */
+// TODO too big!
 class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
 
     private val viewModel by viewModel<QrCodeScannerViewModel>()
@@ -292,13 +293,11 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
             if (resultCode == Activity.RESULT_OK) {
                 when (requestCode) {
                     REQUEST_GALLERY -> {
-                        val selectedImageUri = data?.data
-                        val reader = MultiFormatReader()
-                        val path = selectedImageUri?.let { getPath(it) }
-                        val bitmap = BitmapFactory.decodeFile(path)
-                        val result = reader.decode(getBinaryBitmap(bitmap))
-
-                        handleQrCodeUri(result.text)
+                        data?.data?.getImagePath(this)?.let {
+                            val bitmap = BitmapFactory.decodeFile(it)
+                            val result = MultiFormatReader().decode(getBinaryBitmap(bitmap))
+                            handleQrCodeUri(result.text)
+                        }
                     }
                 }
             }
@@ -345,19 +344,6 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
         urlAlert.show()
     }
 
-    private fun getPath(uri: Uri): String {
-        var result: String? = null
-        val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri, mediaStoreData, null, null, null)
-        if (cursor.moveToFirst()) {
-            val columnIndex = cursor.getColumnIndexOrThrow(mediaStoreData[0])
-            result = cursor.getString(columnIndex)
-        }
-        cursor.close()
-
-        return result ?: resources.getString(R.string.qr_code_not_found)
-    }
-
     private fun getBinaryBitmap(bitmap: Bitmap): BinaryBitmap {
         val intArray = IntArray(bitmap.width * bitmap.height);
         //copy pixel data from the Bitmap into the 'intArray' array
@@ -399,9 +385,9 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
         return setRoundCornerToBitmap(bitmap)
     }
 
-    private fun setRoundCornerToBitmap(bitmap: Bitmap): RoundedBitmapDrawable {
-        val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap)
-        roundedBitmapDrawable.cornerRadius = Math.max(bitmap.width, bitmap.height) / 2.0f
-        return roundedBitmapDrawable
-    }
+    private fun setRoundCornerToBitmap(bitmap: Bitmap): RoundedBitmapDrawable =
+        RoundedBitmapDrawableFactory.create(resources, bitmap).apply {
+            cornerRadius = Math.max(bitmap.width, bitmap.height) / 2.0f
+        }
+
 }

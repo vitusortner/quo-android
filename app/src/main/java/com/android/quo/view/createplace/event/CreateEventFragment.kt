@@ -42,6 +42,8 @@ import com.android.quo.util.Constants.Request.REQUEST_GALLERY
 import com.android.quo.util.CreatePlace
 import com.android.quo.util.DefaultImages
 import com.android.quo.util.extension.compressImage
+import com.android.quo.util.extension.getImagePath
+import com.android.quo.util.extension.hideKeyboard
 import com.android.quo.util.extension.now
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.permissionsGranted
@@ -129,7 +131,7 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
                     ?.run {
                         locationProgressBar.visibility = VISIBLE
                         locationEditText.clearFocus()
-                        hideKeyboard(requireActivity())
+                        requireActivity().hideKeyboard()
                         checkForLastLocation {
                             persistAddressFromLocation(it)
                         }
@@ -301,14 +303,6 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
         }
     }
 
-    private fun hideKeyboard(activity: FragmentActivity) {
-        //Find the currently focused view, so we can grab the correct window token from it.
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        val view = activity.currentFocus ?: View(activity)
-        (activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .hideSoftInputFromWindow(view.windowToken, 0)
-    }
-
     @SuppressLint("MissingPermission")
     private fun checkForLastLocation(onSuccess: (Location) -> Unit) {
         locationClient.lastLocation.addOnSuccessListener { it?.let { onSuccess(it) } }
@@ -358,7 +352,7 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
         }
 
     private fun setHeaderImageFromGallery(uri: Uri) =
-        getPath(uri)?.let {
+        uri.getImagePath(requireContext()).let {
             val image = File(it)
             val imageDir =
                 Environment
@@ -394,19 +388,6 @@ class CreateEventFragment : BaseFragment(R.layout.fragment_create_event) {
     private fun setHeaderImageFromCamera(extras: Bundle) {
         CreatePlace.place.titlePicture = extras.get(DATA) as String
         (extras.get(DATA) as Bitmap).let { headerImageView.setImageBitmap(it) }
-    }
-
-    private fun getPath(uri: Uri): String? {
-        var result: String? = null
-        val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-
-        requireContext().contentResolver.query(uri, mediaStoreData, null, null, null).apply {
-            if (moveToFirst()) {
-                result = getColumnIndexOrThrow(mediaStoreData[0]).let { getString(it) }
-                close()
-            }
-        }
-        return result
     }
 
     private fun setLabelDefaultValues() {
