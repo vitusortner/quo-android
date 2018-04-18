@@ -49,15 +49,13 @@ fun async(block: () -> Unit) =
 fun Uri.getImagePath(context: Context): String? {
     var result: String? = null
     val mediaStoreData = arrayOf(MediaStore.Images.Media.DATA)
-    val cursor = context.contentResolver.query(this, mediaStoreData, null, null, null)
-
-    cursor.apply {
+    context.contentResolver.query(this, mediaStoreData, null, null, null).apply {
         if (moveToFirst()) {
             val columnIndex = getColumnIndexOrThrow(mediaStoreData[0])
             result = getString(columnIndex)
         }
+        close()
     }
-    cursor?.close()
     return result
 }
 
