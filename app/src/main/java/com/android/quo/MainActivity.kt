@@ -64,13 +64,7 @@ class MainActivity : BaseActivity() {
     override fun onNewIntent(intent: Intent) {
         intent.getParcelableExtra<Place>(Extra.PLACE_EXTRA)?.let { place ->
             log.d("PLACE: $place")
-
-            val bundle = Bundle()
-            bundle.putParcelable(Extra.PLACE_EXTRA, place)
-
-            val fragment = PlaceFragment()
-            fragment.arguments = bundle
-
+            val bundle = Bundle().apply { putParcelable(Extra.PLACE_EXTRA, place) }
             supportFragmentManager.createAndReplaceFragment(
                 PLACE_FRAGMENT,
                 PlaceFragment::class,

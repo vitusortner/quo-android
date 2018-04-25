@@ -9,11 +9,12 @@ import android.arch.persistence.room.PrimaryKey
  */
 @Entity(tableName = "component")
 data class Component(
-        @PrimaryKey
-        var id: String = "",
-        var picture: String? = null,
-        var text: String? = null,
-        @ColumnInfo(name = "place_id")
-        var placeId: String = "",
-        var position: Int = 0
+    @PrimaryKey
+    var id: String = "",
+    var picture: String? = null,
+    var text: String? = null,
+    @ColumnInfo(name = "place_id")
+    var placeId: String = "",
+    var position: Int = 0
+// TODO add type (picture, text)
 )

@@ -4,17 +4,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.db.entity.Component
 import com.android.quo.view.BaseRecyclerViewAdapter
+import com.android.quo.viewmodel.PageComponent
 import com.bumptech.glide.RequestManager
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.layout_component_image.imageView
-import kotlinx.android.synthetic.main.layout_component_text.textView
+import kotlinx.android.synthetic.main.layout_component_image.*
+import kotlinx.android.synthetic.main.layout_component_text.*
 
 /**
  * Created by vitusortner on 11.12.17.
  */
-class PageAdapter(private val imageLoader: RequestManager) : BaseRecyclerViewAdapter<Component>() {
+class PageAdapter(private val imageLoader: RequestManager) :
+    BaseRecyclerViewAdapter<PageComponent>() {
 
     private val PICTURE = 1
     private val TEXT = 2
@@ -50,4 +51,5 @@ class PageAdapter(private val imageLoader: RequestManager) : BaseRecyclerViewAda
 
     private class ImageViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer
+
 }

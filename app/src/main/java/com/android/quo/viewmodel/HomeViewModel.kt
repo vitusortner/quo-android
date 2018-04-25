@@ -3,15 +3,14 @@ package com.android.quo.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Place
+import com.android.quo.db.entity.User
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.AuthService
 import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
-import com.android.quo.util.extension.async
-import com.android.quo.util.extension.flatMapFlowable
-import com.android.quo.util.extension.observeOnUi
-import com.android.quo.util.extension.subscribeOnIo
-import com.android.quo.util.extension.toDate
+import com.android.quo.util.extension.*
+import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -35,11 +34,10 @@ class HomeViewModel(
     fun updatePlaces() =
         userRepository.getUserSingle()
             .subscribeOnIo()
-            .flatMapFlowable { placeRepository.getVisitedPlaces(it.id) }
+            .getVisitedPlaces()
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
-            // TODO move this ordering to DB level
-            .map { it.sortedByDescending { it.lastScanned.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
+            .filterNotEmpty()
+            .sortByTimestamp() // TODO move this ordering to DB level
             .observeOnUi()
             .subscribeBy(
                 onNext = { places.value = it },
@@ -48,4 +46,11 @@ class HomeViewModel(
             .addTo(compositeDisposable)
 
     fun logout() = async { authService.logout() }
+
+    private fun Single<User>.getVisitedPlaces() =
+        this.flatMapFlowable { placeRepository.getVisitedPlaces(it.id) }
+
+    private fun Flowable<List<Place>>.sortByTimestamp() =
+        this.map { it.sortedByDescending { it.lastScanned.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
+
 }

@@ -6,10 +6,10 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.android.quo.R
-import com.android.quo.db.entity.Picture
 import com.android.quo.util.Constants.Extra
 import com.android.quo.util.extension.toPx
-import kotlinx.android.synthetic.main.activity_gallery_image_pager.viewPager
+import com.android.quo.viewmodel.GalleryPicture
+import kotlinx.android.synthetic.main.activity_gallery_image_pager.*
 
 /**
  * Created by vitusortner on 16.11.17.
@@ -20,8 +20,10 @@ class ImagePagerActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_image_pager)
 
-        val list = intent.getParcelableArrayListExtra<Picture>(Extra.PICTURE_LIST_EXTRA)
-        val position = intent.getIntExtra(Extra.PICTURE_POSITION_EXTRA, 0)
+        val list = intent
+            .getParcelableArrayListExtra<GalleryPicture>(Extra.PICTURE_LIST_EXTRA)
+        val position = intent
+            .getIntExtra(Extra.PICTURE_POSITION_EXTRA, 0)
 
         viewPager.pageMargin = resources.getDimension(R.dimen.place_image_pager_margin).toPx(this)
         viewPager.adapter = ImagePagerAdapter(supportFragmentManager, list)
@@ -30,7 +32,7 @@ class ImagePagerActivity : FragmentActivity() {
 
     class ImagePagerAdapter(
         fragmentManager: FragmentManager,
-        private val list: List<Picture>
+        private val list: List<GalleryPicture>
     ) : FragmentStatePagerAdapter(fragmentManager) {
 
         /**

@@ -1,11 +1,14 @@
 package com.android.quo.viewmodel
 
+import com.android.quo.db.entity.User
 import com.android.quo.network.model.ServerPicture
+import com.android.quo.network.model.ServerUploadImage
 import com.android.quo.repository.PictureRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.service.UploadService
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import java.io.File
 
@@ -22,17 +25,27 @@ class PlaceViewModel(
     fun uploadImage(image: File, placeId: String) =
         uploadService.uploadImage(image)
             .subscribeOnIo()
-            .flatMap { userRepository.getUserSingle() }
-            .map {
-                ServerPicture(
-                    ownerId = it.id,
-                    placeId = placeId,
-                    src = image.path,
-                    isVisible = true
-                )
-            }
-            .flatMap { pictureRepository.addPicture(placeId, it) }
+            .getUser()
+            .createServerPicture(image.path, placeId)
+            .addPicture(placeId)
             .observeOnUi()
             .subscribe()
             .addTo(compositeDisposable)
+
+    private fun Single<ServerUploadImage>.getUser() =
+        this.flatMap { userRepository.getUserSingle() }
+
+    private fun Single<User>.createServerPicture(imagePath: String, placeId: String) =
+        this.map {
+            ServerPicture(
+                ownerId = it.id,
+                placeId = placeId,
+                src = imagePath,
+                isVisible = true
+            )
+        }
+
+    private fun Single<ServerPicture>.addPicture(placeId: String) =
+        this.flatMap { pictureRepository.addPicture(placeId, it) }
+
 }

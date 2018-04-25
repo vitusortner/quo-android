@@ -77,7 +77,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         viewModel.getPlaces()
             .observe(
                 this,
-                Observer { it?.let { adapter.setItems(it) } }
+                Observer { it?.let(adapter::setItems) }
             )
 
     /**

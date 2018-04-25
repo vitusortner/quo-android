@@ -30,11 +30,11 @@ class PageFragment : BaseFragment(R.layout.fragment_place_page) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        observeComponents()
-        setupSwipeRefresh()
-
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
+
+        setupSwipeRefresh()
+        observeComponents()
     }
 
     private fun observeComponents() =
@@ -42,7 +42,7 @@ class PageFragment : BaseFragment(R.layout.fragment_place_page) {
             viewModel.getComponents(placeId)
                 .observe(
                     this,
-                    Observer { it?.let { adapter.setItems(it) } }
+                    Observer { it?.let(adapter::setItems) }
                 )
         }
 

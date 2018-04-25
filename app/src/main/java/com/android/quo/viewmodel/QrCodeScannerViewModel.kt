@@ -3,11 +3,13 @@ package com.android.quo.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.android.quo.db.entity.Place
+import com.android.quo.db.entity.User
 import com.android.quo.repository.PlaceRepository
 import com.android.quo.repository.UserRepository
 import com.android.quo.util.extension.flatMapFlowable
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
+import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -30,7 +32,7 @@ class QrCodeScannerViewModel(
     private fun loadPlace(qrCodeId: String) =
         userRepository.getUserSingle()
             .subscribeOnIo()
-            .flatMapFlowable { placeRepository.getPlace(qrCodeId, it.id) }
+            .getPlace(qrCodeId)
             .observeOnUi()
             .subscribeBy(
                 onNext = { place.value = it },
@@ -41,4 +43,8 @@ class QrCodeScannerViewModel(
     fun resetLiveData() {
         place.value = null
     }
+
+    private fun Single<User>.getPlace(qrCodeId: String) =
+        this.flatMapFlowable { placeRepository.getPlace(qrCodeId, it.id) }
+
 }

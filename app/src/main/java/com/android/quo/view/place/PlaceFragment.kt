@@ -228,11 +228,8 @@ class PlaceFragment : BaseFragment(R.layout.fragment_place) {
         toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
 
         toolbar.setOnMenuItemClickListener {
-            val bundle = Bundle()
-            bundle.putParcelable(Extra.PLACE_EXTRA, place)
-            val fragment = InfoFragment()
-            fragment.arguments = bundle
-
+            val bundle = Bundle().apply { putParcelable(Extra.PLACE_EXTRA, place) }
+            val fragment = InfoFragment().apply { arguments = bundle }
             requireFragmentManager().addFragment(fragment, true)
             true
         }

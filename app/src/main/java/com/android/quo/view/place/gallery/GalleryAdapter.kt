@@ -3,20 +3,20 @@ package com.android.quo.view.place.gallery
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.android.quo.R
-import com.android.quo.db.entity.Picture
 import com.android.quo.view.BaseRecyclerViewAdapter
+import com.android.quo.viewmodel.GalleryPicture
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
-import kotlinx.android.synthetic.main.layout_gallery_image_thumbnail.view.imageView
+import kotlinx.android.synthetic.main.layout_gallery_image_thumbnail.view.*
 
 /**
  * Created by vitusortner on 14.11.17.
  */
 class GalleryAdapter(
     private val imageLoader: RequestManager,
-    private val onClick: (List<Picture>, position: Int) -> Unit
+    private val onClick: (List<GalleryPicture>, position: Int) -> Unit
 ) :
-    BaseRecyclerViewAdapter<Picture>() {
+    BaseRecyclerViewAdapter<GalleryPicture>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(inflateView(parent, R.layout.layout_gallery_image_thumbnail))

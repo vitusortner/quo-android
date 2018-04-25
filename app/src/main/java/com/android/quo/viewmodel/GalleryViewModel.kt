@@ -2,23 +2,30 @@ package com.android.quo.viewmodel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.os.Parcelable
 import com.android.quo.db.entity.Picture
 import com.android.quo.repository.PictureRepository
 import com.android.quo.util.Constants.Date.MONGO_DB_TIMESTAMP_FORMAT
+import com.android.quo.util.extension.filterNotEmpty
 import com.android.quo.util.extension.observeOnUi
 import com.android.quo.util.extension.subscribeOnIo
 import com.android.quo.util.extension.toDate
+import io.reactivex.Flowable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by vitusortner on 09.12.17.
  */
+@Parcelize
+data class GalleryPicture(val src: String) : Parcelable
+
 class GalleryViewModel(private val pictureRepository: PictureRepository) : BaseViewModel() {
 
-    private var pictures = MutableLiveData<List<Picture>>()
+    private var pictures = MutableLiveData<List<GalleryPicture>>()
 
-    fun getPictures(placeId: String): LiveData<List<Picture>> {
+    fun getPictures(placeId: String): LiveData<List<GalleryPicture>> {
         loadPictures(placeId)
         return pictures
     }
@@ -27,8 +34,9 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : BaseV
         pictureRepository.getPictures(placeId)
             .subscribeOnIo()
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
-            .map { it.sortedByDescending { it.timestamp.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
+            .filterNotEmpty()
+            .sortByTimestamp()
+            .toGalleryPicture()
             .observeOnUi()
             .subscribeBy(
                 onNext = { pictures.value = it },
@@ -37,4 +45,11 @@ class GalleryViewModel(private val pictureRepository: PictureRepository) : BaseV
             .addTo(compositeDisposable)
 
     fun updatePictures(placeId: String) = loadPictures(placeId)
+
+    private fun Flowable<List<Picture>>.sortByTimestamp() =
+        this.map { it.sortedByDescending { it.timestamp.toDate(MONGO_DB_TIMESTAMP_FORMAT) } }
+
+    private fun Flowable<List<Picture>>.toGalleryPicture() =
+        this.map { it.map { GalleryPicture(it.src) } }
+
 }

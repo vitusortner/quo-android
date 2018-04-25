@@ -6,13 +6,12 @@ import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.android.quo.R
-import com.android.quo.db.entity.Picture
 import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Extra
 import com.android.quo.view.BaseFragment
+import com.android.quo.viewmodel.GalleryPicture
 import com.android.quo.viewmodel.GalleryViewModel
-import kotlinx.android.synthetic.main.fragment_place_gallery.recyclerView
-import kotlinx.android.synthetic.main.fragment_place_gallery.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_place_gallery.*
 import org.koin.android.architecture.ext.viewModel
 
 /**
@@ -58,10 +57,12 @@ class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
         }
     }
 
-    private fun onClick(list: List<Picture>, position: Int) {
-        val intent = Intent(context, ImagePagerActivity::class.java)
-        intent.putParcelableArrayListExtra(Extra.PICTURE_LIST_EXTRA, ArrayList(list))
-        intent.putExtra(Extra.PICTURE_POSITION_EXTRA, position)
-        requireContext().startActivity(intent)
-    }
+    private fun onClick(list: List<GalleryPicture>, position: Int) =
+        Intent(context, ImagePagerActivity::class.java).apply {
+            putParcelableArrayListExtra(Extra.PICTURE_LIST_EXTRA, ArrayList(list))
+            putExtra(Extra.PICTURE_POSITION_EXTRA, position)
+        }.let {
+            requireContext().startActivity(it)
+        }
+
 }

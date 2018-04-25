@@ -26,16 +26,15 @@ class PlacePreviewAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.apply {
-            pagePreviewCardView.setOnClickListener { onClick(list[position]) }
-
-            placePreviewTitleTextView.text = list[position].title
-            placePreviewDescriptionTextView.text = list[position].description
-
-            val imageUrl = list[position].titlePicture
-            imageLoader
-                .load(imageUrl)
-                .apply(centerCropTransform())
-                .into(placePreviewImageView)
+            list[position].apply {
+                pagePreviewCardView.setOnClickListener { onClick(this) }
+                placePreviewTitleTextView.text = title
+                placePreviewDescriptionTextView.text = description
+                imageLoader
+                    .load(titlePicture)
+                    .apply(centerCropTransform())
+                    .into(placePreviewImageView)
+            }
         }
     }
 }

@@ -19,3 +19,5 @@ fun <T> Flowable<T>.subscribeOnIo() = subscribeOn(Schedulers.io())
 fun <T> Flowable<T>.subscribeOnComputation() = subscribeOn(Schedulers.computation())
 
 fun <T, R> Single<T>.flatMapFlowable(mapper: (T) -> Flowable<R>) = toFlowable().flatMap(mapper)
+
+fun <T> Flowable<List<T>>.filterNotEmpty() = this.filter { it.isNotEmpty() }
