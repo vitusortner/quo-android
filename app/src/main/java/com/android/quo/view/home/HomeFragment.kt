@@ -1,6 +1,5 @@
 package com.android.quo.view.home
 
-import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -11,6 +10,8 @@ import com.android.quo.R
 import com.android.quo.db.entity.Place
 import com.android.quo.util.Constants
 import com.android.quo.util.extension.addFragment
+import com.android.quo.util.extension.filterNull
+import com.android.quo.util.extension.observeWithLifecycle
 import com.android.quo.view.BaseFragment
 import com.android.quo.view.login.LoginActivity
 import com.android.quo.view.place.PlaceFragment
@@ -42,7 +43,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         setupToolbar()
-        observePlaces()
+        observe()
         setupSwipeRefresh()
     }
 
@@ -70,15 +71,10 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         }
     }
 
-    /**
-     * Observe place preview list and set adapter for place preview recycler view
-     */
-    private fun observePlaces() =
+    private fun observe() =
         viewModel.getPlaces()
-            .observe(
-                this,
-                Observer { it?.let(adapter::setItems) }
-            )
+            .filterNull()
+            .observeWithLifecycle(this, adapter::setItems)
 
     /**
      * Update place preview list and stop refreshing animation

@@ -1,11 +1,12 @@
 package com.android.quo.view.place.page
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.android.quo.R
 import com.android.quo.util.Constants.Extra
+import com.android.quo.util.extension.filterNull
+import com.android.quo.util.extension.observeWithLifecycle
 import com.android.quo.view.BaseFragment
 import com.android.quo.viewmodel.PageViewModel
 import kotlinx.android.synthetic.main.fragment_place_page.recyclerView
@@ -34,17 +35,15 @@ class PageFragment : BaseFragment(R.layout.fragment_place_page) {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         setupSwipeRefresh()
-        observeComponents()
+        observe()
     }
 
-    private fun observeComponents() =
-        placeId?.let { placeId ->
-            viewModel.getComponents(placeId)
-                .observe(
-                    this,
-                    Observer { it?.let(adapter::setItems) }
-                )
-        }
+    private fun observe() {
+        val placeId = placeId ?: return
+        viewModel.getComponents(placeId)
+            .filterNull()
+            .observeWithLifecycle(this, adapter::setItems)
+    }
 
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(R.color.tradewind)

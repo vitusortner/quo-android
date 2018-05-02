@@ -8,6 +8,8 @@ import android.view.View
 import com.android.quo.R
 import com.android.quo.util.Constants
 import com.android.quo.util.Constants.Extra
+import com.android.quo.util.extension.filterNull
+import com.android.quo.util.extension.observeWithLifecycle
 import com.android.quo.view.BaseFragment
 import com.android.quo.viewmodel.GalleryPicture
 import com.android.quo.viewmodel.GalleryViewModel
@@ -40,13 +42,10 @@ class GalleryFragment : BaseFragment(R.layout.fragment_place_gallery) {
     }
 
     private fun observePictures() {
-        placeId?.let { placeId ->
-            viewModel.getPictures(placeId)
-                .observe(
-                    this,
-                    Observer { it?.let { adapter.setItems(it) } }
-                )
-        }
+        val placeId = placeId ?: return
+        viewModel.getPictures(placeId)
+            .filterNull()
+            .observeWithLifecycle(this, adapter::setItems)
     }
 
     private fun setupSwipeRefresh() {

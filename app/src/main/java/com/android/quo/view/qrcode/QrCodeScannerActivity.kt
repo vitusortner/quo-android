@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -30,7 +29,9 @@ import com.android.quo.util.Constants.QR_CODE_URI
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_GPS
 import com.android.quo.util.Constants.Request.PERMISSION_REQUEST_MULTIPLE
 import com.android.quo.util.Constants.Request.REQUEST_GALLERY
+import com.android.quo.util.extension.filterNull
 import com.android.quo.util.extension.getImagePath
+import com.android.quo.util.extension.observeWithLifecycle
 import com.android.quo.util.extension.permissionsGranted
 import com.android.quo.view.BaseActivity
 import com.android.quo.viewmodel.QrCodeScannerViewModel
@@ -106,7 +107,6 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
         when (requestCode) {
             PERMISSION_REQUEST_MULTIPLE -> trySetupLocationClient()
             PERMISSION_REQUEST_GPS -> trySetupLocationClient()
-
         }
     }
 
@@ -212,38 +212,44 @@ class QrCodeScannerActivity : BaseActivity(), ZXingScannerView.ResultHandler {
     }
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
-    @SuppressLint("MissingPermission")
     private fun tryOpenPlace(qrCodeId: String) {
-        viewModel.getPlace(qrCodeId).observe(this, Observer {
-            it?.let { place ->
-                // TODO this is just a dirty fix, better not use live data in this case
-                viewModel.resetLiveData()
-
+        viewModel.getPlace(qrCodeId)
+            .filterNull()
+            .observeWithLifecycle(this) { place ->
+                viewModel.resetLiveData() // TODO this is just a dirty fix, better not use live data in this case
                 // TODO remove nullability of hasToValidateGps
-                place.hasToValidateGps?.let { hasToValidateGps ->
-                    if (hasToValidateGps) {
-                        locationClient.lastLocation.addOnSuccessListener {
-                            it?.let {
-                                // Create location object from place lat and long
-                                val placeLocation = Location("")
-                                placeLocation.latitude = place.latitude
-                                placeLocation.longitude = place.longitude
-
-                                if (placeLocation.distanceTo(it) <= Constants.LOCATION_DISTANCE
-                                    || place.isHost
-                                ) {
-                                    startPlaceIntent(place)
-                                } else {
-                                    openWrongLocationAlert()
-                                }
-                            } ?: openLocationErrorAlert()
-                        }
-                    } else {
-                        startPlaceIntent(place)
-                    }
-                }
+                place.hasToValidateGps?.let { openPlaceOrAlert(it, place) }
             }
-        })
+    }
+
+    private fun openPlaceOrAlert(hasToValidateGps: Boolean, place: Place) {
+        if (hasToValidateGps) {
+            val location = getLocationOrNull() ?: run { openLocationErrorAlert(); return }
+            if (validateLocation(place, location)) {
+                startPlaceIntent(place)
+            } else {
+                openWrongLocationAlert()
+            }
+        } else {
+            startPlaceIntent(place)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocationOrNull(): Location? {
+        var location: Location? = null
+        locationClient.lastLocation.addOnSuccessListener { lastLocation: Location? ->
+            location = lastLocation
+        }
+        return location
+    }
+
+    private fun validateLocation(place: Place, deviceLocation: Location): Boolean {
+        val placeLocation = Location("").apply {
+            latitude = place.latitude
+            longitude = place.longitude
+        }
+        return (placeLocation.distanceTo(deviceLocation) <= Constants.LOCATION_DISTANCE || place.isHost)
     }
 
     private fun openLocationErrorAlert() {

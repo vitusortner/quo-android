@@ -1,12 +1,13 @@
 package com.android.quo.view.myplaces
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.android.quo.R
 import com.android.quo.util.Constants.FragmentTag
 import com.android.quo.util.extension.createAndReplaceFragment
+import com.android.quo.util.extension.filterNull
+import com.android.quo.util.extension.observeWithLifecycle
 import com.android.quo.view.BaseFragment
 import com.android.quo.view.createplace.CreatePlaceFragment
 import com.android.quo.view.home.HomeFragment
@@ -31,7 +32,8 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
         super.onCreate(savedInstanceState)
         requireActivity().bottomNavigationView.visibility = View.VISIBLE
 
-        adapter = PlacePreviewAdapter(imageLoader) { HomeFragment.onClick(it, requireFragmentManager()) }
+        adapter =
+            PlacePreviewAdapter(imageLoader) { HomeFragment.onClick(it, requireFragmentManager()) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,7 +42,7 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        observePlaces()
+        observe()
         setupSwipeRefresh()
         setupFloatingActionButton()
     }
@@ -48,9 +50,10 @@ class MyPlacesFragment : BaseFragment(R.layout.fragment_my_places) {
     /**
      * Observe place preview list and set adapter for place preview recycler view
      */
-    private fun observePlaces() =
+    private fun observe() =
         viewModel.getPlaces()
-            .observe(this, Observer { it?.let { places -> adapter.setItems(places) } })
+            .filterNull()
+            .observeWithLifecycle(this, adapter::setItems)
 
     /**
      * Update place preview list and stop refreshing animation
